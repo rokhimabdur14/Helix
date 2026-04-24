@@ -1,0 +1,703 @@
+{
+  "brand_id": "fotofusi",
+  "processed_at": "2026-04-23T11:08:07.439623",
+  "posts": [
+    {
+      "post_id": "ff_001",
+      "date": "2026-02-15",
+      "posted_time": "19:00",
+      "type": "image",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Dokumentasi Annual Gathering PT Mitra Karya — 200 peserta, 1 hari penuh energi. Thanks sudah percayakan momen spesial ini ke Fotofusi.",
+      "hashtags": [
+        "#fotograferjogja",
+        "#corporatephotography",
+        "#eventphotography",
+        "#jogjaphotographer",
+        "#fotofusijogja"
+      ],
+      "reach": 485,
+      "impressions": 612,
+      "likes": 42,
+      "comments": 6,
+      "saves": 15,
+      "shares": 4,
+      "profile_visits": 18,
+      "follows": 3,
+      "engagement_rate": 13.81,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_002",
+      "date": "2026-02-17",
+      "posted_time": "12:30",
+      "type": "image",
+      "content_pillar": "Service Edu",
+      "caption": "Paket pre-wedding Silver: 4 jam, 2 lokasi, 100+ foto edited. Harga mulai 3.75jt — all-inclusive.",
+      "hashtags": [
+        "#prewedding",
+        "#prewedjogja",
+        "#fotografipernikahan",
+        "#weddingjogja"
+      ],
+      "reach": 210,
+      "impressions": 245,
+      "likes": 18,
+      "comments": 2,
+      "saves": 3,
+      "shares": 1,
+      "profile_visits": 8,
+      "follows": 0,
+      "engagement_rate": 11.43,
+      "day_of_week": "Tuesday"
+    },
+    {
+      "post_id": "ff_003",
+      "date": "2026-02-19",
+      "posted_time": "20:00",
+      "type": "reel",
+      "content_pillar": "Workshop Documentation",
+      "caption": "15 detik yang merangkum workshop digital marketing kemarin. Kamera jalan terus, momen tak terlewat.",
+      "hashtags": [
+        "#workshopjogja",
+        "#reeljogja",
+        "#corporatereel",
+        "#fotografi"
+      ],
+      "reach": 780,
+      "impressions": 920,
+      "likes": 68,
+      "comments": 8,
+      "saves": 22,
+      "shares": 12,
+      "profile_visits": 28,
+      "follows": 5,
+      "engagement_rate": 14.1,
+      "day_of_week": "Thursday"
+    },
+    {
+      "post_id": "ff_004",
+      "date": "2026-02-22",
+      "posted_time": "18:45",
+      "type": "carousel",
+      "content_pillar": "Brand Education",
+      "caption": "Kenapa Fotofusi beda dari freelance biasa? 7 alasan kenapa UMKM & korporat pilih kami. Swipe ->",
+      "hashtags": [
+        "#fotograferjogja",
+        "#managedmarketplace",
+        "#fotofusistory"
+      ],
+      "reach": 620,
+      "impressions": 755,
+      "likes": 52,
+      "comments": 9,
+      "saves": 28,
+      "shares": 6,
+      "profile_visits": 22,
+      "follows": 4,
+      "engagement_rate": 15.32,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_005",
+      "date": "2026-02-24",
+      "posted_time": "11:00",
+      "type": "image",
+      "content_pillar": "Service Edu",
+      "caption": "Paket Wisuda Family 2jt — 20+ foto edited, album mini, 3 pose keluarga.",
+      "hashtags": [
+        "#wisudajogja",
+        "#fotowisuda",
+        "#graduationphotography"
+      ],
+      "reach": 145,
+      "impressions": 168,
+      "likes": 12,
+      "comments": 1,
+      "saves": 2,
+      "shares": 0,
+      "profile_visits": 5,
+      "follows": 0,
+      "engagement_rate": 10.34,
+      "day_of_week": "Tuesday"
+    },
+    {
+      "post_id": "ff_006",
+      "date": "2026-02-26",
+      "posted_time": "19:30",
+      "type": "image",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Town Hall Meeting Bank ABC — 150 peserta, 2 stage. Momen awarding karyawan terbaik tidak terlewat.",
+      "hashtags": [
+        "#corporateevent",
+        "#townhall",
+        "#fotograferjogja",
+        "#jogjacorporate"
+      ],
+      "reach": 510,
+      "impressions": 640,
+      "likes": 46,
+      "comments": 7,
+      "saves": 17,
+      "shares": 5,
+      "profile_visits": 19,
+      "follows": 2,
+      "engagement_rate": 14.71,
+      "day_of_week": "Thursday"
+    },
+    {
+      "post_id": "ff_007",
+      "date": "2026-02-28",
+      "posted_time": "09:00",
+      "type": "image",
+      "content_pillar": "Behind The Scenes",
+      "caption": "Persiapan gear sebelum shoot corporate besar. Backup body, backup lensa, backup battery. Profesional = siap segala kondisi.",
+      "hashtags": [
+        "#bts",
+        "#fotograferjogja",
+        "#behindthescenes"
+      ],
+      "reach": 395,
+      "impressions": 445,
+      "likes": 38,
+      "comments": 4,
+      "saves": 11,
+      "shares": 3,
+      "profile_visits": 12,
+      "follows": 2,
+      "engagement_rate": 14.18,
+      "day_of_week": "Saturday"
+    },
+    {
+      "post_id": "ff_008",
+      "date": "2026-03-02",
+      "posted_time": "20:00",
+      "type": "reel",
+      "content_pillar": "Workshop Documentation",
+      "caption": "Timelapse workshop dari setup sampai closing. 6 jam dipadatkan jadi 30 detik.",
+      "hashtags": [
+        "#workshop",
+        "#reeljogja",
+        "#timelapse",
+        "#fotografi"
+      ],
+      "reach": 915,
+      "impressions": 1120,
+      "likes": 82,
+      "comments": 12,
+      "saves": 35,
+      "shares": 18,
+      "profile_visits": 38,
+      "follows": 7,
+      "engagement_rate": 16.07,
+      "day_of_week": "Monday"
+    },
+    {
+      "post_id": "ff_009",
+      "date": "2026-03-04",
+      "posted_time": "12:00",
+      "type": "carousel",
+      "content_pillar": "Service Edu",
+      "caption": "Perbedaan paket Wedding Bronze, Silver, Gold. Swipe untuk lihat detail dan harga.",
+      "hashtags": [
+        "#weddingjogja",
+        "#fotografipernikahan",
+        "#weddingjogja"
+      ],
+      "reach": 285,
+      "impressions": 322,
+      "likes": 22,
+      "comments": 3,
+      "saves": 5,
+      "shares": 2,
+      "profile_visits": 10,
+      "follows": 1,
+      "engagement_rate": 11.23,
+      "day_of_week": "Wednesday"
+    },
+    {
+      "post_id": "ff_010",
+      "date": "2026-03-06",
+      "posted_time": "19:15",
+      "type": "image",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Launching produk klien — dari stage lighting sampai crowd reaction, semua tertangkap.",
+      "hashtags": [
+        "#productlaunch",
+        "#corporatephotography",
+        "#fotografijogja"
+      ],
+      "reach": 445,
+      "impressions": 528,
+      "likes": 38,
+      "comments": 5,
+      "saves": 14,
+      "shares": 3,
+      "profile_visits": 15,
+      "follows": 2,
+      "engagement_rate": 13.48,
+      "day_of_week": "Friday"
+    },
+    {
+      "post_id": "ff_011",
+      "date": "2026-03-08",
+      "posted_time": "10:30",
+      "type": "image",
+      "content_pillar": "Brand Education",
+      "caption": "Hari perempuan — terima kasih kepada klien-klien perempuan inspiratif yang mempercayai Fotofusi.",
+      "hashtags": [
+        "#hariperempuan",
+        "#womensday",
+        "#fotofusijogja"
+      ],
+      "reach": 325,
+      "impressions": 378,
+      "likes": 48,
+      "comments": 12,
+      "saves": 6,
+      "shares": 8,
+      "profile_visits": 14,
+      "follows": 3,
+      "engagement_rate": 22.77,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_012",
+      "date": "2026-03-10",
+      "posted_time": "20:30",
+      "type": "reel",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Compilation 10 corporate event yang kami handle Q1 2026. Dari workshop sampai town hall.",
+      "hashtags": [
+        "#corporateevent",
+        "#fotograferjogja",
+        "#jogjacorporate",
+        "#reeljogja"
+      ],
+      "reach": 1240,
+      "impressions": 1520,
+      "likes": 112,
+      "comments": 15,
+      "saves": 48,
+      "shares": 22,
+      "profile_visits": 55,
+      "follows": 11,
+      "engagement_rate": 15.89,
+      "day_of_week": "Tuesday"
+    },
+    {
+      "post_id": "ff_013",
+      "date": "2026-03-13",
+      "posted_time": "19:00",
+      "type": "carousel",
+      "content_pillar": "Behind The Scenes",
+      "caption": "A day in the life fotografer corporate event. Swipe untuk ikuti timeline kami.",
+      "hashtags": [
+        "#bts",
+        "#fotograferjogja",
+        "#adayinthelife"
+      ],
+      "reach": 580,
+      "impressions": 695,
+      "likes": 56,
+      "comments": 8,
+      "saves": 24,
+      "shares": 5,
+      "profile_visits": 25,
+      "follows": 4,
+      "engagement_rate": 16.03,
+      "day_of_week": "Friday"
+    },
+    {
+      "post_id": "ff_014",
+      "date": "2026-03-15",
+      "posted_time": "11:30",
+      "type": "image",
+      "content_pillar": "Service Edu",
+      "caption": "Maternity shoot — 2jt untuk momen yang hanya ada sekali. Outdoor, studio, atau rumah.",
+      "hashtags": [
+        "#maternity",
+        "#maternityphotography",
+        "#fotografijogja"
+      ],
+      "reach": 168,
+      "impressions": 198,
+      "likes": 14,
+      "comments": 2,
+      "saves": 3,
+      "shares": 1,
+      "profile_visits": 6,
+      "follows": 0,
+      "engagement_rate": 11.9,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_015",
+      "date": "2026-03-17",
+      "posted_time": "19:30",
+      "type": "image",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Media gathering klien — dokumentasi profesional untuk press release dan sosial media.",
+      "hashtags": [
+        "#mediagathering",
+        "#corporatephotography"
+      ],
+      "reach": 420,
+      "impressions": 490,
+      "likes": 36,
+      "comments": 4,
+      "saves": 13,
+      "shares": 3,
+      "profile_visits": 14,
+      "follows": 2,
+      "engagement_rate": 13.33,
+      "day_of_week": "Tuesday"
+    },
+    {
+      "post_id": "ff_016",
+      "date": "2026-03-20",
+      "posted_time": "12:00",
+      "type": "image",
+      "content_pillar": "Workshop Documentation",
+      "caption": "Detail shot dari workshop finance kemarin. Close-up handshake, ekspresi peserta, momen otentik.",
+      "hashtags": [
+        "#workshop",
+        "#detailshot",
+        "#fotografijogja"
+      ],
+      "reach": 385,
+      "impressions": 445,
+      "likes": 32,
+      "comments": 3,
+      "saves": 10,
+      "shares": 2,
+      "profile_visits": 12,
+      "follows": 2,
+      "engagement_rate": 12.21,
+      "day_of_week": "Friday"
+    },
+    {
+      "post_id": "ff_017",
+      "date": "2026-03-22",
+      "posted_time": "20:00",
+      "type": "reel",
+      "content_pillar": "Brand Education",
+      "caption": "3 kesalahan umum saat hire fotografer untuk event. Jangan sampai kecewa di hari H!",
+      "hashtags": [
+        "#tipsfotografi",
+        "#fotograferjogja",
+        "#eventtips"
+      ],
+      "reach": 1080,
+      "impressions": 1345,
+      "likes": 98,
+      "comments": 18,
+      "saves": 52,
+      "shares": 14,
+      "profile_visits": 42,
+      "follows": 9,
+      "engagement_rate": 16.85,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_018",
+      "date": "2026-03-24",
+      "posted_time": "19:00",
+      "type": "carousel",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Best moments dari Conference Tech Jogja 2026. 10 foto pilihan.",
+      "hashtags": [
+        "#conference",
+        "#techconference",
+        "#corporatephotography"
+      ],
+      "reach": 720,
+      "impressions": 880,
+      "likes": 68,
+      "comments": 11,
+      "saves": 28,
+      "shares": 8,
+      "profile_visits": 30,
+      "follows": 5,
+      "engagement_rate": 15.97,
+      "day_of_week": "Tuesday"
+    },
+    {
+      "post_id": "ff_019",
+      "date": "2026-03-27",
+      "posted_time": "11:00",
+      "type": "image",
+      "content_pillar": "Service Edu",
+      "caption": "Couple session outdoor 550rb — 1 lokasi, 1 jam, 20+ foto edited.",
+      "hashtags": [
+        "#couplesession",
+        "#fotografijogja"
+      ],
+      "reach": 132,
+      "impressions": 155,
+      "likes": 10,
+      "comments": 1,
+      "saves": 2,
+      "shares": 0,
+      "profile_visits": 4,
+      "follows": 0,
+      "engagement_rate": 9.85,
+      "day_of_week": "Friday"
+    },
+    {
+      "post_id": "ff_020",
+      "date": "2026-03-29",
+      "posted_time": "19:30",
+      "type": "image",
+      "content_pillar": "Behind The Scenes",
+      "caption": "Tim Fotofusi saat shoot corporate training 2 hari di luar kota. Solid dari sunrise sampai sunset.",
+      "hashtags": [
+        "#timfotofusi",
+        "#bts",
+        "#fotograferjogja"
+      ],
+      "reach": 468,
+      "impressions": 545,
+      "likes": 44,
+      "comments": 6,
+      "saves": 16,
+      "shares": 4,
+      "profile_visits": 18,
+      "follows": 3,
+      "engagement_rate": 14.96,
+      "day_of_week": "Sunday"
+    },
+    {
+      "post_id": "ff_021",
+      "date": "2026-04-01",
+      "posted_time": "20:00",
+      "type": "reel",
+      "content_pillar": "Workshop Documentation",
+      "caption": "Cinematic cut dari workshop design thinking. Energi peserta terasa dari layar.",
+      "hashtags": [
+        "#workshop",
+        "#cinematicreel",
+        "#fotografijogja"
+      ],
+      "reach": 1450,
+      "impressions": 1820,
+      "likes": 135,
+      "comments": 22,
+      "saves": 68,
+      "shares": 28,
+      "profile_visits": 65,
+      "follows": 13,
+      "engagement_rate": 17.45,
+      "day_of_week": "Wednesday"
+    },
+    {
+      "post_id": "ff_022",
+      "date": "2026-04-04",
+      "posted_time": "18:45",
+      "type": "image",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Internal meeting Startup XYZ — casual tapi tetap profesional. Dokumentasi lengkap semua sesi.",
+      "hashtags": [
+        "#corporatephotography",
+        "#startupjogja",
+        "#internalevent"
+      ],
+      "reach": 512,
+      "impressions": 620,
+      "likes": 48,
+      "comments": 7,
+      "saves": 18,
+      "shares": 4,
+      "profile_visits": 22,
+      "follows": 3,
+      "engagement_rate": 15.04,
+      "day_of_week": "Saturday"
+    },
+    {
+      "post_id": "ff_023",
+      "date": "2026-04-06",
+      "posted_time": "12:00",
+      "type": "image",
+      "content_pillar": "Service Edu",
+      "caption": "Bukber Ramadan package — 500rb sampai 850rb. Cocok untuk komunitas & perusahaan.",
+      "hashtags": [
+        "#bukber",
+        "#ramadan",
+        "#fotografijogja",
+        "#bukberjogja"
+      ],
+      "reach": 245,
+      "impressions": 285,
+      "likes": 20,
+      "comments": 3,
+      "saves": 4,
+      "shares": 1,
+      "profile_visits": 9,
+      "follows": 1,
+      "engagement_rate": 11.43,
+      "day_of_week": "Monday"
+    },
+    {
+      "post_id": "ff_024",
+      "date": "2026-04-09",
+      "posted_time": "19:00",
+      "type": "carousel",
+      "content_pillar": "Brand Education",
+      "caption": "Portfolio Q1 2026 — 32 project selesai, 100% klien puas. Swipe untuk lihat highlights.",
+      "hashtags": [
+        "#portfolio",
+        "#fotograferjogja",
+        "#managedmarketplace"
+      ],
+      "reach": 685,
+      "impressions": 815,
+      "likes": 64,
+      "comments": 10,
+      "saves": 32,
+      "shares": 7,
+      "profile_visits": 28,
+      "follows": 6,
+      "engagement_rate": 16.5,
+      "day_of_week": "Thursday"
+    },
+    {
+      "post_id": "ff_025",
+      "date": "2026-04-12",
+      "posted_time": "20:15",
+      "type": "reel",
+      "content_pillar": "Corporate Event Portfolio",
+      "caption": "Product launch event untuk brand lokal Jogja. Stage, MC, audience — semua tercover.",
+      "hashtags": [
+        "#productlaunch",
+        "#reeljogja",
+        "#corporateevent"
+      ],
+      "reach": 1180,
+      "impressions": 1465,
+      "likes": 108,
+      "comments": 16,
+      "saves": 55,
+      "shares": 20,
+      "profile_visits": 52,
+      "follows": 10,
+      "engagement_rate": 16.86,
+      "day_of_week": "Sunday"
+    }
+  ],
+  "aggregates": {
+    "post_count": 25,
+    "total_reach": 14380,
+    "total_follows": 98,
+    "avg_reach": 575.0,
+    "avg_engagement_rate": 14.47,
+    "median_engagement_rate": 14.71,
+    "by_type": {
+      "image": {
+        "count": 14,
+        "avg_reach": 346.0,
+        "avg_engagement_rate": 13.53,
+        "total_follows": 23
+      },
+      "reel": {
+        "count": 6,
+        "avg_reach": 1108.0,
+        "avg_engagement_rate": 16.2,
+        "total_follows": 55
+      },
+      "carousel": {
+        "count": 5,
+        "avg_reach": 578,
+        "avg_engagement_rate": 15.01,
+        "total_follows": 20
+      }
+    },
+    "by_content_pillar": {
+      "Corporate Event Portfolio": {
+        "count": 8,
+        "avg_reach": 689,
+        "avg_engagement_rate": 14.89,
+        "total_follows": 38
+      },
+      "Service Edu": {
+        "count": 6,
+        "avg_reach": 198.0,
+        "avg_engagement_rate": 11.03,
+        "total_follows": 2
+      },
+      "Workshop Documentation": {
+        "count": 4,
+        "avg_reach": 882.0,
+        "avg_engagement_rate": 14.96,
+        "total_follows": 27
+      },
+      "Brand Education": {
+        "count": 4,
+        "avg_reach": 678.0,
+        "avg_engagement_rate": 17.86,
+        "total_follows": 22
+      },
+      "Behind The Scenes": {
+        "count": 3,
+        "avg_reach": 481,
+        "avg_engagement_rate": 15.06,
+        "total_follows": 9
+      }
+    },
+    "top_5_posts": [
+      {
+        "post_id": "ff_011",
+        "date": "2026-03-08",
+        "type": "image",
+        "content_pillar": "Brand Education",
+        "engagement_rate": 22.77,
+        "reach": 325,
+        "caption_preview": "Hari perempuan — terima kasih kepada klien-klien perempuan inspiratif yang mempe..."
+      },
+      {
+        "post_id": "ff_021",
+        "date": "2026-04-01",
+        "type": "reel",
+        "content_pillar": "Workshop Documentation",
+        "engagement_rate": 17.45,
+        "reach": 1450,
+        "caption_preview": "Cinematic cut dari workshop design thinking. Energi peserta terasa dari layar."
+      },
+      {
+        "post_id": "ff_025",
+        "date": "2026-04-12",
+        "type": "reel",
+        "content_pillar": "Corporate Event Portfolio",
+        "engagement_rate": 16.86,
+        "reach": 1180,
+        "caption_preview": "Product launch event untuk brand lokal Jogja. Stage, MC, audience — semua tercov..."
+      },
+      {
+        "post_id": "ff_017",
+        "date": "2026-03-22",
+        "type": "reel",
+        "content_pillar": "Brand Education",
+        "engagement_rate": 16.85,
+        "reach": 1080,
+        "caption_preview": "3 kesalahan umum saat hire fotografer untuk event. Jangan sampai kecewa di hari ..."
+      },
+      {
+        "post_id": "ff_024",
+        "date": "2026-04-09",
+        "type": "carousel",
+        "content_pillar": "Brand Education",
+        "engagement_rate": 16.5,
+        "reach": 685,
+        "caption_preview": "Portfolio Q1 2026 — 32 project selesai, 100% klien puas. Swipe untuk lihat highl..."
+      }
+    ],
+    "engagement_by_hour": {
+      "09:00": 14.18,
+      "10:00": 22.77,
+      "11:00": 10.7,
+      "12:00": 11.57,
+      "18:00": 15.18,
+      "19:00": 14.85,
+      "20:00": 16.2
+    }
+  }
+}

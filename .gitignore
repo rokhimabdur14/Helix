@@ -32,5 +32,26 @@ data/*.json
 data/*.xlsx
 !data/.gitkeep
 
+# Fotofusi demo data — DI-COMMIT supaya demo jalan di production
+!data/fotofusi_insights.csv
+!data/fotofusi_insights.json
+!data/fotofusi_website.json
+
+# Templates — DI-COMMIT (referensi user untuk format CSV insights)
+!data/templates/
+!data/templates/*
+
+# Expertise knowledge base — DI-COMMIT (markdown summary, bukan PDF mentah)
+!data/expertise/
+data/expertise/_raw_*.txt
+
+# Brand configs — fotofusi demo committed, brand lain tidak
+config/brands/*.config.json
+!config/brands/fotofusi.config.json
+!config/brands/_schema.md
+
 # Logs
 *.log
+
+# Render local cache (kalau pakai render dev)
+.render/

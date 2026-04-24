@@ -1,0 +1,428 @@
+@import "tailwindcss";
+
+:root {
+  /* HELIX brand tokens — dark futuristic */
+  --bg-base: #05070e;
+  --bg-surface: #0a0f1d;
+  --bg-elevated: #111827;
+  --bg-panel: #1e293b;
+  --border-subtle: #1e293b;
+  --border-strong: #334155;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+
+  --accent-blue: #3b82f6;
+  --accent-purple: #7c3aed;
+  --accent-lavender: #a78bfa;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #7c3aed 50%, #a78bfa 100%);
+
+  --danger: #ef4444;
+  --success: #10b981;
+}
+
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --color-surface: var(--bg-surface);
+  --color-elevated: var(--bg-elevated);
+  --color-panel: var(--bg-panel);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--text-muted);
+  --color-secondary: var(--text-secondary);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-lavender: var(--accent-lavender);
+  --font-display: var(--font-display, "Orbitron", system-ui, sans-serif);
+  --font-sans: var(--font-sans, "Space Grotesk", system-ui, sans-serif);
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  overflow-x: hidden;
+}
+
+/* ========== Animated ambient background ========== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(124, 58, 237, 0.18), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 40%, rgba(59, 130, 246, 0.12), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 60% 90%, rgba(167, 139, 250, 0.08), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambient-drift 20s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 70%);
+  animation: grid-parallax 30s linear infinite;
+}
+
+@keyframes ambient-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-3%, 2%) scale(1.05); }
+  100% { transform: translate(3%, -2%) scale(1); }
+}
+
+/* Subtle parallax-like drift on the dot grid (slower than ambient) */
+@keyframes grid-parallax {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+/* ========== Floating particles (DNA spheres) ========== */
+.particle-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particle-field::before,
+.particle-field::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.35;
+  will-change: transform;
+}
+.particle-field::before {
+  width: 320px;
+  height: 320px;
+  top: 10%;
+  left: 8%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.55), transparent 70%);
+  animation: orb-float-a 22s ease-in-out infinite alternate;
+  /* Parallax: bergerak berlawanan dengan kursor (depth illusion). --mx/--my: -1..1 */
+  translate: calc(var(--mx, 0) * -25px) calc(var(--my, 0) * -25px);
+  transition: translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.particle-field::after {
+  width: 380px;
+  height: 380px;
+  bottom: 8%;
+  right: 6%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.45), transparent 70%);
+  animation: orb-float-b 28s ease-in-out infinite alternate;
+  translate: calc(var(--mx, 0) * 35px) calc(var(--my, 0) * 35px);
+  transition: translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.starfield {
+  /* Subtle parallax — bergerak lebih sedikit daripada orbs (dekat foreground) */
+  translate: calc(var(--mx, 0) * 8px) calc(var(--my, 0) * 8px);
+  transition: translate 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes orb-float-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(80px, 60px) scale(1.1); }
+  100% { transform: translate(-40px, 100px) scale(0.95); }
+}
+@keyframes orb-float-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-90px, -50px) scale(1.08); }
+  100% { transform: translate(60px, -110px) scale(0.92); }
+}
+
+/* Tiny floating dots overlay (sparse, slow drift) */
+.starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(167, 139, 250, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 70% 60%, rgba(96, 165, 250, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(167, 139, 250, 0.4), transparent),
+    radial-gradient(1px 1px at 85% 20%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 15% 70%, rgba(167, 139, 250, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 60% 10%, rgba(96, 165, 250, 0.4), transparent);
+  background-size: 100% 100%;
+  animation: starfield-drift 40s linear infinite;
+  opacity: 0.7;
+}
+@keyframes starfield-drift {
+  0%   { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-30px) translateX(20px); }
+}
+
+/* ========== Font utilities ========== */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+
+/* ========== Logo animations ========== */
+.logo-pulse {
+  animation: logo-breathe 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.3));
+}
+.logo-pulse:hover {
+  animation: logo-spin 4s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.6));
+}
+@keyframes logo-breathe {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.3)); }
+  50%      { transform: scale(1.04); filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.5)); }
+}
+@keyframes logo-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========== Wordmark gradient text animation ========== */
+.wordmark {
+  background: linear-gradient(
+    120deg,
+    #f8fafc 0%,
+    #c4b5fd 25%,
+    #a78bfa 50%,
+    #c4b5fd 75%,
+    #f8fafc 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: wordmark-shine 6s linear infinite;
+}
+@keyframes wordmark-shine {
+  from { background-position: 0% center; }
+  to   { background-position: 200% center; }
+}
+
+/* ========== Message bubble slide-in ========== */
+.bubble-in {
+  animation: bubble-slide 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes bubble-slide {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Stagger fade-in (untuk hasil generation list) ==========
+   Explicit `opacity: 0` baseline + `forwards` fill = bulletproof terhadap
+   paint race (nggak ada flash sebelum animation kick in).
+   Setiap item set inline style: style={{ "--stagger-i": i }}
+   Delay = i × 60ms. */
+.stagger-in {
+  opacity: 0;
+  animation: stagger-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--stagger-i, 0) * 60ms);
+}
+@keyframes stagger-fade {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Variant untuk panel besar — slide dari atas */
+.reveal-in {
+  opacity: 0;
+  animation: reveal-down 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes reveal-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== Creator backdrop icons ========== */
+.creator-icon {
+  position: absolute;
+  pointer-events: none;
+  animation-name: creator-drift;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+  /* Soft outer glow biar terasa "lampu studio" */
+  filter: drop-shadow(0 0 14px currentColor);
+  /* Parallax tipis ikut kursor (lebih halus dari orbs) */
+  transition: translate 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, rotate;
+}
+.creator-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes creator-drift {
+  0% {
+    transform: translate(0, 0) rotate(-4deg) scale(1);
+  }
+  100% {
+    transform: translate(12px, -18px) rotate(4deg) scale(1.04);
+  }
+}
+
+/* Subtle pulse alternative — beberapa icon pakai ini biar variatif */
+@keyframes creator-pulse {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: var(--icon-opacity, 0.12);
+  }
+  50% {
+    transform: translate(-10px, 14px) rotate(-5deg) scale(0.96);
+    opacity: calc(var(--icon-opacity, 0.12) * 1.4);
+  }
+}
+.creator-icon.pulse {
+  animation-name: creator-pulse;
+}
+
+/* ========== Button glow (primary) ========== */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 50%, #8b5cf6 100%);
+  background-size: 200% auto;
+  transition:
+    background-position 0.5s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 4px 20px -4px rgba(124, 58, 237, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.6), rgba(96, 165, 250, 0.6));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.btn-primary:hover:not(:disabled) {
+  background-position: right center;
+  box-shadow:
+    0 8px 40px -4px rgba(124, 58, 237, 0.75),
+    0 0 0 1px rgba(167, 139, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.015);
+}
+.btn-primary:hover:not(:disabled)::before {
+  opacity: 1;
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(1);
+  transition: transform 0.1s ease;
+}
+
+/* Generic interactive lift — apply via class .lift-on-hover */
+.lift-on-hover {
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+.lift-on-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 30px -8px rgba(124, 58, 237, 0.35),
+    0 0 0 1px rgba(167, 139, 250, 0.25);
+}
+
+/* ========== Input focus glow ========== */
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15), 0 0 24px -4px rgba(124, 58, 237, 0.3);
+}
+
+/* ========== Scrollbar styling ========== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-purple);
+}
+
+/* ========== Dropdown fade-in ========== */
+.dropdown-in {
+  animation: dropdown-fade 0.2s ease-out;
+  transform-origin: top right;
+}
+@keyframes dropdown-fade {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ========== Modal backdrop fade-in ========== */
+.modal-backdrop-in {
+  animation: backdrop-fade 0.25s ease-out;
+}
+.modal-content-in {
+  animation: modal-pop 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes backdrop-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modal-pop {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ========== DNA helix loader (for loading states) ========== */
+@keyframes dna-bounce {
+  0%, 80%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+  40%           { transform: scaleY(1); opacity: 1; }
+}
+.dna-dot {
+  animation: dna-bounce 1.2s ease-in-out infinite;
+}
+.dna-dot:nth-child(2) { animation-delay: 0.15s; }
+.dna-dot:nth-child(3) { animation-delay: 0.3s; }
