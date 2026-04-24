@@ -40,12 +40,19 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# CORS — dev: localhost any port. Prod: tambahkan domain Vercel via env var
-# CORS_ORIGIN_REGEX (mis. "https://my-app.*\.vercel\.app|https://my-domain\.com")
-_default_dev_regex = r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
-_prod_regex = os.getenv("CORS_ORIGIN_REGEX", "")
+# CORS — default sudah cover:
+# - dev: localhost / 127.0.0.1 any port
+# - prod: any *.vercel.app subdomain (frontend Vercel)
+# - prod: any *.hf.space subdomain (kalau frontend juga di HF Spaces)
+# Override via env CORS_ORIGIN_REGEX kalau punya custom domain.
+_default_regex = (
+    r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
+    r"|https://.*\.vercel\.app"
+    r"|https://.*\.hf\.space"
+)
+_extra_regex = os.getenv("CORS_ORIGIN_REGEX", "")
 _combined_regex = (
-    f"{_default_dev_regex}|{_prod_regex}" if _prod_regex else _default_dev_regex
+    f"{_default_regex}|{_extra_regex}" if _extra_regex else _default_regex
 )
 
 app.add_middleware(
