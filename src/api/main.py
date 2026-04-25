@@ -136,6 +136,16 @@ def root():
     }
 
 
+@app.get("/debug/env")
+def debug_env():
+    key = os.getenv("GROQ_API_KEY")
+    return {
+        "groq_key_present": bool(key),
+        "groq_key_length": len(key) if key else 0,
+        "groq_key_prefix": (key[:7] + "...") if key else None,
+    }
+
+
 @app.get("/brands")
 def list_brands():
     """List all brand configs available."""
