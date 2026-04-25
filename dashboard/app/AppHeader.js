@@ -26,7 +26,7 @@ export function AppHeader({
   return (
     <header className="border-b border-slate-800/60 bg-slate-950/40 backdrop-blur-xl">
       {backendStatus === "offline" && <BackendOfflineBanner />}
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
         <Link href="/" className="flex items-center gap-3">
           <Image
             src="/brand/helix-mark.svg"
@@ -40,7 +40,7 @@ export function AppHeader({
             <h1 className="wordmark font-display text-xl font-extrabold">
               HELIX
             </h1>
-            <p className="text-[11px] text-slate-500 tracking-wide">
+            <p className="hidden text-[11px] text-slate-500 tracking-wide sm:block">
               AI Social Media Strategist ·{" "}
               <span className="text-slate-400">by Akselera Tech</span>
             </p>
@@ -135,13 +135,27 @@ function StatusDot({ status }) {
 }
 
 function BackendOfflineBanner() {
+  const isProd = !/(localhost|127\.0\.0\.1)/.test(API_URL);
   return (
-    <div className="border-b border-red-900/50 bg-red-950/40 px-6 py-2 text-center text-xs text-red-300">
+    <div className="border-b border-red-900/50 bg-red-950/40 px-4 py-2 text-center text-xs text-red-300 sm:px-6">
       <span className="font-semibold">Server HELIX tidak merespons.</span>{" "}
-      Pastikan backend FastAPI jalan:{" "}
-      <code className="rounded bg-red-950/60 px-1.5 py-0.5 text-red-200">
-        uvicorn src.api.main:app --port 8000
-      </code>
+      {isProd ? (
+        <>
+          Backend{" "}
+          <code className="rounded bg-red-950/60 px-1.5 py-0.5 text-red-200">
+            {API_URL}
+          </code>{" "}
+          mungkin sedang restart atau kena cold start — coba refresh dalam 30
+          detik.
+        </>
+      ) : (
+        <>
+          Pastikan backend jalan:{" "}
+          <code className="rounded bg-red-950/60 px-1.5 py-0.5 text-red-200">
+            uvicorn src.api.main:app --port 8000
+          </code>
+        </>
+      )}
     </div>
   );
 }

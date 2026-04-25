@@ -13,11 +13,11 @@ const TYPE_COLOR = {
 const COLUMNS = [
   { id: "date", label: "Date", sortable: true },
   { id: "type", label: "Type", sortable: true },
-  { id: "content_pillar", label: "Pillar", sortable: true },
+  { id: "content_pillar", label: "Pillar", sortable: true, hideOnMobile: true },
   { id: "reach", label: "Reach", sortable: true, num: true },
   { id: "engagement_rate", label: "ER %", sortable: true, num: true },
-  { id: "follows", label: "+Follows", sortable: true, num: true },
-  { id: "caption", label: "Caption", sortable: false },
+  { id: "follows", label: "+Follows", sortable: true, num: true, hideOnMobile: true },
+  { id: "caption", label: "Caption", sortable: false, hideOnMobile: true },
 ];
 
 export function PostsTable({ posts }) {
@@ -62,7 +62,9 @@ export function PostsTable({ posts }) {
                   key={c.id}
                   className={`px-3 py-2 text-left font-semibold uppercase tracking-wider text-slate-400 ${
                     c.num ? "text-right" : ""
-                  } ${c.sortable ? "cursor-pointer hover:text-violet-300" : ""}`}
+                  } ${c.sortable ? "cursor-pointer hover:text-violet-300" : ""} ${
+                    c.hideOnMobile ? "hidden md:table-cell" : ""
+                  }`}
                   onClick={c.sortable ? () => toggleSort(c.id) : undefined}
                 >
                   <span
@@ -96,7 +98,7 @@ export function PostsTable({ posts }) {
               >
                 {p.type}
               </td>
-              <td className="max-w-[160px] truncate px-3 py-2 text-slate-300">
+              <td className="hidden max-w-[160px] truncate px-3 py-2 text-slate-300 md:table-cell">
                 {p.content_pillar}
               </td>
               <td className="px-3 py-2 text-right text-slate-300">
@@ -105,10 +107,10 @@ export function PostsTable({ posts }) {
               <td className="px-3 py-2 text-right font-semibold text-violet-200">
                 {p.engagement_rate}%
               </td>
-              <td className="px-3 py-2 text-right text-emerald-300">
+              <td className="hidden px-3 py-2 text-right text-emerald-300 md:table-cell">
                 +{p.follows || 0}
               </td>
-              <td className="max-w-[260px] truncate px-3 py-2 text-slate-500">
+              <td className="hidden max-w-[260px] truncate px-3 py-2 text-slate-500 md:table-cell">
                 {p.caption}
               </td>
             </tr>

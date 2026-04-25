@@ -131,7 +131,7 @@ function StudioPageInner() {
         onDelete={deleteBrand}
       />
 
-      <main className="flex-1 px-6 py-8">
+      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto max-w-5xl">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -180,7 +180,7 @@ function StudioPageInner() {
 
           {!brandsLoading && activeBrandId && (
             <>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
                   const active = activeTab === tab.id;

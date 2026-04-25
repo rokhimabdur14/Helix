@@ -16,7 +16,10 @@ export function HourHeatmap({ data }) {
 
   return (
     <div>
-      <div className="grid grid-cols-12 gap-1 sm:grid-cols-24" style={{ gridTemplateColumns: "repeat(24, 1fr)" }}>
+      <div
+        className="grid gap-1"
+        style={{ gridTemplateColumns: "repeat(12, minmax(0, 1fr))" }}
+      >
         {HOURS.map((h, i) => {
           const er = valueByHour[h];
           const has = er !== undefined;

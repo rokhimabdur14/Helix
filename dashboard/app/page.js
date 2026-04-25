@@ -82,7 +82,7 @@ export default function ChatPage() {
         onDelete={deleteBrand}
       />
 
-      <main className="flex-1 overflow-y-auto px-6 py-6">
+      <main className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
         <div className="mx-auto max-w-3xl space-y-4">
           <ModeToggle mode={mode} onChange={setMode} />
 
@@ -137,7 +137,7 @@ export default function ChatPage() {
         </div>
       </main>
 
-      <footer className="border-t border-slate-800/60 bg-slate-950/40 px-6 py-4 backdrop-blur-xl">
+      <footer className="border-t border-slate-800/60 bg-slate-950/40 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
         <div className="mx-auto max-w-3xl">
           <div className="flex gap-2">
             <textarea
