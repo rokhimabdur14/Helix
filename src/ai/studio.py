@@ -113,11 +113,80 @@ def load_brand_profile(brand_id: str, max_chars: int = 6000) -> str:
     return result
 
 
+def _load_social_context(brand_id: str, max_refs: int = 6) -> str:
+    """Compose social profile aesthetic + top references untuk inject ke prompt.
+
+    Lazy import dari src.social.storage supaya gak nyiptain circular dependency
+    saat startup.
+    """
+    try:
+        from src.social import storage as social_storage
+    except ImportError:
+        return ""
+
+    blocks = []
+
+    # Profile snapshots (per platform — IG + TT terpisah)
+    profile = social_storage.load_profile(brand_id)
+    ready_snaps = [s for s in profile.get("snapshots", []) if s.get("status") == "ready"]
+    for snap in ready_snaps:
+        ana = snap.get("analysis", {})
+        if not ana:
+            continue
+        line = (
+            f"--- {snap['platform'].upper()} @{snap['handle']} ---\n"
+            f"Vibe: {ana.get('vibe', 'n/a')}\n"
+            f"Color palette: {', '.join(ana.get('color_palette', []))}\n"
+            f"Editing style: {ana.get('editing_style', 'n/a')}\n"
+            f"Consistency: {ana.get('consistency_score', 'n/a')} — {ana.get('consistency_reason', '')}\n"
+            f"Content themes: {ana.get('content_themes', [])}\n"
+            f"Format mix: {ana.get('format_mix', {})}\n"
+            f"Key observations: {' | '.join(ana.get('key_observations', []))}"
+        )
+        blocks.append(line)
+
+    # Reference library (cap top N, prioritize "own" + "inspiration" tag)
+    refs = social_storage.load_references(brand_id)
+    ready_refs = [r for r in refs.get("references", []) if r.get("status") == "ready"]
+    # Prioritize own + inspiration over competitor
+    priority = {"own": 0, "inspiration": 1, "competitor": 2}
+    ready_refs.sort(key=lambda r: priority.get(r.get("tag", "inspiration"), 3))
+    for r in ready_refs[:max_refs]:
+        ana = r.get("analysis", {})
+        if not ana:
+            continue
+        line = (
+            f"--- REF [{r.get('tag', 'inspiration')}] {r.get('platform', '')} ---\n"
+            f"URL: {r.get('url')}\n"
+            f"Format: {ana.get('format', 'n/a')} | Topic: {ana.get('topic_or_pillar', 'n/a')}\n"
+            f"Visual: {ana.get('visual_summary', 'n/a')}\n"
+            f"Hook/first frame: {ana.get('hook_or_first_frame', 'n/a')}\n"
+            f"Hook pattern: {ana.get('hooks_pattern', 'n/a')}\n"
+            f"Caption excerpt: {ana.get('caption_excerpt', '-')[:160]}\n"
+            f"Why it works: {' | '.join(ana.get('why_it_works', []))}\n"
+            f"Replication angle: {ana.get('replication_angle', 'n/a')}"
+        )
+        blocks.append(line)
+
+    if not blocks:
+        return ""
+    body = "\n\n".join(blocks)
+    return f"""
+
+=== SOCIAL DNA (visual analysis dari profile sosmed brand + reference library yang user pilih) ===
+{body}
+
+PENTING: pas generate konten, ambil cue dari SOCIAL DNA di atas — match aesthetic
+brand sendiri, dan replicate pattern dari reference yang user kurasi (terutama
+yang tag "inspiration" / "own"). Jangan jadi generik."""
+
+
 def _system_prompt_with_brand(brand_id: str, role_intro: str) -> str:
-    """Build system prompt: role intro + expertise + brand profile."""
+    """Build system prompt: role intro + expertise + brand profile + social DNA."""
     # Compress brand profile lebih agresif krn expertise dibawa juga
     profile = load_brand_profile(brand_id, max_chars=3500)
     expertise_text, _ = load_expertise()
+    social_block = _load_social_context(brand_id)
 
     expertise_block = ""
     if expertise_text:
@@ -138,7 +207,7 @@ ATURAN OUTPUT:
 - Terapkan prinsip dari HELIX expertise (algoritma, growth tactics) saat relevan
 {expertise_block}
 === DATA BRAND ===
-{profile}
+{profile}{social_block}
 """
 
 

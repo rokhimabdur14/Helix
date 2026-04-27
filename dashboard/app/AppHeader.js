@@ -10,6 +10,7 @@ import { useBackendStatus } from "./use-backend-status";
 const NAV = [
   { href: "/", label: "Chat" },
   { href: "/studio", label: "Studio" },
+  { href: "/references", label: "References" },
   { href: "/analysis", label: "Analysis" },
 ];
 

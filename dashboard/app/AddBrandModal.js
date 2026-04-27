@@ -7,6 +7,8 @@ export function AddBrandModal({ open, onClose, onCreate }) {
   const [brandName, setBrandName] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [tagline, setTagline] = useState("");
+  const [instagramHandle, setInstagramHandle] = useState("");
+  const [tiktokHandle, setTiktokHandle] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,6 +19,8 @@ export function AddBrandModal({ open, onClose, onCreate }) {
       setBrandName("");
       setWebsiteUrl("");
       setTagline("");
+      setInstagramHandle("");
+      setTiktokHandle("");
       setError("");
       setSubmitting(false);
     }
@@ -44,6 +48,8 @@ export function AddBrandModal({ open, onClose, onCreate }) {
         website_url: websiteUrl.trim(),
       };
       if (tagline.trim()) payload.tagline = tagline.trim();
+      if (instagramHandle.trim()) payload.instagram_handle = instagramHandle.trim();
+      if (tiktokHandle.trim()) payload.tiktok_handle = tiktokHandle.trim();
 
       await onCreate(payload);
       onClose();
@@ -110,6 +116,31 @@ export function AddBrandModal({ open, onClose, onCreate }) {
             placeholder="Bisa diisi nanti"
             disabled={submitting}
           />
+
+          <div className="border-t border-slate-800/60 pt-4">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-violet-400">
+              Sosial media (opsional, untuk visual analysis)
+            </p>
+            <div className="space-y-3">
+              <Field
+                label="Instagram handle"
+                optional
+                value={instagramHandle}
+                onChange={setInstagramHandle}
+                placeholder="@brandkamu (tanpa @ juga oke)"
+                disabled={submitting}
+                hint="HELIX akan screenshot profile + analisa aesthetic visual"
+              />
+              <Field
+                label="TikTok handle"
+                optional
+                value={tiktokHandle}
+                onChange={setTiktokHandle}
+                placeholder="@brandkamu"
+                disabled={submitting}
+              />
+            </div>
+          </div>
 
           {error && (
             <div className="rounded-lg border border-red-900/50 bg-red-950/40 px-3 py-2 text-sm text-red-300">

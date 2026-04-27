@@ -74,6 +74,22 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ brand_id: brandId, history, message }),
     }),
+  social: {
+    triggerSnapshot: (brandId, { platform, handle }) =>
+      apiFetch(`/brands/${brandId}/social/snapshot`, {
+        method: "POST",
+        body: JSON.stringify({ platform, handle }),
+      }),
+    getProfile: (brandId) => apiFetch(`/brands/${brandId}/social/profile`),
+    listReferences: (brandId) => apiFetch(`/brands/${brandId}/references`),
+    addReference: (brandId, { url, tag }) =>
+      apiFetch(`/brands/${brandId}/references`, {
+        method: "POST",
+        body: JSON.stringify({ url, tag: tag || "inspiration" }),
+      }),
+    deleteReference: (brandId, refId) =>
+      apiFetch(`/brands/${brandId}/references/${refId}`, { method: "DELETE" }),
+  },
   studio: {
     hook: (brandId, { topic, format_type, count }) =>
       apiFetch("/studio/hook", {

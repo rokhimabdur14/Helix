@@ -29,6 +29,7 @@ pydantic==2.13.3
 pydantic_core==2.46.3
 pypdf==6.10.2
 pyee==13.0.1
+Pillow==12.2.0
 pyparsing==3.3.2
 python-dotenv==1.2.2
 PyYAML==6.0.3

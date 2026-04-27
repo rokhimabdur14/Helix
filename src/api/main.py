@@ -30,6 +30,9 @@ from src.scraper.website_scraper import (  # noqa: E402
     scrape_brand_website,
 )
 from src.ai import studio  # noqa: E402
+from src.social import screenshot as social_screenshot  # noqa: E402
+from src.social import service as social_service  # noqa: E402
+from src.social import storage as social_storage  # noqa: E402
 
 DATA_DIR = PROJECT_ROOT / "data"
 CONFIG_DIR = PROJECT_ROOT / "config" / "brands"
@@ -88,6 +91,8 @@ class BrandCreateRequest(BaseModel):
     brand_name: str = Field(..., min_length=1, max_length=80)
     website_url: HttpUrl
     tagline: str | None = None
+    instagram_handle: str | None = Field(None, max_length=60)
+    tiktok_handle: str | None = Field(None, max_length=60)
 
 
 class BrandCreateResponse(BaseModel):
@@ -243,13 +248,37 @@ def create_brand(req: BrandCreateRequest, background_tasks: BackgroundTasks):
     }
     if req.tagline:
         config["tagline"] = req.tagline
+    if req.instagram_handle:
+        config["instagram_handle"] = social_screenshot.normalize_handle(req.instagram_handle)
+    if req.tiktok_handle:
+        config["tiktok_handle"] = social_screenshot.normalize_handle(req.tiktok_handle)
 
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     with open(config_path, "w", encoding="utf-8") as f:
         json.dump(config, f, ensure_ascii=False, indent=2)
 
-    # Schedule scrape — runs after response sent.
+    # Schedule website scrape — runs after response sent.
     background_tasks.add_task(_run_scrape_in_background, req.brand_id, website_url)
+
+    # Auto-trigger social profile snapshot kalau handle disediakan
+    if req.instagram_handle:
+        ig_handle = social_screenshot.normalize_handle(req.instagram_handle)
+        social_storage.save_profile_pending(
+            req.brand_id, "instagram", ig_handle,
+            social_screenshot.profile_url("instagram", ig_handle),
+        )
+        background_tasks.add_task(
+            social_service.snapshot_profile, req.brand_id, "instagram", ig_handle
+        )
+    if req.tiktok_handle:
+        tt_handle = social_screenshot.normalize_handle(req.tiktok_handle)
+        social_storage.save_profile_pending(
+            req.brand_id, "tiktok", tt_handle,
+            social_screenshot.profile_url("tiktok", tt_handle),
+        )
+        background_tasks.add_task(
+            social_service.snapshot_profile, req.brand_id, "tiktok", tt_handle
+        )
 
     return BrandCreateResponse(
         brand_id=req.brand_id,
@@ -281,6 +310,7 @@ def delete_brand(brand_id: str):
     (DATA_DIR / f"{brand_id}_website.json").unlink(missing_ok=True)
     (DATA_DIR / f"{brand_id}_insights.json").unlink(missing_ok=True)
     (DATA_DIR / f"{brand_id}_insights.csv").unlink(missing_ok=True)
+    social_storage.delete_all_for_brand(brand_id)
 
     # Invalidate cache
     _knowledge_cache.pop(brand_id, None)
@@ -407,6 +437,79 @@ def list_expertise():
     """List active expertise knowledge sources used by Studio prompts."""
     _, manifest = studio.load_expertise()
     return {"expertise": manifest}
+
+
+# ========== Social profile + reference library endpoints ==========
+
+
+class ProfileSnapshotRequest(BaseModel):
+    platform: Literal["instagram", "tiktok"]
+    handle: str = Field(..., min_length=1, max_length=60)
+
+
+class ReferenceCreateRequest(BaseModel):
+    url: str = Field(..., min_length=10, max_length=500)
+    tag: Literal["own", "inspiration", "competitor"] = "inspiration"
+
+
+@app.post("/brands/{brand_id}/social/snapshot", status_code=202)
+def trigger_profile_snapshot(
+    brand_id: str,
+    req: ProfileSnapshotRequest,
+    background_tasks: BackgroundTasks,
+):
+    """Schedule profile snapshot — return langsung dengan status pending."""
+    _ensure_brand(brand_id)
+    handle = social_screenshot.normalize_handle(req.handle)
+    url = social_screenshot.profile_url(req.platform, handle)
+    entry = social_storage.save_profile_pending(brand_id, req.platform, handle, url)
+    background_tasks.add_task(
+        social_service.snapshot_profile, brand_id, req.platform, handle
+    )
+    return entry
+
+
+@app.get("/brands/{brand_id}/social/profile")
+def get_profile_snapshots(brand_id: str):
+    """Return all snapshot per platform untuk brand ini."""
+    _ensure_brand(brand_id)
+    return social_storage.load_profile(brand_id)
+
+
+@app.post("/brands/{brand_id}/references", status_code=202)
+def add_reference(
+    brand_id: str,
+    req: ReferenceCreateRequest,
+    background_tasks: BackgroundTasks,
+):
+    """Tambah URL reference — screenshot + analyze di background."""
+    _ensure_brand(brand_id)
+    if not social_screenshot.is_supported_url(req.url):
+        raise HTTPException(
+            status_code=400,
+            detail="URL hanya support Instagram (instagram.com) atau TikTok (tiktok.com)",
+        )
+    platform = social_screenshot.detect_platform(req.url)
+    entry = social_storage.add_reference_pending(brand_id, req.url, platform, req.tag)
+    background_tasks.add_task(
+        social_service.analyze_reference_url, brand_id, entry["id"], req.url
+    )
+    return entry
+
+
+@app.get("/brands/{brand_id}/references")
+def list_references(brand_id: str):
+    """List all references untuk brand ini."""
+    _ensure_brand(brand_id)
+    return social_storage.load_references(brand_id)
+
+
+@app.delete("/brands/{brand_id}/references/{ref_id}", status_code=204)
+def remove_reference(brand_id: str, ref_id: str):
+    _ensure_brand(brand_id)
+    if not social_storage.delete_reference(brand_id, ref_id):
+        raise HTTPException(status_code=404, detail=f"Reference '{ref_id}' not found")
+    return None
 
 
 @app.post("/studio/plan")
