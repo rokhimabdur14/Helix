@@ -61,8 +61,8 @@ export function AddBrandModal({ open, onClose, onCreate }) {
         className="modal-backdrop-in absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={submitting ? undefined : onClose}
       />
-      <div className="modal-content-in relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/95 shadow-2xl shadow-violet-900/30">
-        <div className="border-b border-slate-800 bg-gradient-to-r from-blue-500/10 via-violet-500/10 to-violet-500/5 px-6 py-4">
+      <div className="modal-content-in relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/95 shadow-2xl shadow-violet-900/30">
+        <div className="flex-shrink-0 border-b border-slate-800 bg-gradient-to-r from-blue-500/10 via-violet-500/10 to-violet-500/5 px-5 py-4 sm:px-6">
           <h2 className="font-display text-base font-bold uppercase tracking-wider text-slate-100">
             Tambah Brand Baru
           </h2>
@@ -71,7 +71,7 @@ export function AddBrandModal({ open, onClose, onCreate }) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
           <Field
             label="Brand Name"
             value={brandName}

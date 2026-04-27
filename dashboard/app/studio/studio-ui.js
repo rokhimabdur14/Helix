@@ -89,7 +89,7 @@ export function GenerateButton({ onClick, loading, disabled, children }) {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+      className="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
     >
       {loading ? (
         <span className="inline-flex items-end gap-1 h-4">

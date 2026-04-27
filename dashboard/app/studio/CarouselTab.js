@@ -130,10 +130,12 @@ export function CarouselTab({ brandId, consumePrefill }) {
       {result?.slides?.length > 0 && (
         <ResultPanel title={result.title || "Carousel draft"}>
           <div className="grid gap-5 md:grid-cols-[280px_1fr]">
-            <SlidePreview
-              slide={result.slides[activeSlide]}
-              total={result.slides.length}
-            />
+            <div className="mx-auto w-full max-w-[280px] md:mx-0">
+              <SlidePreview
+                slide={result.slides[activeSlide]}
+                total={result.slides.length}
+              />
+            </div>
             <div>
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -143,7 +145,7 @@ export function CarouselTab({ brandId, consumePrefill }) {
                   {activeSlide + 1} / {result.slides.length}
                 </span>
               </div>
-              <div className="grid grid-cols-5 gap-2 sm:grid-cols-6 md:grid-cols-5">
+              <div className="grid grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-5">
                 {result.slides.map((s, i) => {
                   const active = i === activeSlide;
                   return (

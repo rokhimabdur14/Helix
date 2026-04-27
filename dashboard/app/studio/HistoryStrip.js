@@ -50,7 +50,7 @@ export function HistoryStrip({ entries, onRestore, onRemove, onClear, renderPrev
           <button
             key={entry.id}
             onClick={() => onRestore(entry)}
-            className="group relative flex max-w-[220px] flex-shrink-0 flex-col gap-1 rounded-lg border border-slate-800 bg-slate-900/60 p-2 pr-7 text-left transition hover:border-violet-500/50 hover:bg-slate-800/60"
+            className="group relative flex w-[160px] flex-shrink-0 flex-col gap-1 rounded-lg border border-slate-800 bg-slate-900/60 p-2 pr-7 text-left transition hover:border-violet-500/50 hover:bg-slate-800/60 sm:w-[220px]"
           >
             <span className="truncate text-xs text-slate-200">
               {renderPreview(entry)}
@@ -72,7 +72,7 @@ export function HistoryStrip({ entries, onRestore, onRemove, onClear, renderPrev
                   onRemove(entry.id);
                 }
               }}
-              className="absolute right-1 top-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded text-slate-600 opacity-0 transition hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+              className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded text-slate-500 transition hover:bg-red-500/10 hover:text-red-400 sm:h-5 sm:w-5 sm:text-slate-600 sm:opacity-0 sm:group-hover:opacity-100"
               aria-label="Remove"
             >
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
