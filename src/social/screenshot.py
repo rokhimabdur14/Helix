@@ -10,13 +10,14 @@ from io import BytesIO
 from typing import Literal
 
 
-# Mobile UA + viewport — IG kasih layout grid yang lebih clean dibanding desktop,
-# dan login wall lebih jarang muncul (terutama untuk view-only).
-MOBILE_UA = (
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
-    "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+# Desktop UA — empirically lebih sering kasih content yang ke-render daripada
+# mobile UA. IG mobile aktif redirect ke login sheet; desktop kasih public
+# preview (dengan login overlay yang bisa kita dismiss).
+DESKTOP_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 )
-MOBILE_VIEWPORT = {"width": 412, "height": 915}  # Pixel 7-ish
+DESKTOP_VIEWPORT = {"width": 1280, "height": 1800}
 
 Platform = Literal["instagram", "tiktok"]
 
@@ -53,38 +54,39 @@ def capture(url: str, full_page: bool = False, max_height: int = 2400) -> bytes:
             (vision LLM ada limit ukuran input)
 
     Raises:
-        RuntimeError jika Playwright gagal init atau page gagal load
+        RuntimeError jika Playwright gagal init / page gagal load / detect
+        halaman login wall atau "user not found" (UI kasih error jelas).
     """
-    # Lazy import — Playwright heavy
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         try:
             context = browser.new_context(
-                user_agent=MOBILE_UA,
-                viewport=MOBILE_VIEWPORT,
-                device_scale_factor=2,
-                is_mobile=True,
-                has_touch=True,
+                user_agent=DESKTOP_UA,
+                viewport=DESKTOP_VIEWPORT,
                 locale="id-ID",
+                # IG / TT cek kombinasi UA + headers; kasih header yang masuk akal
+                extra_http_headers={
+                    "Accept-Language": "id-ID,id;q=0.9,en;q=0.8",
+                },
             )
             page = context.new_page()
             try:
-                # domcontentloaded biar gak nunggu network idle (IG/TT analytics
-                # bikin networkidle hampir gak pernah trigger)
                 page.goto(url, timeout=20000, wait_until="domcontentloaded")
-                # Beri 2 detik biar grid render + lazy images muat sebagian
-                page.wait_for_timeout(2500)
-                # Dismiss IG cookie banner kalau ada
-                _try_dismiss_ig_overlays(page)
+                _wait_for_content(page, url)
+                _try_dismiss_overlays(page)
+                # Settle 1 detik tambahan supaya post images lazy-load
+                page.wait_for_timeout(1000)
+
+                # Detect halaman error (user gak ada / login wall full screen)
+                _detect_dead_page(page, url)
 
                 if full_page:
-                    # Cap height supaya output PNG gak kegedean
                     clip = {
                         "x": 0,
                         "y": 0,
-                        "width": MOBILE_VIEWPORT["width"],
+                        "width": DESKTOP_VIEWPORT["width"],
                         "height": max_height,
                     }
                     return page.screenshot(clip=clip, type="png")
@@ -96,16 +98,40 @@ def capture(url: str, full_page: bool = False, max_height: int = 2400) -> bytes:
             browser.close()
 
 
-def _try_dismiss_ig_overlays(page) -> None:
-    """Best-effort dismiss IG login modal / cookie banner. Silent on failure."""
+def _wait_for_content(page, url: str) -> None:
+    """Tunggu sampai indikator content muncul. Kalau timeout, lanjut aja —
+    biar _detect_dead_page yang putuskan apakah usable.
+    """
+    if "instagram.com" in url:
+        # IG: tunggu ada gambar profile / post grid
+        selectors = ["img[alt]", "main article", "header img"]
+    elif "tiktok.com" in url:
+        # TT: tunggu post grid atau profile header
+        selectors = ['[data-e2e="user-post-item"]', "h1", "header"]
+    else:
+        return
+    for sel in selectors:
+        try:
+            page.locator(sel).first.wait_for(timeout=4000, state="visible")
+            return
+        except Exception:
+            continue
+
+
+def _try_dismiss_overlays(page) -> None:
+    """Best-effort dismiss login modal / cookie banner. Silent on failure."""
     selectors = [
-        # Cookie banner
+        # IG cookie banner (desktop)
+        'button._a9--._ap36._a9_0',
         'button:has-text("Allow all cookies")',
         'button:has-text("Accept All")',
         'button:has-text("Izinkan semua")',
-        # Login modal close — IG sering munculin "Log in" sheet, ada X button
+        # IG "Log in" modal close
         'div[role="dialog"] svg[aria-label="Close"]',
         'div[role="presentation"] button[aria-label="Close"]',
+        # TikTok cookie banner / login modal close
+        'tiktok-cookie-banner button',
+        'div[data-e2e="modal-close-inner-button"]',
     ]
     for sel in selectors:
         try:
@@ -115,6 +141,45 @@ def _try_dismiss_ig_overlays(page) -> None:
                 page.wait_for_timeout(300)
         except Exception:
             continue
+
+
+def _detect_dead_page(page, url: str) -> None:
+    """Raise RuntimeError dengan pesan jelas kalau halaman jelas dead-end.
+
+    Trigger kalau:
+    - IG kasih halaman "Sorry, this page isn't available."
+    - IG full-screen login wall (no public preview)
+    - TikTok kasih "Couldn't find this account"
+    """
+    try:
+        body_text = page.locator("body").inner_text(timeout=2000) or ""
+    except Exception:
+        body_text = ""
+    lower = body_text.lower()
+
+    not_found_markers = (
+        "sorry, this page isn't available",
+        "page not found",
+        "couldn't find this account",
+        "the link you followed may be broken",
+        "halaman tidak tersedia",
+    )
+    for marker in not_found_markers:
+        if marker in lower:
+            raise RuntimeError(
+                f"Halaman tidak tersedia / handle tidak ditemukan ({url}). "
+                f"Cek username sosmed sudah benar."
+            )
+
+    # IG full login wall: body cuma berisi prompt login + minim content
+    if "instagram.com" in url:
+        login_markers = ("log in to see", "log in to instagram", "create new account")
+        login_hits = sum(1 for m in login_markers if m in lower)
+        if login_hits >= 2 and len(body_text) < 600:
+            raise RuntimeError(
+                "Instagram blokir public preview untuk profile ini (login wall). "
+                "Coba handle lain, atau IG butuh waktu — retry lagi nanti."
+            )
 
 
 def to_data_url(png_bytes: bytes) -> str:

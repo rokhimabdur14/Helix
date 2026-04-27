@@ -87,6 +87,19 @@ export function ReferencesTab({ brandId, onCountChange }) {
     }
   }
 
+  async function handleDeleteProfile(platform) {
+    if (!window.confirm(`Hapus profile snapshot ${platform}?`)) return;
+    try {
+      await api.social.deleteProfile(brandId, platform);
+      setProfile((prev) => ({
+        ...prev,
+        snapshots: (prev.snapshots || []).filter((s) => s.platform !== platform),
+      }));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   async function triggerSnapshot(platform) {
     const handle = window.prompt(
       `Handle ${platform}? (tanpa @, contoh: fotofusi)`
@@ -140,7 +153,12 @@ export function ReferencesTab({ brandId, onCountChange }) {
         )}
         <div className="grid gap-4 md:grid-cols-2">
           {profile.snapshots?.map((snap) => (
-            <ProfileCard key={snap.platform} snapshot={snap} />
+            <ProfileCard
+              key={snap.platform}
+              snapshot={snap}
+              onDelete={() => handleDeleteProfile(snap.platform)}
+              onResnap={() => triggerSnapshot(snap.platform)}
+            />
           ))}
         </div>
       </section>
@@ -254,7 +272,7 @@ function PlatformBadge({ platform }) {
   );
 }
 
-function ProfileCard({ snapshot }) {
+function ProfileCard({ snapshot, onDelete, onResnap }) {
   const ana = snapshot.analysis || {};
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
@@ -265,7 +283,42 @@ function ProfileCard({ snapshot }) {
             @{snapshot.handle}
           </span>
         </div>
-        <StatusBadge status={snapshot.status} />
+        <div className="flex items-center gap-2">
+          <StatusBadge status={snapshot.status} />
+          {onResnap && (
+            <button
+              onClick={onResnap}
+              title="Re-snap dengan handle baru"
+              className="text-slate-600 transition hover:text-violet-300"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M14 8a6 6 0 11-1.76-4.24M14 2v4h-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              title="Hapus snapshot"
+              className="text-slate-600 transition hover:text-red-400"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M3 4h10m-1 0v9a1 1 0 01-1 1H5a1 1 0 01-1-1V4m2 0V3a1 1 0 011-1h2a1 1 0 011 1v1"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {snapshot.thumbnail && (

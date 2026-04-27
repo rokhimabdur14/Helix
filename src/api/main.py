@@ -476,6 +476,16 @@ def get_profile_snapshots(brand_id: str):
     return social_storage.load_profile(brand_id)
 
 
+@app.delete("/brands/{brand_id}/social/profile/{platform}", status_code=204)
+def remove_profile_snapshot(brand_id: str, platform: str):
+    _ensure_brand(brand_id)
+    if platform not in ("instagram", "tiktok"):
+        raise HTTPException(status_code=400, detail="platform harus 'instagram' atau 'tiktok'")
+    if not social_storage.delete_profile_snapshot(brand_id, platform):
+        raise HTTPException(status_code=404, detail=f"Profile snapshot {platform} tidak ada")
+    return None
+
+
 @app.post("/brands/{brand_id}/references", status_code=202)
 def add_reference(
     brand_id: str,

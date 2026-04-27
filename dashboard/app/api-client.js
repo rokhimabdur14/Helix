@@ -81,6 +81,10 @@ export const api = {
         body: JSON.stringify({ platform, handle }),
       }),
     getProfile: (brandId) => apiFetch(`/brands/${brandId}/social/profile`),
+    deleteProfile: (brandId, platform) =>
+      apiFetch(`/brands/${brandId}/social/profile/${platform}`, {
+        method: "DELETE",
+      }),
     listReferences: (brandId) => apiFetch(`/brands/${brandId}/references`),
     addReference: (brandId, { url, tag }) =>
       apiFetch(`/brands/${brandId}/references`, {

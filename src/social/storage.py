@@ -97,6 +97,19 @@ def save_profile_failed(brand_id: str, platform: str, handle: str, url: str, err
     )
 
 
+def delete_profile_snapshot(brand_id: str, platform: str) -> bool:
+    """Remove snapshot untuk platform tertentu. Return True kalau ada yang dihapus."""
+    data = load_profile(brand_id)
+    before = len(data.get("snapshots", []))
+    data["snapshots"] = [s for s in data.get("snapshots", []) if s.get("platform") != platform]
+    if len(data["snapshots"]) == before:
+        return False
+    DATA_DIR.mkdir(exist_ok=True)
+    with open(_profile_path(brand_id), "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    return True
+
+
 # ===== Reference library =====
 
 
