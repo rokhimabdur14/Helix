@@ -32,6 +32,12 @@ _scraper.headers.update({"Accept-Language": "id,en;q=0.9"})
 _playwright_ctx = None
 _playwright_browser = None
 
+# Cap berapa kali Playwright boleh dipakai per scrape session.
+# Playwright = ~3-15s per page. Tanpa cap, SPA-heavy site bisa makan menit.
+# Reset per panggilan scrape_brand_website().
+MAX_PLAYWRIGHT_PER_SCRAPE = 5
+_playwright_uses_this_scrape = 0
+
 
 def _get_playwright_browser():
     global _playwright_ctx, _playwright_browser
@@ -94,8 +100,10 @@ def fetch_page(url: str, use_playwright: bool = False) -> BeautifulSoup | None:
 
     Tries cloudscraper first (fast). Falls back to Playwright if:
     - use_playwright=True (forced)
-    - page looks like empty SPA
+    - page looks like empty SPA AND under MAX_PLAYWRIGHT_PER_SCRAPE budget
     """
+    global _playwright_uses_this_scrape
+
     if not use_playwright:
         # Tier 1: cloudscraper
         try:
@@ -107,22 +115,31 @@ def fetch_page(url: str, use_playwright: bool = False) -> BeautifulSoup | None:
                 return None
 
             html = resp.text
-            # Check if it's an empty SPA → need Playwright
+            # Check if it's an empty SPA → need Playwright (subject to budget)
             if _looks_like_empty_spa(html):
-                print(f"  [spa] {url} — switching to Playwright")
+                if _playwright_uses_this_scrape >= MAX_PLAYWRIGHT_PER_SCRAPE:
+                    print(f"  [spa] {url} — Playwright budget habis, skip JS render")
+                    return BeautifulSoup(html, "lxml")  # return sparse content rather than nothing
+                print(f"  [spa] {url} — switching to Playwright ({_playwright_uses_this_scrape + 1}/{MAX_PLAYWRIGHT_PER_SCRAPE})")
                 return fetch_page(url, use_playwright=True)
 
             return BeautifulSoup(html, "lxml")
         except Exception as e:
             print(f"  [cloudscraper fail] {url}: {e} — trying Playwright")
+            if _playwright_uses_this_scrape >= MAX_PLAYWRIGHT_PER_SCRAPE:
+                return None
             return fetch_page(url, use_playwright=True)
 
-    # Tier 2: Playwright
+    # Tier 2: Playwright (counts against budget)
+    _playwright_uses_this_scrape += 1
     try:
         browser = _get_playwright_browser()
         page = browser.new_page()
         try:
-            page.goto(url, timeout=20000, wait_until="networkidle")
+            # domcontentloaded jauh lebih cepat dari networkidle.
+            # networkidle nunggu 500ms tanpa request — di site dengan analytics/chat
+            # widget yang heartbeat terus, hampir selalu hit timeout penuh.
+            page.goto(url, timeout=15000, wait_until="domcontentloaded")
             html = page.content()
         finally:
             page.close()
@@ -206,14 +223,19 @@ def discover_internal_links(soup: BeautifulSoup, base_url: str) -> list[str]:
     return sorted(links)
 
 
-def scrape_brand_website(brand_id: str, base_url: str | None = None, max_pages: int = 30) -> dict:
+def scrape_brand_website(brand_id: str, base_url: str | None = None, max_pages: int = 10) -> dict:
     """Scrape seluruh website brand, return structured data.
 
     Args:
         brand_id: slug brand (dipakai untuk nama output file)
         base_url: URL base website. Kalau None, coba baca dari config brand.
-        max_pages: safety cap supaya scrape tidak runaway di website besar
+        max_pages: safety cap supaya scrape tidak runaway di website besar.
+            Default 10 — kebanyakan brand cukup homepage + 5-9 halaman utama
+            (about, services, contact). Naikin manual kalau brand butuh lebih.
     """
+    global _playwright_uses_this_scrape
+    _playwright_uses_this_scrape = 0  # reset budget per scrape session
+
     config = load_brand_config(brand_id)
     if base_url is None:
         base_url = config.get("website_url") or f"https://{brand_id}.com"

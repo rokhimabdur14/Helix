@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -94,7 +94,7 @@ class BrandCreateResponse(BaseModel):
     brand_id: str
     brand_name: str
     website_url: str
-    pages_scraped: int
+    scrape_status: Literal["pending", "ready", "failed"]
     created_at: str
 
 
@@ -144,10 +144,14 @@ def list_brands():
         brand_id = config_file.stem.replace(".config", "")
         with open(config_file, "r", encoding="utf-8") as f:
             cfg = json.load(f)
+        # Brand legacy yang gak punya scrape_status diperlakukan sebagai "ready"
+        # (config bundled di repo pasti udah punya data di data/{id}_website.json)
         brands.append({
             "brand_id": brand_id,
             "brand_name": cfg.get("brand_name"),
             "tagline": cfg.get("tagline"),
+            "scrape_status": cfg.get("scrape_status", "ready"),
+            "scrape_error": cfg.get("scrape_error"),
         })
     return {"brands": brands}
 
@@ -172,9 +176,51 @@ def get_brand_insights(brand_id: str):
         return json.load(f)
 
 
+def _update_config(brand_id: str, **updates) -> None:
+    """Patch fields in {brand_id}.config.json. Safe no-op if file missing."""
+    path = CONFIG_DIR / f"{brand_id}.config.json"
+    if not path.exists():
+        return
+    with open(path, "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+    cfg.update(updates)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+
+def _run_scrape_in_background(brand_id: str, website_url: str) -> None:
+    """Background task: scrape website + update config status.
+
+    On success: scrape_status="ready", pages_scraped=N
+    On failure: scrape_status="failed", scrape_error=str
+    Tidak menghapus config — biar user bisa retry dari UI nanti (atau hapus manual).
+    """
+    try:
+        scrape_result = scrape_brand_website(brand_id, base_url=website_url)
+        save_scrape_result(scrape_result, brand_id)
+        _update_config(
+            brand_id,
+            scrape_status="ready",
+            pages_scraped=scrape_result["pages_scraped"],
+            scrape_error=None,
+        )
+        # Invalidate knowledge cache supaya chat/studio pakai data baru
+        _knowledge_cache.pop(brand_id, None)
+    except Exception as e:
+        _update_config(
+            brand_id,
+            scrape_status="failed",
+            scrape_error=str(e)[:300],
+        )
+
+
 @app.post("/brands", response_model=BrandCreateResponse, status_code=201)
-def create_brand(req: BrandCreateRequest):
-    """Create new brand: save minimal config, auto-scrape website."""
+def create_brand(req: BrandCreateRequest, background_tasks: BackgroundTasks):
+    """Create new brand: save config immediately, scrape in background.
+
+    Returns 201 dengan scrape_status="pending". Frontend polling /brands akan
+    lihat status berubah ke "ready" atau "failed" setelah scrape kelar.
+    """
     validate_brand_id(req.brand_id)
 
     config_path = CONFIG_DIR / f"{req.brand_id}.config.json"
@@ -184,15 +230,16 @@ def create_brand(req: BrandCreateRequest):
             detail=f"Brand '{req.brand_id}' sudah ada"
         )
 
-    # 1. Write minimal starter config
     from datetime import datetime
     created_at = datetime.now().isoformat()
+    website_url = str(req.website_url).rstrip("/")
 
     config = {
         "brand_id": req.brand_id,
         "brand_name": req.brand_name,
-        "website_url": str(req.website_url).rstrip("/"),
+        "website_url": website_url,
         "created_at": created_at,
+        "scrape_status": "pending",
     }
     if req.tagline:
         config["tagline"] = req.tagline
@@ -201,27 +248,14 @@ def create_brand(req: BrandCreateRequest):
     with open(config_path, "w", encoding="utf-8") as f:
         json.dump(config, f, ensure_ascii=False, indent=2)
 
-    # 2. Scrape website (synchronous for now — OK for MVP)
-    try:
-        scrape_result = scrape_brand_website(
-            req.brand_id,
-            base_url=str(req.website_url)
-        )
-        save_scrape_result(scrape_result, req.brand_id)
-        pages_scraped = scrape_result["pages_scraped"]
-    except Exception as e:
-        # Rollback config if scrape fails completely
-        config_path.unlink(missing_ok=True)
-        raise HTTPException(status_code=502, detail=f"Scrape failed: {e}")
-
-    # 3. Invalidate knowledge cache
-    _knowledge_cache.pop(req.brand_id, None)
+    # Schedule scrape — runs after response sent.
+    background_tasks.add_task(_run_scrape_in_background, req.brand_id, website_url)
 
     return BrandCreateResponse(
         brand_id=req.brand_id,
         brand_name=req.brand_name,
-        website_url=str(req.website_url),
-        pages_scraped=pages_scraped,
+        website_url=website_url,
+        scrape_status="pending",
         created_at=created_at,
     )
 

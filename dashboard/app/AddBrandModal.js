@@ -117,21 +117,12 @@ export function AddBrandModal({ open, onClose, onCreate }) {
             </div>
           )}
 
-          {submitting && (
-            <div className="rounded-lg border border-violet-900/50 bg-violet-950/30 px-3 py-3 text-sm text-violet-200">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex gap-1">
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:-0.3s]"></span>
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:-0.15s]"></span>
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400"></span>
-                </span>
-                <span>Scraping website...</span>
-              </div>
-              <p className="mt-1 text-xs text-violet-400/70">
-                Bisa 30 detik - 3 menit tergantung ukuran website.
-              </p>
-            </div>
-          )}
+          <div className="rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2.5 text-xs text-slate-400">
+            <span className="font-medium text-slate-300">Catatan:</span>{" "}
+            Scraping website jalan di background setelah brand dibuat. Modal
+            tutup instan, kamu bisa langsung lanjut kerja. Brand di sidebar
+            tampilkan status 🔄 sampai scrape kelar.
+          </div>
 
           <div className="flex gap-2 pt-2">
             <button
@@ -147,7 +138,7 @@ export function AddBrandModal({ open, onClose, onCreate }) {
               disabled={submitting || !brandId || !brandName || !websiteUrl}
               className="btn-primary flex-1 rounded-lg py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {submitting ? "Scraping..." : "Buat & Scrape"}
+              {submitting ? "Membuat..." : "Buat brand"}
             </button>
           </div>
         </form>

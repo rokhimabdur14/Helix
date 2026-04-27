@@ -62,6 +62,8 @@ export function BrandSwitcher({
             {brands.map((b) => {
               const isActive = b.brand_id === activeBrandId;
               const isDemo = b.brand_id === "fotofusi";
+              const isPending = b.scrape_status === "pending";
+              const isFailed = b.scrape_status === "failed";
               return (
                 <div
                   key={b.brand_id}
@@ -82,8 +84,27 @@ export function BrandSwitcher({
                       }`}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium text-slate-200">
-                        {b.brand_name}
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate text-sm font-medium text-slate-200">
+                          {b.brand_name}
+                        </span>
+                        {isPending && (
+                          <span
+                            title="Scraping website di background"
+                            className="inline-flex items-center gap-1 rounded bg-violet-500/15 px-1.5 py-0.5 text-[10px] font-medium text-violet-300"
+                          >
+                            <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-violet-400" />
+                            scraping
+                          </span>
+                        )}
+                        {isFailed && (
+                          <span
+                            title={b.scrape_error || "Scrape gagal — brand tetap bisa dipakai dengan profile minimal"}
+                            className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                          >
+                            ⚠ scrape gagal
+                          </span>
+                        )}
                       </div>
                       <div className="truncate text-xs text-slate-500">
                         {b.brand_id}

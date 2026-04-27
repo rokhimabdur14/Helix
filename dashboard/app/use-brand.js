@@ -59,6 +59,17 @@ export function useBrand() {
     }
   }, [backendStatus, refresh, activeBrandId]);
 
+  // Auto-poll selama ada brand yang scrape_status="pending".
+  // Stop polling begitu semua ready/failed → no wasted requests.
+  const hasPending = brands.some((b) => b.scrape_status === "pending");
+  useEffect(() => {
+    if (!hasPending) return;
+    const id = setInterval(() => {
+      refresh();
+    }, 5000);
+    return () => clearInterval(id);
+  }, [hasPending, refresh]);
+
   const selectBrand = useCallback((brandId) => {
     setActiveBrandId(brandId);
     if (typeof window !== "undefined") {
