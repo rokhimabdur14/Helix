@@ -118,14 +118,8 @@ export function ReferencesTab({ brandId, onCountChange }) {
 
   return (
     <div>
-      <div className="mb-2 rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-blue-500/5 p-3 text-xs text-violet-100">
-        <span className="font-semibold">Tips:</span> Reference + profile snapshot
-        otomatis ke-inject ke prompt Plan/Hook/Caption/Carousel — generate konten
-        akan match aesthetic brand & replicate pattern referensi yang kamu pilih.
-      </div>
-
       {/* Profile snapshots */}
-      <section className="mb-6 mt-4">
+      <section className="mb-6">
         <div className="mb-3 flex items-center justify-between gap-2">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-violet-300">
             Profile snapshots
