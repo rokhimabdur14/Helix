@@ -327,6 +327,7 @@ class PlanRequest(BaseModel):
     posts_per_week: int = Field(4, ge=2, le=7)
     start_date: str | None = None  # YYYY-MM-DD; default today
     goals: list[Literal["awareness", "engagement", "sales", "education"]] | None = None
+    theme: str | None = Field(None, max_length=500)  # tema konten user — bias hook & angle
 
 
 def _ensure_brand(brand_id: str):
@@ -384,6 +385,7 @@ def studio_plan(req: PlanRequest):
             posts_per_week=req.posts_per_week,
             start_date=req.start_date,
             goals=req.goals,
+            theme=req.theme,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

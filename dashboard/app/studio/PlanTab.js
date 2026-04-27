@@ -10,6 +10,7 @@ import {
   NumberStepper,
   ResultPanel,
   SegmentedControl,
+  TextArea,
 } from "./studio-ui";
 import { useStudioHistory } from "./use-studio-history";
 
@@ -63,6 +64,7 @@ export function PlanTab({ brandId, onSendToTool }) {
   const [postsPerWeek, setPostsPerWeek] = useState(4);
   const [goals, setGoals] = useState([]);
   const [startDate, setStartDate] = useState("");
+  const [theme, setTheme] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
@@ -88,6 +90,7 @@ export function PlanTab({ brandId, onSendToTool }) {
       posts_per_week: postsPerWeek,
       start_date: startDate,
       goals,
+      theme: theme.trim(),
     };
     try {
       const data = await api.studio.plan(brandId, input);
@@ -105,6 +108,7 @@ export function PlanTab({ brandId, onSendToTool }) {
     setPostsPerWeek(entry.input.posts_per_week);
     setGoals(entry.input.goals || []);
     setStartDate(entry.input.start_date || todayISO());
+    setTheme(entry.input.theme || "");
     setResult(entry.output);
     setError("");
   }
@@ -137,6 +141,21 @@ export function PlanTab({ brandId, onSendToTool }) {
             disabled={loading}
             className="input-glow w-full rounded-xl border border-slate-700/60 bg-slate-950/40 px-4 py-2.5 text-sm text-slate-100 focus:border-violet-500 focus:outline-none disabled:opacity-50"
             style={{ colorScheme: "dark" }}
+          />
+        </Field>
+      </div>
+
+      <div className="mt-4">
+        <Field
+          label="Tema konten (opsional)"
+          hint={`${theme.length}/500 — HELIX bias hook & angle ke tema ini`}
+        >
+          <TextArea
+            value={theme}
+            onChange={setTheme}
+            placeholder="Contoh: Wedding Season Q2 — soft sell paket prewedding, tonjolkan moment intimate & lokasi hidden gem Jogja"
+            rows={2}
+            disabled={loading}
           />
         </Field>
       </div>
@@ -181,7 +200,9 @@ export function PlanTab({ brandId, onSendToTool }) {
         onRemove={history.remove}
         onClear={history.clear}
         renderPreview={(entry) =>
-          `${entry.input.period} · ${entry.input.start_date || "today"}`
+          entry.input.theme
+            ? `${entry.input.theme}`
+            : `${entry.input.period} · ${entry.input.start_date || "today"}`
         }
       />
 

@@ -360,6 +360,7 @@ def generate_plan(
     posts_per_week: int = 4,
     start_date: str | None = None,
     goals: list[str] | None = None,
+    theme: str | None = None,
 ) -> dict:
     """Generate content calendar (weekly/monthly) untuk brand.
 
@@ -393,12 +394,25 @@ def generate_plan(
     insights_section = _load_brand_insights(brand_id)
     insights_block = f"\n\n{insights_section}" if insights_section else ""
 
-    system = _system_prompt_with_brand(brand_id, PLAN_ROLE) + insights_block
+    theme_clean = (theme or "").strip()
+    theme_block = ""
+    if theme_clean:
+        theme_block = f"""
+
+TEMA KONTEN PERIODE INI: {theme_clean}
+
+Aturan tema (WAJIB diikuti):
+- Sebelum bikin post, scan dulu DATA BRAND + HELIX EXPERTISE + INSIGHTS post lama untuk cari angle/insight/data point yang paling nyambung dengan tema ini
+- SETIAP post harus orbit ke tema ini (boleh angle berbeda: edukasi, BTS, testimonial, problem-solution, comparison, dst — tapi semua nyambung tema)
+- "hook_idea" tiap post HARUS specific untuk tema, bukan hook generik. Variasi tipe hook (question / shock stat / contrarian / story / promise) tapi semua nyambung tema
+- Pillars yang dipilih harus mendukung tema (bukan pillar random brand)
+- Strategy paragraph di output harus jelaskan: kenapa tema ini cocok untuk brand sekarang, angle apa dari brand knowledge yang dipakai, dan flow narasi minggu/bulan mengarah ke mana"""
+
     user = f"""Buat content calendar untuk:
 
 PERIOD: {period} ({weeks} minggu, {start.isoformat()} s/d {end.isoformat()})
 POSTS: {total_posts} posts total ({posts_per_week} per minggu)
-GOALS: {goals_text}
+GOALS: {goals_text}{theme_block}
 
 Aturan:
 - Setiap post WAJIB punya tanggal dalam range di atas (format YYYY-MM-DD)

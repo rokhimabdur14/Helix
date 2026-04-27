@@ -105,7 +105,7 @@ export const api = {
           goal,
         }),
       }),
-    plan: (brandId, { period, posts_per_week, start_date, goals }) =>
+    plan: (brandId, { period, posts_per_week, start_date, goals, theme }) =>
       apiFetch("/studio/plan", {
         method: "POST",
         body: JSON.stringify({
@@ -114,6 +114,7 @@ export const api = {
           posts_per_week,
           start_date: start_date || null,
           goals: goals && goals.length > 0 ? goals : null,
+          theme: theme && theme.trim() ? theme.trim() : null,
         }),
       }),
   },
