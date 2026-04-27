@@ -100,62 +100,26 @@ export function ReferencesTab({ brandId, onCountChange }) {
     }
   }
 
-  async function triggerSnapshot(platform) {
-    const handle = window.prompt(
-      `Handle ${platform}? (tanpa @, contoh: fotofusi)`
-    );
-    if (!handle?.trim()) return;
-    try {
-      await api.social.triggerSnapshot(brandId, {
-        platform,
-        handle: handle.trim(),
-      });
-      refresh();
-    } catch (e) {
-      setError(e.message);
-    }
-  }
-
   return (
     <div>
-      {/* Profile snapshots */}
-      <section className="mb-6">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-violet-300">
+      {/* Profile snapshots — di-trigger otomatis saat add brand. UI di sini
+          read-only (display + delete + re-snap card yang udah ada). */}
+      {profile.snapshots?.length > 0 && (
+        <section className="mb-6">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-violet-300">
             Profile snapshots
           </h3>
-          <div className="flex gap-2">
-            <button
-              onClick={() => triggerSnapshot("instagram")}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs text-slate-300 transition hover:border-violet-500/50 hover:text-violet-200"
-            >
-              + Instagram
-            </button>
-            <button
-              onClick={() => triggerSnapshot("tiktok")}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs text-slate-300 transition hover:border-violet-500/50 hover:text-violet-200"
-            >
-              + TikTok
-            </button>
+          <div className="grid gap-4 md:grid-cols-2">
+            {profile.snapshots.map((snap) => (
+              <ProfileCard
+                key={snap.platform}
+                snapshot={snap}
+                onDelete={() => handleDeleteProfile(snap.platform)}
+              />
+            ))}
           </div>
-        </div>
-        {profile.snapshots?.length === 0 && (
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5 text-center text-xs text-slate-500">
-            Belum ada profile snapshot. Klik tombol Instagram / TikTok di atas
-            untuk mulai.
-          </div>
-        )}
-        <div className="grid gap-4 md:grid-cols-2">
-          {profile.snapshots?.map((snap) => (
-            <ProfileCard
-              key={snap.platform}
-              snapshot={snap}
-              onDelete={() => handleDeleteProfile(snap.platform)}
-              onResnap={() => triggerSnapshot(snap.platform)}
-            />
-          ))}
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Reference library */}
       <section>
@@ -266,7 +230,7 @@ function PlatformBadge({ platform }) {
   );
 }
 
-function ProfileCard({ snapshot, onDelete, onResnap }) {
+function ProfileCard({ snapshot, onDelete }) {
   const ana = snapshot.analysis || {};
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
@@ -279,23 +243,6 @@ function ProfileCard({ snapshot, onDelete, onResnap }) {
         </div>
         <div className="flex items-center gap-2">
           <StatusBadge status={snapshot.status} />
-          {onResnap && (
-            <button
-              onClick={onResnap}
-              title="Re-snap dengan handle baru"
-              className="text-slate-600 transition hover:text-violet-300"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M14 8a6 6 0 11-1.76-4.24M14 2v4h-4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )}
           {onDelete && (
             <button
               onClick={onDelete}
