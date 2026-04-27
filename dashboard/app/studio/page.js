@@ -10,6 +10,7 @@ import { CaptionTab } from "./CaptionTab";
 import { CarouselTab } from "./CarouselTab";
 import { HookTab } from "./HookTab";
 import { PlanTab } from "./PlanTab";
+import { ReferencesTab } from "./ReferencesTab";
 
 const TABS = [
   {
@@ -35,6 +36,12 @@ const TABS = [
     label: "Carousel",
     desc: "Multi-slide dengan narrative arc",
     icon: CarouselIcon,
+  },
+  {
+    id: "references",
+    label: "References",
+    desc: "Profile snapshot + library inspirasi",
+    icon: ReferencesIcon,
   },
 ];
 
@@ -77,6 +84,9 @@ function StudioPageInner() {
   // Shape: { tool: "hook|caption|carousel", payload: {...} }
   const [prefill, setPrefill] = useState(null);
   const [expertise, setExpertise] = useState([]);
+  // Counts dari References tab — dipakai indicator "N references aktif"
+  // di Plan/Hook/Caption/Carousel.
+  const [socialCounts, setSocialCounts] = useState({ references: 0, profiles: 0 });
 
   // Sync URL → state untuk back/forward browser navigation
   useEffect(() => {
@@ -105,6 +115,28 @@ function StudioPageInner() {
       .then((d) => setExpertise(d.expertise || []))
       .catch(() => setExpertise([]));
   }, []);
+
+  // Fetch social counts saat brand berubah, supaya indicator SOCIAL DNA muncul
+  // di tab Plan/Hook/Caption/Carousel walau user belum pernah ke References tab.
+  useEffect(() => {
+    if (!activeBrandId) {
+      setSocialCounts({ references: 0, profiles: 0 });
+      return;
+    }
+    let cancelled = false;
+    Promise.all([
+      api.social.getProfile(activeBrandId).catch(() => ({ snapshots: [] })),
+      api.social.listReferences(activeBrandId).catch(() => ({ references: [] })),
+    ]).then(([p, r]) => {
+      if (cancelled) return;
+      const profiles = (p.snapshots || []).filter((s) => s.status === "ready").length;
+      const references = (r.references || []).filter((x) => x.status === "ready").length;
+      setSocialCounts({ profiles, references });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeBrandId]);
 
   const sendToTool = useCallback(
     (tool, payload) => {
@@ -180,7 +212,7 @@ function StudioPageInner() {
 
           {!brandsLoading && activeBrandId && (
             <>
-              <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5">
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
                   const active = activeTab === tab.id;
@@ -220,6 +252,31 @@ function StudioPageInner() {
                 })}
               </div>
 
+              {(socialCounts.references > 0 || socialCounts.profiles > 0) &&
+                activeTab !== "references" && (
+                  <button
+                    onClick={() => changeTab("references")}
+                    className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-4 py-2.5 text-left text-xs text-violet-100 transition hover:border-violet-500/60"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
+                      <span className="font-semibold">SOCIAL DNA aktif:</span>
+                      <span className="text-violet-200">
+                        {socialCounts.profiles} profile
+                        {socialCounts.profiles !== 1 ? "s" : ""} ·{" "}
+                        {socialCounts.references} reference
+                        {socialCounts.references !== 1 ? "s" : ""}
+                      </span>
+                      <span className="text-violet-300/70">
+                        — auto-inject ke generator
+                      </span>
+                    </span>
+                    <span className="text-violet-400 transition group-hover:translate-x-0.5">
+                      Manage →
+                    </span>
+                  </button>
+                )}
+
               <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur">
                 {activeTab === "plan" && (
                   <PlanTab
@@ -243,6 +300,12 @@ function StudioPageInner() {
                   <CarouselTab
                     brandId={activeBrandId}
                     consumePrefill={consumePrefill}
+                  />
+                )}
+                {activeTab === "references" && (
+                  <ReferencesTab
+                    brandId={activeBrandId}
+                    onCountChange={setSocialCounts}
                   />
                 )}
               </div>
@@ -359,6 +422,20 @@ function CarouselIcon() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ReferencesIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
