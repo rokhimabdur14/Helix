@@ -262,7 +262,26 @@ function PostCard({ post, index = 0, onSendToTool }) {
 
   function handleSend(targetTool) {
     if (!onSendToTool) return;
-    if (targetTool === "hook") {
+    if (targetTool === "brief") {
+      const fmtLower = post.format?.toLowerCase();
+      const briefFormat =
+        fmtLower === "reel"
+          ? "reel"
+          : fmtLower === "story"
+          ? "story"
+          : fmtLower === "carousel"
+          ? "carousel_foto"
+          : "single_foto"; // feed → single_foto fallback
+      onSendToTool("brief", {
+        topic: post.hook_idea
+          ? `${post.topic}. Hook awal: ${post.hook_idea}`
+          : post.topic,
+        format_type: briefFormat,
+        pillar: post.pillar || "",
+        goal: post.goal?.toLowerCase() || "",
+        mode: "original",
+      });
+    } else if (targetTool === "hook") {
       onSendToTool("hook", {
         topic: `${post.topic}. Hook awal: ${post.hook_idea || ""}`.trim(),
         format_type:
@@ -286,7 +305,9 @@ function PostCard({ post, index = 0, onSendToTool }) {
   }
 
   const fmt = post.format?.toLowerCase();
-  const sendButtons = [];
+  // Brief is the primary action — works for any format. Legacy tools (hook/caption/
+  // carousel) tetep tersedia kalau user mau output spesifik.
+  const sendButtons = ["brief"];
   if (fmt === "reel" || fmt === "story") sendButtons.push("hook");
   if (fmt === "carousel") sendButtons.push("carousel");
   sendButtons.push("caption");
@@ -354,15 +375,22 @@ function PostCard({ post, index = 0, onSendToTool }) {
               </span>
             )}
             <div className="ml-auto flex flex-wrap gap-1.5">
-              {sendButtons.map((tool) => (
-                <button
-                  key={tool}
-                  onClick={() => handleSend(tool)}
-                  className="rounded-md border border-slate-700/60 bg-slate-900/80 px-2 py-1 text-[10px] font-medium text-slate-400 transition hover:border-violet-500/50 hover:text-violet-200"
-                >
-                  → {tool}
-                </button>
-              ))}
+              {sendButtons.map((tool) => {
+                const primary = tool === "brief";
+                return (
+                  <button
+                    key={tool}
+                    onClick={() => handleSend(tool)}
+                    className={
+                      primary
+                        ? "rounded-md border border-violet-500/60 bg-gradient-to-r from-violet-600/30 to-blue-600/30 px-2.5 py-1 text-[10px] font-semibold text-violet-100 transition hover:from-violet-600/50 hover:to-blue-600/50"
+                        : "rounded-md border border-slate-700/60 bg-slate-900/80 px-2 py-1 text-[10px] font-medium text-slate-400 transition hover:border-violet-500/50 hover:text-violet-200"
+                    }
+                  >
+                    → {tool}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -137,5 +137,23 @@ export const api = {
           theme: theme && theme.trim() ? theme.trim() : null,
         }),
       }),
+    brief: (brandId, payload) =>
+      apiFetch("/studio/brief", {
+        method: "POST",
+        body: JSON.stringify({
+          brand_id: brandId,
+          format_type: payload.format_type,
+          topic: payload.topic,
+          mode: payload.mode || "original",
+          angle: payload.angle?.trim() || null,
+          reference_ids:
+            payload.reference_ids && payload.reference_ids.length > 0
+              ? payload.reference_ids
+              : null,
+          reference_text: payload.reference_text?.trim() || null,
+          pillar: payload.pillar?.trim() || null,
+          goal: payload.goal || null,
+        }),
+      }),
   },
 };

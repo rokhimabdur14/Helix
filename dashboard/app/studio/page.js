@@ -6,6 +6,7 @@ import { AddBrandModal } from "../AddBrandModal";
 import { api } from "../api-client";
 import { AppHeader } from "../AppHeader";
 import { useBrand } from "../use-brand";
+import { BriefTab } from "./BriefTab";
 import { CaptionTab } from "./CaptionTab";
 import { CarouselTab } from "./CarouselTab";
 import { HookTab } from "./HookTab";
@@ -18,6 +19,12 @@ const TABS = [
     label: "Plan",
     desc: "Kalender konten mingguan/bulanan",
     icon: PlanIcon,
+  },
+  {
+    id: "brief",
+    label: "Brief",
+    desc: "Brief eksekusi lengkap per post",
+    icon: BriefIcon,
   },
   {
     id: "hook",
@@ -212,7 +219,7 @@ function StudioPageInner() {
 
           {!brandsLoading && activeBrandId && (
             <>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
                   const active = activeTab === tab.id;
@@ -282,6 +289,12 @@ function StudioPageInner() {
                   <PlanTab
                     brandId={activeBrandId}
                     onSendToTool={sendToTool}
+                  />
+                )}
+                {activeTab === "brief" && (
+                  <BriefTab
+                    brandId={activeBrandId}
+                    consumePrefill={consumePrefill}
                   />
                 )}
                 {activeTab === "hook" && (
@@ -373,6 +386,27 @@ function PlanIcon() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function BriefIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 2h6l4 4v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2h2"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 2v4h6V2M9 12h6M9 16h6M9 8h3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

@@ -394,6 +394,18 @@ class PlanRequest(BaseModel):
     theme: str | None = Field(None, max_length=500)  # tema konten user — bias hook & angle
 
 
+class BriefRequest(BaseModel):
+    brand_id: str
+    format_type: Literal["reel", "carousel_foto", "single_foto", "story"]
+    topic: str = Field(..., min_length=3, max_length=500)
+    mode: Literal["tiru", "modifikasi", "original"] = "original"
+    angle: str | None = Field(None, max_length=500)
+    reference_ids: list[str] | None = None
+    reference_text: str | None = Field(None, max_length=2000)
+    pillar: str | None = Field(None, max_length=100)
+    goal: Literal["awareness", "engagement", "sales", "education"] | None = None
+
+
 def _ensure_brand(brand_id: str):
     if not (CONFIG_DIR / f"{brand_id}.config.json").exists():
         raise HTTPException(status_code=404, detail=f"Brand '{brand_id}' not found")
@@ -533,6 +545,27 @@ def studio_plan(req: PlanRequest):
             start_date=req.start_date,
             goals=req.goals,
             theme=req.theme,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI error: {e}")
+
+
+@app.post("/studio/brief")
+def studio_brief(req: BriefRequest):
+    _ensure_brand(req.brand_id)
+    try:
+        return studio.generate_brief(
+            req.brand_id,
+            format_type=req.format_type,
+            topic=req.topic,
+            mode=req.mode,
+            angle=req.angle,
+            reference_ids=req.reference_ids,
+            reference_text=req.reference_text,
+            pillar=req.pillar,
+            goal=req.goal,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

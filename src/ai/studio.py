@@ -463,6 +463,8 @@ def generate_plan(
     insights_section = _load_brand_insights(brand_id)
     insights_block = f"\n\n{insights_section}" if insights_section else ""
 
+    system = _system_prompt_with_brand(brand_id, PLAN_ROLE) + insights_block
+
     theme_clean = (theme or "").strip()
     theme_block = ""
     if theme_clean:
@@ -521,4 +523,258 @@ Output JSON schema:
         max_tokens=4000,
         model=PLAN_MODEL,
         temperature=0.7,
+    )
+
+
+# ========== 5. Brief (unified per-post) ==========
+
+BRIEF_ROLE = """Kamu adalah HELIX Content Brief Director — ahli bikin brief eksekusi
+untuk SATU post sosmed. Output kamu adalah dokumen produksi siap-eksekusi: bukan ide
+mentah, bukan strategi panjang — tapi instruksi konkret yang bisa dieksekusi sama
+content creator atau editor video tanpa nanya balik.
+
+Kamu integrate 3 hal:
+1. STORYTELLING (Conceptual / Communications / Crafting + Feel-Think-Do-Tell)
+2. ALGORITMA (hook 3-detik, completion rate, posting time)
+3. BRAND DNA (voice, aesthetic, pillars, footage realism)
+
+PRINSIP KERJA:
+- Brief yang lo buat HARUS realistis sesuai footage/aset yang brand punya
+- Hook + twist wajib ada (Dimas Djay framework: hook tahan, twist surprise di tengah/akhir)
+- Setiap field punya alasan strategis — gak random
+- Spesifik untuk brand, pakai fakta dari brand profile + social DNA"""
+
+
+def _load_specific_references(brand_id: str, ref_ids: list[str] | None) -> str:
+    """Load reference yang user pilih spesifik untuk brief ini.
+
+    Berbeda dari _load_social_context yang ambil top-N umum, ini ambil refs
+    yang user explicit pilih (untuk mode tiru/modifikasi).
+    """
+    if not ref_ids:
+        return ""
+    try:
+        from src.social import storage as social_storage
+    except ImportError:
+        return ""
+
+    refs = social_storage.load_references(brand_id)
+    by_id = {r.get("id"): r for r in refs.get("references", [])}
+    blocks = []
+    for rid in ref_ids:
+        r = by_id.get(rid)
+        if not r or r.get("status") != "ready":
+            continue
+        ana = r.get("analysis") or {}
+        if not ana:
+            continue
+        blocks.append(
+            f"--- TARGETED REFERENCE [{r.get('tag', 'inspiration')}] ---\n"
+            f"URL: {r.get('url')}\n"
+            f"Format: {ana.get('format', 'n/a')}\n"
+            f"Visual: {ana.get('visual_summary', 'n/a')}\n"
+            f"Hook/first frame: {ana.get('hook_or_first_frame', 'n/a')}\n"
+            f"Hook pattern: {ana.get('hooks_pattern', 'n/a')}\n"
+            f"Caption excerpt: {ana.get('caption_excerpt', '-')[:300]}\n"
+            f"Why it works: {' | '.join(ana.get('why_it_works', []))}\n"
+            f"Replication angle: {ana.get('replication_angle', 'n/a')}"
+        )
+    if not blocks:
+        return ""
+    return "\n\n=== REFERENSI TARGET (yang user PILIH SENDIRI buat brief ini) ===\n" + "\n\n".join(blocks)
+
+
+def _brief_user_prompt(
+    *,
+    format_type: str,
+    mode: str,
+    topic: str,
+    angle: str | None,
+    pillar: str | None,
+    goal: str | None,
+    reference_text: str | None,
+    targeted_refs_block: str,
+) -> str:
+    """Build format-aware user prompt + JSON schema."""
+    mode_guide = {
+        "tiru": "TIRU pattern dari REFERENSI TARGET — ambil struktur narasi/hook/visual cue, tapi ganti substansi & brand-fit Fotofusi/brand ini",
+        "modifikasi": "MODIFIKASI referensi target — pakai kerangka pattern, tapi belokin angle/twist sesuai catatan custom di bawah",
+        "original": "ORIGINAL — gak ada referensi specific, fresh dari brand DNA + topik",
+    }
+    mode_text = mode_guide.get(mode, mode_guide["original"])
+
+    angle_block = f"\nCUSTOM ANGLE: {angle}" if angle else ""
+    pillar_block = f"\nPILLAR: {pillar}" if pillar else ""
+    goal_block = f"\nGOAL: {goal}" if goal else ""
+    ref_text_block = (
+        f"\n\n=== REFERENSI MANUAL (deskripsi user) ===\n{reference_text}"
+        if reference_text
+        else ""
+    )
+
+    common_input = f"""TOPIK: {topic}
+FORMAT: {format_type}
+MODE: {mode} — {mode_text}{angle_block}{pillar_block}{goal_block}{ref_text_block}{targeted_refs_block}"""
+
+    if format_type == "reel":
+        schema_json = """{
+  "format": "reel",
+  "goal": "awareness|engagement|sales|education",
+  "title": "judul internal brief (max 10 kata, untuk reference)",
+  "narrative_arc": {
+    "feel": "1 kalimat — emosi/curiosity yang dipancing di awal",
+    "think": "1 kalimat — insight/decision yang ditanam di tengah",
+    "do": "1 kalimat — action yang dipancing dari viewer",
+    "tell": "1 kalimat — kenapa viewer bakal share/save ini"
+  },
+  "hooks": [
+    {"text": "hook 1 (max 12 kata, ucapan/teks)", "visual": "visual frame 1 detik pertama", "type": "question|shock|promise|story|contrarian"},
+    {"text": "hook 2 (variasi tipe beda)", "visual": "...", "type": "..."},
+    {"text": "hook 3 (variasi tipe beda lagi)", "visual": "...", "type": "..."}
+  ],
+  "twist": "twist visual atau copy di tengah/akhir reel — 1 kalimat",
+  "scenes": [
+    {"no": 1, "duration_s": 3, "visual": "deskripsi shot konkret", "voiceover": "VO/narasi (kosong kalau silent)", "on_screen_text": "teks layar"},
+    "... 5-8 scenes total, durasi total 15-45 detik"
+  ],
+  "caption": "caption IG/TikTok lengkap (3-7 baris, hook line di awal, body, soft pre-CTA)",
+  "cta": "call to action 1 kalimat (DM/save/comment/follow)",
+  "hashtags": ["#hashtag1 (mix niche+medium+broad, 8-12 total)", "..."],
+  "best_posting_time": "HH:MM (jam Indonesia, alasan singkat di exec_notes)",
+  "exec_notes": "catatan eksekusi: footage yang dibutuhkan, apakah bisa pakai stock/footage existing, music/audio recommendation, BTS option, alasan posting time"
+}"""
+        return f"""Buat BRIEF EKSEKUSI lengkap untuk REEL/video pendek:
+
+{common_input}
+
+ATURAN OUTPUT:
+- 5-8 scene (total durasi 15-45 detik)
+- Hook 3 alternatif WAJIB variasi tipe (jangan 3-3nya question)
+- narrative_arc pakai framework Feel-Think-Do-Tell (Dimas Djay)
+- twist WAJIB ada (visual atau kata-kata) — bikin tahan completion rate
+- exec_notes wajib jujur soal feasibility footage (cek brand DNA: stock vs real footage)
+
+Output JSON valid:
+{schema_json}"""
+
+    elif format_type == "carousel_foto":
+        schema_json = """{
+  "format": "carousel_foto",
+  "goal": "awareness|engagement|sales|education",
+  "title": "judul internal carousel",
+  "narrative_arc": {
+    "feel": "...", "think": "...", "do": "...", "tell": "..."
+  },
+  "slides": [
+    {"no": 1, "type": "cover", "headline": "judul besar (max 8 kata)", "body": "subheading 1 kalimat", "visual": "deskripsi visual cover"},
+    {"no": 2, "type": "content", "headline": "...", "body": "isi slide (max 30 kata)", "visual": "..."},
+    "... 4-7 slides content, slide terakhir type=cta",
+    {"no": 7, "type": "cta", "headline": "...", "body": "...", "visual": "..."}
+  ],
+  "caption": "caption IG (3-5 baris)",
+  "cta": "...",
+  "hashtags": ["#..."],
+  "best_posting_time": "HH:MM",
+  "exec_notes": "color palette saran, font/template, footage yang dipakai"
+}"""
+        return f"""Buat BRIEF EKSEKUSI lengkap untuk CAROUSEL FOTO Instagram:
+
+{common_input}
+
+ATURAN OUTPUT:
+- Slide 1 = cover (hook visual + headline kuat)
+- Slide 2 s/d N-1 = content (1 insight/poin per slide, body max 30 kata — carousel bukan blog)
+- Slide terakhir = CTA
+- 5-8 slide total
+- narrative_arc pakai Feel-Think-Do-Tell
+
+Output JSON valid:
+{schema_json}"""
+
+    elif format_type == "single_foto":
+        schema_json = """{
+  "format": "single_foto",
+  "goal": "awareness|engagement|sales|education",
+  "title": "judul internal",
+  "visual_direction": "deskripsi shot/komposisi/styling untuk foto utama (1 paragraf konkret)",
+  "hook_options": ["hook caption opsi 1 (max 12 kata, kalimat pertama caption)", "opsi 2 (variasi)", "opsi 3 (variasi)"],
+  "caption": "caption full-length (5-12 baris, story-driven, pakai 1 dari hook_options sebagai opening)",
+  "cta": "call to action 1 kalimat",
+  "hashtags": ["#..."],
+  "best_posting_time": "HH:MM",
+  "exec_notes": "props, location, lighting, editing tone, alasan posting time"
+}"""
+        return f"""Buat BRIEF EKSEKUSI lengkap untuk SINGLE PHOTO Instagram/feed:
+
+{common_input}
+
+ATURAN OUTPUT:
+- visual_direction harus konkret (komposisi, lighting, styling) — bukan generic "estetik"
+- 3 hook caption opsi WAJIB variasi tipe
+- Caption full pakai 1 dari hook (sisanya alternatif)
+
+Output JSON valid:
+{schema_json}"""
+
+    else:  # story
+        schema_json = """{
+  "format": "story",
+  "goal": "awareness|engagement|sales|education",
+  "title": "judul internal",
+  "frames": [
+    {"no": 1, "visual": "deskripsi visual frame", "copy": "teks di frame", "sticker_suggestion": "poll|quiz|question|countdown|link|none"},
+    "... 3-7 frames total"
+  ],
+  "cta": "...",
+  "exec_notes": "catatan eksekusi (frame transition, music, link sticker target)"
+}"""
+        return f"""Buat BRIEF EKSEKUSI lengkap untuk STORY Instagram (3-7 frame):
+
+{common_input}
+
+ATURAN OUTPUT:
+- Tiap frame ada sticker suggestion (interaktif: poll/quiz/question) — manfaatin engagement story
+- Sequence: hook → value → CTA
+- Copy frame singkat (story = mobile, attention pendek)
+
+Output JSON valid:
+{schema_json}"""
+
+
+def generate_brief(
+    brand_id: str,
+    format_type: Literal["reel", "carousel_foto", "single_foto", "story"],
+    topic: str,
+    mode: Literal["tiru", "modifikasi", "original"] = "original",
+    angle: str | None = None,
+    reference_ids: list[str] | None = None,
+    reference_text: str | None = None,
+    pillar: str | None = None,
+    goal: str | None = None,
+) -> dict:
+    """Generate brief eksekusi lengkap untuk 1 post.
+
+    Returns format-specific dict (lihat _brief_user_prompt schemas).
+    """
+    system = _system_prompt_with_brand(brand_id, BRIEF_ROLE)
+    targeted_refs = _load_specific_references(brand_id, reference_ids)
+
+    user = _brief_user_prompt(
+        format_type=format_type,
+        mode=mode,
+        topic=topic,
+        angle=angle,
+        pillar=pillar,
+        goal=goal,
+        reference_text=reference_text,
+        targeted_refs_block=targeted_refs,
+    )
+
+    # Brief lebih kompleks (multi-section reasoning + integrate sources) → 70b
+    return _generate_json(
+        system,
+        user,
+        max_tokens=4500,
+        model=PLAN_MODEL,
+        temperature=0.75,
     )
