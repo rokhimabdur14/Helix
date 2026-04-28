@@ -58,6 +58,11 @@ export function BriefTab({ brandId, consumePrefill }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  // Input snapshot yang produce `result` — dipakai buat regen-section
+  // (bukan input current form state, krn user mungkin sudah ubah field setelah generate)
+  const [lastInput, setLastInput] = useState(null);
+  // Section key yang lagi di-regenerate (e.g. "hooks" / "scenes") atau null
+  const [regeneratingSection, setRegeneratingSection] = useState(null);
   // Banner dismiss state — per brand. Re-baca tiap brand berubah supaya
   // brand A yang sudah dismiss gak ngumpetin banner di brand B.
   const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -147,11 +152,28 @@ export function BriefTab({ brandId, consumePrefill }) {
     try {
       const data = await api.studio.brief(brandId, input);
       setResult(data);
+      setLastInput(input);
       history.save(input, data);
     } catch (e) {
       setError(e.message || "Gagal generate brief");
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Regen 1 section: re-call backend dengan input yang sama, lalu merge HANYA
+  // section yang diminta ke result. Section lain tetap (stabil di mata user).
+  async function regenSection(sectionKey) {
+    if (!lastInput || !result || regeneratingSection) return;
+    setRegeneratingSection(sectionKey);
+    setError("");
+    try {
+      const data = await api.studio.brief(brandId, lastInput);
+      setResult((prev) => ({ ...prev, [sectionKey]: data[sectionKey] }));
+    } catch (e) {
+      setError(e.message || `Gagal regen ${sectionKey}`);
+    } finally {
+      setRegeneratingSection(null);
     }
   }
 
@@ -165,6 +187,7 @@ export function BriefTab({ brandId, consumePrefill }) {
     setSelectedRefIds(entry.input.reference_ids || []);
     setReferenceText(entry.input.reference_text || "");
     setResult(entry.output);
+    setLastInput(entry.input);
     setError("");
   }
 
@@ -362,31 +385,70 @@ export function BriefTab({ brandId, consumePrefill }) {
         }
       />
 
-      {result && <BriefResult result={result} />}
+      {result && (
+        <BriefResult
+          result={result}
+          regenerating={regeneratingSection}
+          onRegen={regenSection}
+          canRegen={!!lastInput}
+        />
+      )}
     </div>
   );
 }
 
-function BriefResult({ result }) {
+function BriefResult({ result, regenerating, onRegen, canRegen }) {
   const fmt = result.format;
+  const layoutProps = { result, regenerating, onRegen, canRegen };
   return (
     <ResultPanel
       title={`Brief · ${fmt} · ${result.title || "Untitled"}`}
       onCopyAll={<CopyButton text={JSON.stringify(result, null, 2)} label="Copy JSON" />}
     >
-      {result.narrative_arc && <NarrativeArc arc={result.narrative_arc} />}
+      {result.narrative_arc && (
+        <NarrativeArc
+          arc={result.narrative_arc}
+          regenerating={regenerating}
+          onRegen={onRegen}
+          canRegen={canRegen}
+        />
+      )}
 
-      {fmt === "reel" && <ReelLayout result={result} />}
-      {fmt === "carousel_foto" && <CarouselFotoLayout result={result} />}
-      {fmt === "single_foto" && <SingleFotoLayout result={result} />}
-      {fmt === "story" && <StoryLayout result={result} />}
+      {fmt === "reel" && <ReelLayout {...layoutProps} />}
+      {fmt === "carousel_foto" && <CarouselFotoLayout {...layoutProps} />}
+      {fmt === "single_foto" && <SingleFotoLayout {...layoutProps} />}
+      {fmt === "story" && <StoryLayout {...layoutProps} />}
 
       <BriefMeta result={result} />
     </ResultPanel>
   );
 }
 
-function NarrativeArc({ arc }) {
+function RegenButton({ sectionKey, regenerating, onRegen, disabled }) {
+  if (!onRegen) return null;
+  const isLoading = regenerating === sectionKey;
+  const isOtherLoading = regenerating && regenerating !== sectionKey;
+  return (
+    <button
+      type="button"
+      onClick={() => onRegen(sectionKey)}
+      disabled={disabled || isLoading || isOtherLoading}
+      aria-label={`Regenerate ${sectionKey}`}
+      title={`Generate ulang ${sectionKey} saja`}
+      className="inline-flex items-center gap-1.5 rounded-md border border-slate-700/60 bg-slate-900/60 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400 transition hover:border-violet-500/60 hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      <span
+        className={`inline-block ${isLoading ? "spin-loop" : ""}`}
+        aria-hidden="true"
+      >
+        ↻
+      </span>
+      {isLoading ? "regenerating…" : "regen"}
+    </button>
+  );
+}
+
+function NarrativeArc({ arc, regenerating, onRegen, canRegen }) {
   const items = [
     ["Feel", arc.feel, "text-pink-300"],
     ["Think", arc.think, "text-blue-300"],
@@ -394,30 +456,64 @@ function NarrativeArc({ arc }) {
     ["Tell", arc.tell, "text-amber-300"],
   ].filter(([, v]) => v);
   if (items.length === 0) return null;
+  const isLoading = regenerating === "narrative_arc";
   return (
-    <div className="reveal-in mb-5 rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-blue-500/5 p-4">
-      <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-violet-400">
-        Narrative arc · Feel-Think-Do-Tell
+    <div className="reveal-in mb-5">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-400">
+          Narrative arc · Feel-Think-Do-Tell
+        </span>
+        <RegenButton
+          sectionKey="narrative_arc"
+          regenerating={regenerating}
+          onRegen={onRegen}
+          disabled={!canRegen}
+        />
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {items.map(([label, value, color]) => (
-          <div key={label} className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
-            <div className={`text-[10px] font-semibold uppercase tracking-wider ${color}`}>
-              {label}
+      <div
+        className={`relative rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-blue-500/5 p-4 transition-opacity duration-200 ${
+          isLoading ? "pointer-events-none opacity-40" : ""
+        }`}
+      >
+        <div className="grid gap-2 sm:grid-cols-2">
+          {items.map(([label, value, color]) => (
+            <div key={label} className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+              <div className={`text-[10px] font-semibold uppercase tracking-wider ${color}`}>
+                {label}
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-300">{value}</p>
             </div>
-            <p className="mt-1 text-xs leading-relaxed text-slate-300">{value}</p>
+          ))}
+        </div>
+        {isLoading && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl"
+          >
+            <div className="shimmer-sweep absolute inset-0" />
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
 }
 
-function ReelLayout({ result }) {
+function ReelLayout({ result, regenerating, onRegen, canRegen }) {
   return (
     <>
       {result.hooks?.length > 0 && (
-        <Section title={`${result.hooks.length} hook opsi`}>
+        <Section
+          title={`${result.hooks.length} hook opsi`}
+          actions={
+            <RegenButton
+              sectionKey="hooks"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "hooks"}
+        >
           <div className="space-y-2">
             {result.hooks.map((h, i) => {
               const color =
@@ -469,6 +565,15 @@ function ReelLayout({ result }) {
             (s, x) => s + (x.duration_s || 0),
             0
           )}s)`}
+          actions={
+            <RegenButton
+              sectionKey="scenes"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "scenes"}
         >
           <div className="space-y-2">
             {result.scenes.map((s, i) => (
@@ -512,16 +617,34 @@ function ReelLayout({ result }) {
         </Section>
       )}
 
-      <CaptionBlock caption={result.caption} cta={result.cta} hashtags={result.hashtags} />
+      <CaptionBlock
+        caption={result.caption}
+        cta={result.cta}
+        hashtags={result.hashtags}
+        regenerating={regenerating}
+        onRegen={onRegen}
+        canRegen={canRegen}
+      />
     </>
   );
 }
 
-function CarouselFotoLayout({ result }) {
+function CarouselFotoLayout({ result, regenerating, onRegen, canRegen }) {
   return (
     <>
       {result.slides?.length > 0 && (
-        <Section title={`${result.slides.length} slides`}>
+        <Section
+          title={`${result.slides.length} slides`}
+          actions={
+            <RegenButton
+              sectionKey="slides"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "slides"}
+        >
           <div className="space-y-2">
             {result.slides.map((s, i) => {
               const typeColor =
@@ -564,16 +687,34 @@ function CarouselFotoLayout({ result }) {
         </Section>
       )}
 
-      <CaptionBlock caption={result.caption} cta={result.cta} hashtags={result.hashtags} />
+      <CaptionBlock
+        caption={result.caption}
+        cta={result.cta}
+        hashtags={result.hashtags}
+        regenerating={regenerating}
+        onRegen={onRegen}
+        canRegen={canRegen}
+      />
     </>
   );
 }
 
-function SingleFotoLayout({ result }) {
+function SingleFotoLayout({ result, regenerating, onRegen, canRegen }) {
   return (
     <>
       {result.visual_direction && (
-        <Section title="Visual direction">
+        <Section
+          title="Visual direction"
+          actions={
+            <RegenButton
+              sectionKey="visual_direction"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "visual_direction"}
+        >
           <div className="rounded-xl border border-pink-500/30 bg-pink-500/5 p-3">
             <p className="text-sm leading-relaxed text-pink-100">
               📸 {result.visual_direction}
@@ -583,7 +724,18 @@ function SingleFotoLayout({ result }) {
       )}
 
       {result.hook_options?.length > 0 && (
-        <Section title={`${result.hook_options.length} hook caption opsi`}>
+        <Section
+          title={`${result.hook_options.length} hook caption opsi`}
+          actions={
+            <RegenButton
+              sectionKey="hook_options"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "hook_options"}
+        >
           <div className="space-y-2">
             {result.hook_options.map((h, i) => (
               <div
@@ -602,16 +754,34 @@ function SingleFotoLayout({ result }) {
         </Section>
       )}
 
-      <CaptionBlock caption={result.caption} cta={result.cta} hashtags={result.hashtags} />
+      <CaptionBlock
+        caption={result.caption}
+        cta={result.cta}
+        hashtags={result.hashtags}
+        regenerating={regenerating}
+        onRegen={onRegen}
+        canRegen={canRegen}
+      />
     </>
   );
 }
 
-function StoryLayout({ result }) {
+function StoryLayout({ result, regenerating, onRegen, canRegen }) {
   return (
     <>
       {result.frames?.length > 0 && (
-        <Section title={`${result.frames.length} story frames`}>
+        <Section
+          title={`${result.frames.length} story frames`}
+          actions={
+            <RegenButton
+              sectionKey="frames"
+              regenerating={regenerating}
+              onRegen={onRegen}
+              disabled={!canRegen}
+            />
+          }
+          isRegenerating={regenerating === "frames"}
+        >
           <div className="grid gap-2 sm:grid-cols-2">
             {result.frames.map((f, i) => (
               <div
@@ -652,14 +822,28 @@ function StoryLayout({ result }) {
   );
 }
 
-function CaptionBlock({ caption, cta, hashtags }) {
+function CaptionBlock({ caption, cta, hashtags, regenerating, onRegen, canRegen }) {
   if (!caption && !cta && !hashtags?.length) return null;
   const fullText = [caption, cta, hashtags?.length ? hashtags.join(" ") : null]
     .filter(Boolean)
     .join("\n\n");
 
   return (
-    <Section title="Caption" actions={<CopyButton text={fullText} />}>
+    <Section
+      title="Caption"
+      actions={
+        <div className="flex items-center gap-1.5">
+          <RegenButton
+            sectionKey="caption"
+            regenerating={regenerating}
+            onRegen={onRegen}
+            disabled={!canRegen}
+          />
+          <CopyButton text={fullText} />
+        </div>
+      }
+      isRegenerating={regenerating === "caption"}
+    >
       <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
         {caption && (
           <p className="whitespace-pre-line text-sm leading-relaxed text-slate-200">
@@ -705,16 +889,30 @@ function BriefMeta({ result }) {
   );
 }
 
-function Section({ title, actions, children }) {
+function Section({ title, actions, children, isRegenerating }) {
   return (
-    <div className="mb-5">
+    <div className={`mb-5 ${isRegenerating ? "regenerating-section" : ""}`}>
       <div className="mb-2 flex items-center justify-between">
         <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           {title}
         </h4>
         {actions}
       </div>
-      {children}
+      <div
+        className={`relative transition-opacity duration-200 ${
+          isRegenerating ? "pointer-events-none opacity-40" : ""
+        }`}
+      >
+        {children}
+        {isRegenerating && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl"
+          >
+            <div className="shimmer-sweep absolute inset-0" />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

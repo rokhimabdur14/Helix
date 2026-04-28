@@ -261,6 +261,39 @@ body::after {
   }
 }
 
+/* ========== Regen-section feedback ========== */
+/* Shimmer sweep menutupi section yang lagi di-regenerate.
+   Visual hint: gradien diagonal lewat dari kiri ke kanan, loop. */
+.shimmer-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(167, 139, 250, 0.18) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-pan 1.4s linear infinite;
+}
+@keyframes shimmer-pan {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.spin-loop {
+  display: inline-block;
+  animation: spin-loop 0.9s linear infinite;
+}
+@keyframes spin-loop {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ========== Creator backdrop icons ========== */
 .creator-icon {
   position: absolute;
