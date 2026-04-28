@@ -50,6 +50,12 @@ config/brands/*.config.json
 !config/brands/fotofusi.config.json
 !config/brands/_schema.md
 
+# Source PDFs & screenshots di root — sengaja tidak di-commit
+# (PDF expertise di-extract jadi data/expertise/*.md, sumber asli simpan lokal saja)
+/*.pdf
+/Screenshot*.png
+/ChatGPT*.png
+
 # Logs
 *.log
 

@@ -20,17 +20,27 @@ from src.ai.brain import client  # noqa: E402
 EXPERTISE_DIR = PROJECT_ROOT / "data" / "expertise"
 EXPERTISE_DIR.mkdir(parents=True, exist_ok=True)
 
-# Source PDFs → output slug + topic label
+# Source PDFs → output slug + topic label.
+# `paths` accepts a list — multiple PDFs about the same topic akan di-concat sebelum summarize
+# biar single expertise file (cocok untuk laporan + slide deck dari talk yang sama).
 SOURCES = [
     {
         "slug": "tiktok-algorithm",
         "label": "TikTok Algorithm & FYP",
-        "path": r"D:\WEB Abdur\Kuasai-Algoritma-TikTok-Panduan-FYP-Lengkap-2026.pdf",
+        "paths": [r"D:\WEB Abdur\Kuasai-Algoritma-TikTok-Panduan-FYP-Lengkap-2026.pdf"],
     },
     {
         "slug": "tiktok-growth",
         "label": "TikTok Growth Hacks 0 → 100K",
-        "path": r"D:\WEB Abdur\TikTok-Growth-Hacks-Dari-Nol-Hingga-100K-Followers.pdf",
+        "paths": [r"D:\WEB Abdur\TikTok-Growth-Hacks-Dari-Nol-Hingga-100K-Followers.pdf"],
+    },
+    {
+        "slug": "storytelling-dimas-djay",
+        "label": "Storytelling ala Dimas Djay (Webinar SkillSavvy)",
+        "paths": [
+            r"D:\WEB Abdur\helix\Laporan Webinar _Tinjauan Ilmiah Storytelling ala Dimas Djay_.pdf",
+            r"D:\WEB Abdur\helix\SkillSavvy - Tinjauan Ilmiah Storytelling ala Dimas Djay.pdf",
+        ],
     },
 ]
 
@@ -88,8 +98,14 @@ Ringkas jadi expertise markdown yang siap dipakai HELIX AI sebagai knowledge bas
 
 
 def process_source(source: dict) -> dict:
-    print(f"\n[{source['slug']}] extracting from PDF...")
-    raw = extract_pdf(source["path"])
+    paths = source["paths"]
+    print(f"\n[{source['slug']}] extracting from {len(paths)} PDF(s)...")
+
+    chunks = []
+    for p in paths:
+        text = extract_pdf(p)
+        chunks.append(f"=== SOURCE: {Path(p).name} ===\n\n{text}")
+    raw = "\n\n".join(chunks)
     print(f"[{source['slug']}] raw: {len(raw)} chars, ~{len(raw.split())} words")
 
     # Save raw cache
@@ -101,10 +117,12 @@ def process_source(source: dict) -> dict:
     print(f"[{source['slug']}] summary: {len(summary)} chars")
 
     # Save markdown with frontmatter
+    source_paths_yaml = "\n".join(f"  - {p}" for p in paths)
     md_content = f"""---
 slug: {source['slug']}
 label: {source['label']}
-source_path: {source['path']}
+source_paths:
+{source_paths_yaml}
 generated_by: scripts/extract_expertise.py
 model: {SUMMARIZE_MODEL}
 ---
@@ -121,8 +139,9 @@ model: {SUMMARIZE_MODEL}
 def main():
     results = []
     for source in SOURCES:
-        if not Path(source["path"]).exists():
-            print(f"SKIP {source['slug']}: file not found at {source['path']}")
+        missing = [p for p in source["paths"] if not Path(p).exists()]
+        if missing:
+            print(f"SKIP {source['slug']}: file(s) not found: {missing}")
             continue
         try:
             results.append(process_source(source))
