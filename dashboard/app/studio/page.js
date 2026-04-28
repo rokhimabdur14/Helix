@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AddBrandModal } from "../AddBrandModal";
 import { api } from "../api-client";
 import { AppHeader } from "../AppHeader";
@@ -117,6 +117,36 @@ function StudioPageInner() {
     [pathname, router, searchParams]
   );
 
+  // Tab refs untuk keyboard nav: Arrow/Home/End cycle + focus management.
+  const tabRefs = useRef([]);
+  const handleTabKeyDown = useCallback(
+    (event, currentIdx) => {
+      const last = VALID_TAB_IDS.length - 1;
+      let nextIdx = null;
+      switch (event.key) {
+        case "ArrowRight":
+          nextIdx = currentIdx === last ? 0 : currentIdx + 1;
+          break;
+        case "ArrowLeft":
+          nextIdx = currentIdx === 0 ? last : currentIdx - 1;
+          break;
+        case "Home":
+          nextIdx = 0;
+          break;
+        case "End":
+          nextIdx = last;
+          break;
+        default:
+          return;
+      }
+      event.preventDefault();
+      const nextTab = VALID_TAB_IDS[nextIdx];
+      changeTab(nextTab);
+      tabRefs.current[nextIdx]?.focus();
+    },
+    [changeTab]
+  );
+
   useEffect(() => {
     api.listExpertise()
       .then((d) => setExpertise(d.expertise || []))
@@ -219,14 +249,28 @@ function StudioPageInner() {
 
           {!brandsLoading && activeBrandId && (
             <>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
-                {TABS.map((tab) => {
+              <div
+                role="tablist"
+                aria-label="Studio tools"
+                aria-orientation="horizontal"
+                className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6"
+              >
+                {TABS.map((tab, idx) => {
                   const Icon = tab.icon;
                   const active = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
+                      ref={(el) => {
+                        tabRefs.current[idx] = el;
+                      }}
+                      role="tab"
+                      id={`studio-tab-${tab.id}`}
+                      aria-selected={active}
+                      aria-controls={`studio-panel-${tab.id}`}
+                      tabIndex={active ? 0 : -1}
                       onClick={() => changeTab(tab.id)}
+                      onKeyDown={(e) => handleTabKeyDown(e, idx)}
                       className={`lift-on-hover group flex items-start gap-3 rounded-xl border p-4 text-left ${
                         active
                           ? "border-violet-500/60 bg-gradient-to-br from-blue-600/10 to-violet-600/10 shadow-lg shadow-violet-900/20"
@@ -284,7 +328,13 @@ function StudioPageInner() {
                   </button>
                 )}
 
-              <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur">
+              <div
+                role="tabpanel"
+                id={`studio-panel-${activeTab}`}
+                aria-labelledby={`studio-tab-${activeTab}`}
+                tabIndex={0}
+                className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/40"
+              >
                 {activeTab === "plan" && (
                   <PlanTab
                     brandId={activeBrandId}

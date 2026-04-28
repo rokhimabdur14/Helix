@@ -15,9 +15,9 @@ import {
 import { useStudioHistory } from "./use-studio-history";
 
 const FORMAT_OPTIONS = [
-  { value: "reel", label: "Reel / Video" },
-  { value: "carousel_foto", label: "Carousel Foto" },
-  { value: "single_foto", label: "Single Foto" },
+  { value: "reel", label: "Reel" },
+  { value: "carousel_foto", label: "Carousel" },
+  { value: "single_foto", label: "Foto" },
   { value: "story", label: "Story" },
 ];
 
