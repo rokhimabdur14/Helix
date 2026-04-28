@@ -69,6 +69,32 @@ export const api = {
   deleteBrand: (brandId) =>
     apiFetch(`/brands/${brandId}`, { method: "DELETE" }),
   getInsights: (brandId) => apiFetch(`/brands/${brandId}/insights`),
+  uploadInsights: async (brandId, file) => {
+    // Multipart pakai raw fetch — apiFetch set Content-Type JSON yang nabrak
+    // multipart boundary header, jadi harus bypass.
+    const fd = new FormData();
+    fd.append("file", file);
+    let res;
+    try {
+      res = await fetch(`${API_URL}/brands/${brandId}/insights/upload`, {
+        method: "POST",
+        body: fd,
+      });
+    } catch (e) {
+      throw new ApiNetworkError(`Server tidak merespons: ${e.message}`, e);
+    }
+    if (!res.ok) {
+      let detail;
+      try {
+        const data = await res.json();
+        detail = data.detail || JSON.stringify(data);
+      } catch {
+        detail = await res.text();
+      }
+      throw new Error(`${res.status}: ${detail}`);
+    }
+    return res.json();
+  },
   chat: (brandId, history, message) =>
     apiFetch("/chat", {
       method: "POST",

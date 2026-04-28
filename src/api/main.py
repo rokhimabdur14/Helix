@@ -10,7 +10,8 @@ import sys
 from pathlib import Path
 from typing import Literal
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from datetime import datetime, timezone
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -30,6 +31,7 @@ from src.scraper.website_scraper import (  # noqa: E402
     scrape_brand_website,
 )
 from src.ai import studio  # noqa: E402
+from src.analyzer import insights_parser  # noqa: E402
 from src.social import screenshot as social_screenshot  # noqa: E402
 from src.social import service as social_service  # noqa: E402
 from src.social import storage as social_storage  # noqa: E402
@@ -179,6 +181,83 @@ def get_brand_insights(brand_id: str):
         raise HTTPException(status_code=404, detail=f"No insights for '{brand_id}'")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+# Required CSV columns untuk endpoint upload. content_pillar + posted_time
+# optional (default "Uncategorized" / "00:00"). Kolom lain semua wajib.
+REQUIRED_INSIGHT_COLUMNS = {
+    "post_id",
+    "date",
+    "type",
+    "caption",
+    "reach",
+    "likes",
+    "comments",
+}
+
+
+@app.post("/brands/{brand_id}/insights/upload")
+async def upload_brand_insights(
+    brand_id: str, file: UploadFile = File(...)
+):
+    """Upload CSV insights → replace existing data → return parsed aggregates.
+
+    CSV harus pakai schema HELIX (lihat REQUIRED_INSIGHT_COLUMNS). Format raw
+    Instagram/TikTok export belum di-handle di Phase 1 — user wajib normalize
+    dulu (kasih template di frontend).
+    """
+    _ensure_brand(brand_id)
+
+    if not (file.filename or "").lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="File harus berekstensi .csv")
+
+    raw = await file.read()
+    if len(raw) > 5 * 1024 * 1024:  # 5 MB cap, plenty buat ribuan post
+        raise HTTPException(status_code=413, detail="CSV maksimal 5 MB")
+    try:
+        text = raw.decode("utf-8-sig")  # strip BOM kalau ada (export Excel)
+    except UnicodeDecodeError:
+        try:
+            text = raw.decode("latin-1")
+        except Exception:
+            raise HTTPException(status_code=400, detail="Encoding CSV tidak dikenali (coba save UTF-8)")
+
+    # Validate header columns sebelum nimpa file existing
+    import csv as csv_module
+    import io
+    reader = csv_module.DictReader(io.StringIO(text))
+    if not reader.fieldnames:
+        raise HTTPException(status_code=400, detail="CSV kosong atau tidak punya header")
+
+    headers = {h.strip() for h in reader.fieldnames}
+    missing = REQUIRED_INSIGHT_COLUMNS - headers
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Kolom wajib hilang: {sorted(missing)}. Wajib: {sorted(REQUIRED_INSIGHT_COLUMNS)}",
+        )
+
+    # Tulis raw CSV ke filesystem (replace existing)
+    csv_path = DATA_DIR / f"{brand_id}_insights.csv"
+    csv_path.write_text(text, encoding="utf-8")
+
+    # Run parser → bikin JSON aggregates
+    try:
+        result = insights_parser.process_brand_insights(brand_id)
+    except Exception as e:
+        # Parser gagal — rollback CSV agar state konsisten
+        csv_path.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail=f"CSV gagal di-parse: {e}")
+
+    # Tag JSON dengan source info biar frontend bisa render badge
+    # "Data: uploaded" vs "Data: synthetic". Tulis ulang JSON setelah parser.
+    json_path = DATA_DIR / f"{brand_id}_insights.json"
+    result["source"] = "uploaded"
+    result["uploaded_at"] = datetime.now(timezone.utc).isoformat()
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+
+    return result
 
 
 def _update_config(brand_id: str, **updates) -> None:

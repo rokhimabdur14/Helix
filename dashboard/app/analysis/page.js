@@ -11,6 +11,7 @@ import { PostsTable } from "./PostsTable";
 import { StatCard } from "./StatCard";
 import { TopPostCard } from "./TopPostCard";
 import { TypeBreakdown } from "./TypeBreakdown";
+import { UploadInsightsModal } from "./UploadInsightsModal";
 
 export default function AnalysisPage() {
   const {
@@ -24,6 +25,7 @@ export default function AnalysisPage() {
   } = useBrand();
 
   const [addOpen, setAddOpen] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,6 +48,11 @@ export default function AnalysisPage() {
       .finally(() => setLoading(false));
   }, [activeBrandId]);
 
+  // Source tag ditulis backend ke insights.json saat upload — kalau absent,
+  // berarti default synthetic data dari repo (fotofusi commit).
+  const insightsSource = insights?.source || (insights ? "synthetic" : null);
+  const uploadedAt = insights?.uploaded_at;
+
   const agg = insights?.aggregates;
   const hasNoInsights = error?.includes("404") || error?.includes("No insights");
 
@@ -61,17 +68,31 @@ export default function AnalysisPage() {
 
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6">
-            <h2 className="wordmark font-display text-2xl font-bold uppercase md:text-3xl">
-              HELIX Analysis
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Analisa performa konten{" "}
-              <span className="text-violet-300">
-                {activeBrand?.brand_name || "—"}
-              </span>{" "}
-              · data-driven insights
-            </p>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="wordmark font-display text-2xl font-bold uppercase md:text-3xl">
+                HELIX Analysis
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Analisa performa konten{" "}
+                <span className="text-violet-300">
+                  {activeBrand?.brand_name || "—"}
+                </span>{" "}
+                · data-driven insights
+              </p>
+              {insightsSource && (
+                <DataSourceBadge source={insightsSource} uploadedAt={uploadedAt} />
+              )}
+            </div>
+            {activeBrandId && (
+              <button
+                type="button"
+                onClick={() => setUploadOpen(true)}
+                className="lift-on-hover rounded-xl border border-violet-500/40 bg-gradient-to-br from-violet-500/10 to-blue-500/10 px-4 py-2 text-sm font-semibold text-violet-200 transition hover:border-violet-500/70"
+              >
+                📤 Upload data sosmed
+              </button>
+            )}
           </div>
 
           {brandsLoading && (
@@ -176,8 +197,46 @@ export default function AnalysisPage() {
         onClose={() => setAddOpen(false)}
         onCreate={createBrand}
       />
+      <UploadInsightsModal
+        open={uploadOpen}
+        brandId={activeBrandId}
+        brandName={activeBrand?.brand_name}
+        onClose={() => setUploadOpen(false)}
+        onSuccess={(data) => setInsights(data)}
+      />
     </div>
   );
+}
+
+function DataSourceBadge({ source, uploadedAt }) {
+  const isUploaded = source === "uploaded";
+  const dot = isUploaded ? "bg-emerald-400" : "bg-amber-400";
+  const label = isUploaded ? "Uploaded" : "Synthetic demo";
+  const hint = isUploaded
+    ? uploadedAt
+      ? `· ${formatRelative(uploadedAt)}`
+      : null
+    : "· data karangan, replace via Upload";
+  return (
+    <div className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-900/40 px-2 py-1 text-[11px] text-slate-400">
+      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
+      <span className="font-semibold text-slate-300">{label}</span>
+      {hint && <span className="text-slate-500">{hint}</span>}
+    </div>
+  );
+}
+
+function formatRelative(iso) {
+  try {
+    const ts = new Date(iso).getTime();
+    const diffMin = Math.floor((Date.now() - ts) / 60000);
+    if (diffMin < 1) return "baru saja";
+    if (diffMin < 60) return `${diffMin}m lalu`;
+    if (diffMin < 1440) return `${Math.floor(diffMin / 60)}j lalu`;
+    return `${Math.floor(diffMin / 1440)}h lalu`;
+  } catch {
+    return "";
+  }
 }
 
 function Section({ title, children }) {
