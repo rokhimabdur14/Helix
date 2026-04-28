@@ -58,6 +58,9 @@ export function BriefTab({ brandId, consumePrefill }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  // Banner dismiss state — per brand. Re-baca tiap brand berubah supaya
+  // brand A yang sudah dismiss gak ngumpetin banner di brand B.
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const history = useStudioHistory("brief", brandId);
 
   // Load references library — dipakai di mode tiru/modifikasi
@@ -72,6 +75,37 @@ export function BriefTab({ brandId, consumePrefill }) {
       .catch(() => setRefs([]))
       .finally(() => setRefsLoading(false));
   }, [brandId]);
+
+  // Read banner dismiss state per brand — key di-scope ke brandId.
+  useEffect(() => {
+    if (!brandId || typeof window === "undefined") {
+      setBannerDismissed(false);
+      return;
+    }
+    try {
+      const v = window.localStorage.getItem(`helix.studio.brief.banner.${brandId}`);
+      setBannerDismissed(v === "dismissed");
+    } catch {
+      setBannerDismissed(false);
+    }
+  }, [brandId]);
+
+  function dismissBanner() {
+    setBannerDismissed(true);
+    if (brandId && typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(
+          `helix.studio.brief.banner.${brandId}`,
+          "dismissed"
+        );
+      } catch {}
+    }
+  }
+
+  // Banner muncul saat user belum pernah generate brief untuk brand ini DAN
+  // belum dismiss explicit. Setelah ada history, banner self-hide (gak perlu
+  // dismiss manual lagi).
+  const showBanner = !bannerDismissed && history.entries.length === 0;
 
   // Prefill dari Plan item
   useEffect(() => {
@@ -136,6 +170,8 @@ export function BriefTab({ brandId, consumePrefill }) {
 
   return (
     <div>
+      {showBanner && <BriefEmptyBanner onDismiss={dismissBanner} />}
+
       <div className="grid gap-4">
         <Field label="Format konten">
           <SegmentedControl
@@ -679,6 +715,60 @@ function Section({ title, actions, children }) {
         {actions}
       </div>
       {children}
+    </div>
+  );
+}
+
+function BriefEmptyBanner({ onDismiss }) {
+  return (
+    <div
+      role="region"
+      aria-label="Brief tab onboarding"
+      className="reveal-in mb-5 rounded-2xl border border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-blue-500/10 p-5"
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-white">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M9 2h6l4 4v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2h2M9 2v4h6V2M9 12h6M9 16h6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold text-violet-100">
+            Brief eksekusi — pertama kali pakai brand ini?
+          </h3>
+          <ul className="mt-2 space-y-1 text-xs leading-relaxed text-slate-300">
+            <li>
+              <span className="text-violet-300">●</span>{" "}
+              Pilih <span className="text-slate-100">format</span> (Reel / Carousel /
+              Foto / Story) — output JSON adapt sesuai format
+            </li>
+            <li>
+              <span className="text-violet-300">●</span>{" "}
+              Set <span className="text-slate-100">mode</span>:{" "}
+              <em>Original</em> dari brand DNA, <em>Tiru</em> pattern referensi, atau{" "}
+              <em>Modifikasi</em> referensi dengan custom angle
+            </li>
+            <li>
+              <span className="text-violet-300">●</span>{" "}
+              History tersimpan otomatis per brand — bisa restore dari strip di bawah form
+            </li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label="Tutup banner onboarding"
+          className="rounded-lg border border-slate-700/60 bg-slate-900/60 px-3 py-1.5 text-[11px] font-semibold text-slate-300 transition hover:border-violet-500/60 hover:text-violet-200"
+        >
+          Mengerti
+        </button>
+      </div>
     </div>
   );
 }
