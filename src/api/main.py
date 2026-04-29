@@ -31,7 +31,7 @@ from src.scraper.website_scraper import (  # noqa: E402
     scrape_brand_website,
 )
 from src.ai import studio  # noqa: E402
-from src.analyzer import insights_parser  # noqa: E402
+from src.analyzer import csv_adapter, insights_parser, pillar_classifier  # noqa: E402
 from src.social import screenshot as social_screenshot  # noqa: E402
 from src.social import service as social_service  # noqa: E402
 from src.social import storage as social_storage  # noqa: E402
@@ -202,9 +202,9 @@ async def upload_brand_insights(
 ):
     """Upload CSV insights → replace existing data → return parsed aggregates.
 
-    CSV harus pakai schema HELIX (lihat REQUIRED_INSIGHT_COLUMNS). Format raw
-    Instagram/TikTok export belum di-handle di Phase 1 — user wajib normalize
-    dulu (kasih template di frontend).
+    Smart adapter (Sprint 9b): auto-detect format HELIX vs Instagram export
+    vs TikTok export. Map source columns ke schema HELIX, lalu LLM tag
+    content_pillar untuk row yang gak punya pillar (pakai brand pillars).
     """
     _ensure_brand(brand_id)
 
@@ -222,38 +222,89 @@ async def upload_brand_insights(
         except Exception:
             raise HTTPException(status_code=400, detail="Encoding CSV tidak dikenali (coba save UTF-8)")
 
-    # Validate header columns sebelum nimpa file existing
-    import csv as csv_module
-    import io
-    reader = csv_module.DictReader(io.StringIO(text))
-    if not reader.fieldnames:
+    # Step 1: parse + detect format
+    src_rows, fieldnames = csv_adapter.parse_csv_text(text)
+    if not fieldnames:
         raise HTTPException(status_code=400, detail="CSV kosong atau tidak punya header")
+    if not src_rows:
+        raise HTTPException(status_code=400, detail="CSV punya header tapi tidak ada data row")
 
-    headers = {h.strip() for h in reader.fieldnames}
-    missing = REQUIRED_INSIGHT_COLUMNS - headers
-    if missing:
+    fmt = csv_adapter.detect_format(fieldnames)
+    if fmt == "unknown":
         raise HTTPException(
             status_code=400,
-            detail=f"Kolom wajib hilang: {sorted(missing)}. Wajib: {sorted(REQUIRED_INSIGHT_COLUMNS)}",
+            detail=(
+                "Format CSV tidak dikenali. HELIX support: schema HELIX (post_id, "
+                "date, type, caption, reach, likes, comments), atau export "
+                "Instagram (Permalink/Publish time/Post type), atau export "
+                "TikTok (Video views/Date posted). Cek headers atau download "
+                "template HELIX."
+            ),
         )
 
-    # Tulis raw CSV ke filesystem (replace existing)
-    csv_path = DATA_DIR / f"{brand_id}_insights.csv"
-    csv_path.write_text(text, encoding="utf-8")
+    # Step 2: adapt rows ke schema HELIX (no-op kalau format = helix)
+    helix_rows, adapt_report = csv_adapter.adapt_rows(src_rows, fmt)
 
-    # Run parser → bikin JSON aggregates
+    # Step 3: validate required columns ada di hasil
+    if fmt == "helix":
+        present = {h.strip() for h in fieldnames}
+        missing = REQUIRED_INSIGHT_COLUMNS - present
+        if missing:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Kolom wajib hilang: {sorted(missing)}. Wajib: {sorted(REQUIRED_INSIGHT_COLUMNS)}",
+            )
+    else:
+        # Untuk format adapted, cek bahwa setidaknya date + caption ke-extract
+        sample_missing_date = sum(1 for r in helix_rows if not r.get("date"))
+        if sample_missing_date == len(helix_rows):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Format {fmt} terdeteksi tapi kolom tanggal tidak ke-parse. Cek format date di export.",
+            )
+
+    # Step 4: classify content_pillar untuk row yang kosong
+    brand_pillars = _load_brand_pillars(brand_id)
+    missing_pillar_rows = [r for r in helix_rows if not (r.get("content_pillar") or "").strip()]
+    pillars_classified_count = 0
+    if missing_pillar_rows and brand_pillars:
+        try:
+            pillar_map = pillar_classifier.classify_pillars(missing_pillar_rows, brand_pillars)
+            for r in helix_rows:
+                if not (r.get("content_pillar") or "").strip():
+                    r["content_pillar"] = pillar_map.get(r["post_id"], brand_pillars[0])
+            pillars_classified_count = len(missing_pillar_rows)
+        except Exception:
+            # LLM gagal — fallback ke pillar pertama biar parser tetap jalan
+            for r in helix_rows:
+                if not (r.get("content_pillar") or "").strip():
+                    r["content_pillar"] = brand_pillars[0]
+    elif missing_pillar_rows:
+        # Brand tidak punya pillars → fallback string
+        for r in helix_rows:
+            if not (r.get("content_pillar") or "").strip():
+                r["content_pillar"] = "Uncategorized"
+
+    # Step 5: serialize ke HELIX schema CSV → tulis ke disk
+    final_csv = csv_adapter.rows_to_csv(helix_rows)
+    csv_path = DATA_DIR / f"{brand_id}_insights.csv"
+    csv_path.write_text(final_csv, encoding="utf-8")
+
+    # Step 6: run insights parser → JSON aggregates
     try:
         result = insights_parser.process_brand_insights(brand_id)
     except Exception as e:
-        # Parser gagal — rollback CSV agar state konsisten
         csv_path.unlink(missing_ok=True)
         raise HTTPException(status_code=400, detail=f"CSV gagal di-parse: {e}")
 
-    # Tag JSON dengan source info biar frontend bisa render badge
-    # "Data: uploaded" vs "Data: synthetic". Tulis ulang JSON setelah parser.
+    # Step 7: tag JSON dengan source + adaptation report
     json_path = DATA_DIR / f"{brand_id}_insights.json"
     result["source"] = "uploaded"
     result["uploaded_at"] = datetime.now(timezone.utc).isoformat()
+    result["adaptation"] = {
+        **adapt_report,
+        "pillars_classified": pillars_classified_count,
+    }
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
@@ -488,6 +539,22 @@ class BriefRequest(BaseModel):
 def _ensure_brand(brand_id: str):
     if not (CONFIG_DIR / f"{brand_id}.config.json").exists():
         raise HTTPException(status_code=404, detail=f"Brand '{brand_id}' not found")
+
+
+def _load_brand_pillars(brand_id: str) -> list[str]:
+    """Read content_strategy.content_pillars dari brand config. Empty kalau gak ada."""
+    path = CONFIG_DIR / f"{brand_id}.config.json"
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+    except Exception:
+        return []
+    pillars = cfg.get("content_strategy", {}).get("content_pillars", [])
+    if not isinstance(pillars, list):
+        return []
+    return [str(p).strip() for p in pillars if str(p).strip()]
 
 
 @app.post("/studio/hook")
