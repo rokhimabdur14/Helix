@@ -373,13 +373,13 @@ function EmptyState({ brand, onPick }) {
 
 function LoadingBubble() {
   return (
-    <div className="bubble-in flex gap-3">
+    <div className="bubble-in flex items-start gap-3">
       <Image
         src="/brand/helix-mark.png"
         alt="HELIX"
         width={32}
         height={32}
-        className="flex-shrink-0 logo-pulse"
+        className="h-8 w-8 flex-shrink-0 logo-pulse"
       />
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm backdrop-blur">
         <span className="inline-flex items-end gap-1 h-4">
@@ -395,7 +395,7 @@ function LoadingBubble() {
 function MessageBubble({ role, content }) {
   const isUser = role === "user";
   return (
-    <div className={`bubble-in flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
+    <div className={`bubble-in flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
       {isUser ? (
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-700 text-sm font-bold text-slate-200">
           Y
@@ -406,7 +406,7 @@ function MessageBubble({ role, content }) {
           alt="HELIX"
           width={32}
           height={32}
-          className="flex-shrink-0"
+          className="h-8 w-8 flex-shrink-0"
         />
       )}
       <div
