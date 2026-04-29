@@ -255,10 +255,10 @@ function ModeButton({ active, onClick, label, sub }) {
 
 function FreeEmptyState({ onPick }) {
   const samples = [
-    "Algoritma TikTok 2026 — apa metric paling penting buat FYP?",
-    "Hook 5 detik buat reel jasa B2B, kasih 3 pattern",
-    "Strategi konten weekly buat akun coffee shop fresh start",
-    "Cara nge-boost watch time di Reels Instagram",
+    "3 metric paling penting algoritma TikTok 2026 — yang nentuin FYP push",
+    "Hook 3 detik untuk reel B2B SaaS launch — 3 pattern berbeda",
+    "Playbook naikin watch time Reels dari 30% ke 70% — step by step",
+    "Strategi 4 minggu pertama akun coffee shop dari nol — pillar + format",
   ];
   return (
     <div className="mt-12 text-center">
@@ -332,10 +332,10 @@ function NoBrandsState({ onAdd, onTryFree }) {
 
 function EmptyState({ brand, onPick }) {
   const samples = [
-    "Post mana yang paling sukses?",
-    "Kasih 3 ide konten untuk minggu depan",
-    "Jam berapa waktu posting terbaik?",
-    "Content pillar mana yang paling worth it?",
+    "Post mana yang paling sukses bulan ini, dan kenapa polanya menang?",
+    "3 ide reel untuk pillar yang punya footage real, lengkap dengan hook",
+    "Jam posting paling worth it berdasarkan engagement rate per hour",
+    "Pillar mana paling under-utilized vs potential ROI? Kasih saran ramp-up",
   ];
 
   return (
