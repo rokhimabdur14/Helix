@@ -1,18 +1,19 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useSpring } from "framer-motion"
-import { Header } from "../../components/landing/header"
-import { HeroSection } from "../../components/landing/hero-section"
-import { FeaturesSection } from "../../components/landing/features-section"
-import { HowItWorksSection } from "../../components/landing/how-it-works-section"
-import { TestimonialsSection } from "../../components/landing/testimonials-section"
-import { CTASection } from "../../components/landing/cta-section"
-import { Footer } from "../../components/landing/footer"
-import { ParallaxBackground } from "../../components/landing/parallax-background"
+import { useEffect, useRef, useState } from "react"
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
+import Link from "next/link"
+import { Header } from "@/components/landing/header"
+import { HeroSection } from "@/components/landing/hero-section"
+import { FeaturesSection } from "@/components/landing/features-section"
+import { HowItWorksSection } from "@/components/landing/how-it-works-section"
+import { TestimonialsSection } from "@/components/landing/testimonials-section"
+import { CTASection } from "@/components/landing/cta-section"
+import { Footer } from "@/components/landing/footer"
+import { ParallaxBackground } from "@/components/landing/parallax-background"
 
 export default function LandingPage() {
-  const containerRef = useRef(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
