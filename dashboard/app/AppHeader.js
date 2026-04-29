@@ -29,7 +29,7 @@ export function AppHeader({
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/brand/helix-mark.svg"
+            src="/brand/helix-mark.png"
             alt="HELIX"
             width={40}
             height={40}

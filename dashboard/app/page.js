@@ -263,7 +263,7 @@ function FreeEmptyState({ onPick }) {
   return (
     <div className="mt-12 text-center">
       <Image
-        src="/brand/helix-mark.svg"
+        src="/brand/helix-mark.png"
         alt="HELIX"
         width={72}
         height={72}
@@ -300,7 +300,7 @@ function NoBrandsState({ onAdd, onTryFree }) {
   return (
     <div className="mt-20 text-center">
       <Image
-        src="/brand/helix-mark.svg"
+        src="/brand/helix-mark.png"
         alt="HELIX"
         width={72}
         height={72}
@@ -341,7 +341,7 @@ function EmptyState({ brand, onPick }) {
   return (
     <div className="mt-16 text-center">
       <Image
-        src="/brand/helix-mark.svg"
+        src="/brand/helix-mark.png"
         alt="HELIX"
         width={72}
         height={72}
@@ -375,7 +375,7 @@ function LoadingBubble() {
   return (
     <div className="bubble-in flex gap-3">
       <Image
-        src="/brand/helix-mark.svg"
+        src="/brand/helix-mark.png"
         alt="HELIX"
         width={32}
         height={32}
@@ -402,7 +402,7 @@ function MessageBubble({ role, content }) {
         </div>
       ) : (
         <Image
-          src="/brand/helix-mark.svg"
+          src="/brand/helix-mark.png"
           alt="HELIX"
           width={32}
           height={32}
