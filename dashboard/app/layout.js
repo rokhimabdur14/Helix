@@ -1,7 +1,5 @@
 import { Orbitron, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { CreatorBackdrop } from "./CreatorBackdrop";
-import { PointerParallax } from "./PointerParallax";
 
 const orbitron = Orbitron({
   variable: "--font-display",
@@ -25,13 +23,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${orbitron.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <PointerParallax />
-        <div className="particle-field" aria-hidden="true" />
-        <CreatorBackdrop />
-        <div className="starfield" aria-hidden="true" />
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
