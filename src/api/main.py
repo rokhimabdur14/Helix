@@ -13,6 +13,7 @@ from typing import Literal
 from datetime import datetime, timezone
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, HttpUrl
 
 # Make sibling modules importable
@@ -490,6 +491,73 @@ def chat(req: ChatRequest):
     updated_history.append(ChatMessage(role="assistant", content=reply))
 
     return ChatResponse(reply=reply, history=updated_history)
+
+
+def _build_chat_messages(req: ChatRequest) -> list[dict]:
+    """Build OpenAI/Groq message list dari ChatRequest. Validate brand kalau brand_id ada."""
+    if req.brand_id:
+        config_path = CONFIG_DIR / f"{req.brand_id}.config.json"
+        if not config_path.exists():
+            raise HTTPException(status_code=404, detail=f"Brand '{req.brand_id}' not found")
+        knowledge = get_cached_knowledge(req.brand_id)
+        system_content = f"{SYSTEM_PROMPT}\n\n=== DATA BRAND ===\n{knowledge}"
+    else:
+        system_content = build_free_system_prompt()
+
+    messages = [{"role": "system", "content": system_content}]
+    for msg in req.history:
+        messages.append({"role": msg.role, "content": msg.content})
+    messages.append({"role": "user", "content": req.message})
+    return messages
+
+
+@app.post("/chat/stream")
+def chat_stream(req: ChatRequest):
+    """Streaming version of /chat — SSE format, lebih cepat first-byte.
+
+    Frontend consume via ReadableStream. Event format:
+        data: {"type": "chunk", "text": "..."}\\n\\n
+        data: {"type": "done"}\\n\\n
+        data: {"type": "error", "message": "..."}\\n\\n  (kalau gagal mid-stream)
+    """
+    # Validation di luar generator biar HTTPException ke-raise sebelum response start
+    messages = _build_chat_messages(req)
+
+    def event_stream():
+        try:
+            stream = groq_client.chat.completions.create(
+                model=MODEL,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=2048,
+                stream=True,
+            )
+            for chunk in stream:
+                delta = ""
+                try:
+                    delta = chunk.choices[0].delta.content or ""
+                except (IndexError, AttributeError):
+                    delta = ""
+                if delta:
+                    payload = json.dumps({"type": "chunk", "text": delta}, ensure_ascii=False)
+                    yield f"data: {payload}\n\n"
+            yield 'data: {"type":"done"}\n\n'
+        except Exception as e:
+            err_payload = json.dumps({"type": "error", "message": str(e)}, ensure_ascii=False)
+            yield f"data: {err_payload}\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            # Disable proxy buffering — HF Spaces (nginx-style) bisa hold chunk
+            # sampai response selesai kalau gak di-disable. Frontend baru terima
+            # data setelah Groq selesai, defeating tujuan streaming.
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 # ========== Content Studio endpoints ==========

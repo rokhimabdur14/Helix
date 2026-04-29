@@ -100,6 +100,74 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ brand_id: brandId, history, message }),
     }),
+  // Stream chat — fire onChunk per token, onDone saat selesai. Throw kalau
+  // network/server error. Tidak retry — kalau gagal, caller tampilkan error.
+  chatStream: async (brandId, history, message, { onChunk, signal } = {}) => {
+    let res;
+    try {
+      res = await fetch(`${API_URL}/chat/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ brand_id: brandId, history, message }),
+        signal,
+      });
+    } catch (e) {
+      throw new ApiNetworkError(
+        `Server HELIX tidak merespons di ${API_URL}. Backend mungkin lagi cold-start.`,
+        e
+      );
+    }
+    if (!res.ok) {
+      let detail;
+      try {
+        const data = await res.json();
+        detail = data.detail || JSON.stringify(data);
+      } catch {
+        detail = await res.text();
+      }
+      throw new Error(`${res.status}: ${detail}`);
+    }
+    if (!res.body) {
+      throw new Error("Stream response tidak punya body");
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        // SSE event delimiter = blank line. Loop sampai habis event di buffer.
+        let idx;
+        while ((idx = buffer.indexOf("\n\n")) >= 0) {
+          const event = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 2);
+          // Each event: "data: {...}" (kita selalu emit single-line data)
+          const line = event.split("\n").find((l) => l.startsWith("data:"));
+          if (!line) continue;
+          const payload = line.slice(5).trim();
+          let parsed;
+          try {
+            parsed = JSON.parse(payload);
+          } catch {
+            continue;
+          }
+          if (parsed.type === "chunk") {
+            onChunk?.(parsed.text);
+          } else if (parsed.type === "done") {
+            return;
+          } else if (parsed.type === "error") {
+            throw new Error(parsed.message || "Stream error");
+          }
+        }
+      }
+    } finally {
+      try {
+        reader.releaseLock();
+      } catch {}
+    }
+  },
   social: {
     triggerSnapshot: (brandId, { platform, handle }) =>
       apiFetch(`/brands/${brandId}/social/snapshot`, {

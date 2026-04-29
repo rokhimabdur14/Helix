@@ -50,15 +50,42 @@ export default function ChatPage() {
     setLoading(true);
 
     const prevHistory = history;
-    setHistory([...history, { role: "user", content: message }]);
+    // Append user message immediately. Assistant bubble di-append nanti pas
+    // chunk pertama dateng — gini LoadingBubble bisa show selama waiting TTFB,
+    // dan auto-hide saat bubble jawaban muncul.
+    setHistory([...prevHistory, { role: "user", content: message }]);
+
+    const brandIdForRequest = mode === "free" ? null : activeBrandId;
+    let accumulated = "";
+    let assistantAppended = false;
 
     try {
-      // Brand mode kirim brand_id; free mode kirim null
-      const brandIdForRequest = mode === "free" ? null : activeBrandId;
-      const data = await api.chat(brandIdForRequest, prevHistory, message);
-      setHistory(data.history);
+      await api.chatStream(brandIdForRequest, prevHistory, message, {
+        onChunk: (text) => {
+          accumulated += text;
+          setHistory((curr) => {
+            if (!assistantAppended) {
+              assistantAppended = true;
+              return [...curr, { role: "assistant", content: accumulated }];
+            }
+            const copy = curr.slice();
+            copy[copy.length - 1] = {
+              role: "assistant",
+              content: accumulated,
+            };
+            return copy;
+          });
+        },
+      });
+      // Edge case: stream selesai tanpa chunk (model balas empty string).
+      // Tetap append empty assistant biar history konsisten.
+      if (!assistantAppended) {
+        setHistory((curr) => [...curr, { role: "assistant", content: "" }]);
+      }
     } catch (err) {
       setError(err.message || "Gagal menghubungi server");
+      // Rollback: balik ke history sebelum user message kalau gagal sama sekali.
+      // Kalau partial response sudah masuk, user bisa re-send konteks lengkap.
       setHistory(prevHistory);
     } finally {
       setLoading(false);
@@ -125,7 +152,14 @@ export default function ChatPage() {
             <MessageBubble key={i} role={msg.role} content={msg.content} />
           ))}
 
-          {loading && <LoadingBubble />}
+          {/* Loading dots hanya selama waiting first chunk — begitu assistant
+              bubble muncul (last role = assistant), bubble itu sendiri yang
+              jadi indicator "lagi nulis". */}
+          {loading &&
+            (history.length === 0 ||
+              history[history.length - 1].role !== "assistant") && (
+              <LoadingBubble />
+            )}
 
           {error && (
             <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300 backdrop-blur">
