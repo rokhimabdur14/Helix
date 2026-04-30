@@ -57,17 +57,17 @@ export function ChatSidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-slate-800/60 bg-slate-950/90 backdrop-blur-xl transition-transform md:static md:translate-x-0 ${
+        className={`helix-sidebar-surface fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r backdrop-blur-xl transition-transform md:static md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-slate-800/60 px-4 py-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <div className="helix-section-divider flex items-center justify-between border-b px-4 py-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Riwayat Chat
           </h2>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-slate-500 hover:bg-slate-800 hover:text-slate-200 md:hidden"
+            className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:hidden"
             aria-label="Tutup sidebar"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -76,7 +76,7 @@ export function ChatSidebar({
           </button>
         </div>
 
-        <div className="border-b border-slate-800/60 p-3">
+        <div className="helix-section-divider border-b p-3">
           <button
             onClick={() => {
               onNew();
@@ -91,7 +91,7 @@ export function ChatSidebar({
           </button>
         </div>
 
-        <div className="border-b border-slate-800/60 p-3">
+        <div className="helix-section-divider border-b p-3">
           <div className="relative">
             <svg
               className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
@@ -110,7 +110,7 @@ export function ChatSidebar({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari riwayat..."
-              className="w-full rounded-lg border border-slate-800 bg-slate-900/60 py-1.5 pl-8 pr-3 text-xs text-slate-200 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none"
+              className="helix-input-surface w-full rounded-lg border py-1.5 pl-8 pr-3 text-xs placeholder:text-slate-500 focus:border-violet-500 focus:outline-none"
             />
           </div>
         </div>
@@ -161,8 +161,8 @@ export function ChatSidebar({
           })}
         </div>
 
-        <div className="border-t border-slate-800/60 px-3 py-2">
-          <p className="text-[10px] text-slate-600">
+        <div className="helix-section-divider border-t px-3 py-2">
+          <p className="text-[10px] text-slate-500">
             {conversations.length} percakapan tersimpan di browser ini
           </p>
         </div>
@@ -177,9 +177,7 @@ function ConversationItem({ conv, active, confirmDelete, onSelect, onDelete }) {
       <button
         onClick={onSelect}
         className={`group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${
-          active
-            ? "bg-gradient-to-r from-blue-600/20 to-violet-600/20 text-violet-100"
-            : "text-slate-300 hover:bg-slate-800/60 hover:text-slate-100"
+          active ? "helix-conv-active" : "helix-conv-hover"
         }`}
       >
         <span className="flex-1 truncate" title={conv.title}>

@@ -49,8 +49,8 @@ export function BrandSwitcher({
       </button>
 
       {open && (
-        <div className="dropdown-in absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-slate-800 bg-slate-950/95 shadow-2xl shadow-violet-900/20 backdrop-blur-xl">
-          <div className="border-b border-slate-800 px-3 py-2 text-xs font-medium uppercase tracking-wider text-slate-500">
+        <div className="helix-dropdown-surface dropdown-in absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border shadow-2xl shadow-violet-900/20">
+          <div className="helix-section-divider border-b px-3 py-2 text-xs font-medium uppercase tracking-wider text-slate-500">
             Your Brands
           </div>
           <div className="max-h-60 overflow-y-auto">
@@ -151,7 +151,7 @@ export function BrandSwitcher({
               onAdd();
               setOpen(false);
             }}
-            className="flex w-full items-center gap-2 border-t border-slate-800 bg-slate-900/40 px-3 py-3 text-sm text-violet-300 transition hover:bg-violet-500/10"
+            className="helix-section-divider flex w-full items-center gap-2 border-t px-3 py-3 text-sm text-violet-300 transition hover:bg-violet-500/10"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path

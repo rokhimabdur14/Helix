@@ -356,24 +356,109 @@ body::before {
 .dna-dot:nth-child(3) { animation-delay: 0.3s; }
 
 /* ============================================================
+   Dark-theme surface enrichment — gradasi subtle di sidebar /
+   modal / header biar gak flat. Body gradient udah ada di :root.
+   Specificity [data-theme="dark"] .X (0,2,0) > .X (0,1,0).
+   ============================================================ */
+/* Sidebar (ChatSidebar) — vertical violet→deep biar feel berlapis */
+[data-theme="dark"] .bg-slate-950\/90 {
+  background:
+    linear-gradient(180deg,
+      rgba(15, 10, 35, 0.95) 0%,
+      rgba(10, 7, 26, 0.92) 50%,
+      rgba(7, 5, 13, 0.92) 100%);
+}
+/* Modal / dropdown — diagonal violet glow halus */
+[data-theme="dark"] .bg-slate-950\/95 {
+  background:
+    linear-gradient(135deg,
+      rgba(20, 13, 45, 0.96) 0%,
+      rgba(11, 7, 28, 0.96) 60%,
+      rgba(7, 5, 13, 0.96) 100%);
+}
+/* Modal backdrop overlay — subtle vignette */
+[data-theme="dark"] .bg-slate-950\/80 {
+  background:
+    radial-gradient(ellipse at center,
+      rgba(13, 8, 32, 0.78) 0%,
+      rgba(7, 5, 13, 0.88) 100%);
+}
+/* Header / lightweight surface — horizontal sweep subtle */
+[data-theme="dark"] .bg-slate-950\/40 {
+  background:
+    linear-gradient(90deg,
+      rgba(13, 8, 32, 0.45) 0%,
+      rgba(20, 13, 45, 0.48) 50%,
+      rgba(13, 8, 32, 0.45) 100%);
+}
+/* Card panels (most common surface) — diagonal violet hint */
+[data-theme="dark"] .bg-slate-900\/40 {
+  background:
+    linear-gradient(135deg,
+      rgba(20, 13, 45, 0.45) 0%,
+      rgba(15, 10, 32, 0.42) 100%);
+}
+[data-theme="dark"] .bg-slate-900\/60 {
+  background:
+    linear-gradient(135deg,
+      rgba(22, 14, 50, 0.62) 0%,
+      rgba(15, 10, 32, 0.6) 100%);
+}
+[data-theme="dark"] .bg-slate-900\/80 {
+  background:
+    linear-gradient(135deg,
+      rgba(20, 13, 45, 0.82) 0%,
+      rgba(13, 8, 28, 0.8) 100%);
+}
+
+/* ============================================================
    Light-theme utility overrides — flip dark-slate surfaces
    ke clean light tone tanpa harus refactor 87 tempat di komponen.
-   Specificity [data-theme="light"] .X (0,2,0) > .X (0,1,0), jadi
-   override naturally win tanpa !important.
+   Specificity [data-theme="light"] .X (0,2,0) > .X (0,1,0).
    ============================================================ */
+/* Solid dark surfaces */
 [data-theme="light"] .bg-slate-950,
 [data-theme="light"] .bg-slate-900 {
   background-color: #ffffff;
 }
+/* Sidebar / modal / dropdown high-opacity → cream gradient */
+[data-theme="light"] .bg-slate-950\/90,
+[data-theme="light"] .bg-slate-950\/95 {
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(248, 247, 255, 0.94) 100%);
+}
+/* Modal backdrop — soft white vignette */
+[data-theme="light"] .bg-slate-950\/80 {
+  background:
+    radial-gradient(ellipse at center,
+      rgba(244, 244, 250, 0.72) 0%,
+      rgba(232, 232, 240, 0.86) 100%);
+}
 [data-theme="light"] .bg-slate-950\/40 {
+  background:
+    linear-gradient(90deg,
+      rgba(250, 250, 252, 0.78) 0%,
+      rgba(245, 243, 255, 0.82) 50%,
+      rgba(250, 250, 252, 0.78) 100%);
+}
+[data-theme="light"] .bg-slate-950\/30,
+[data-theme="light"] .bg-slate-950\/50 {
   background-color: rgba(248, 250, 252, 0.7);
 }
 [data-theme="light"] .bg-slate-900\/40 {
-  background-color: rgba(255, 255, 255, 0.7);
+  background:
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.78) 0%,
+      rgba(248, 247, 255, 0.72) 100%);
 }
 [data-theme="light"] .bg-slate-900\/50,
 [data-theme="light"] .bg-slate-900\/60 {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.88);
+}
+[data-theme="light"] .bg-slate-900\/80 {
+  background-color: rgba(255, 255, 255, 0.94);
 }
 [data-theme="light"] .bg-slate-800,
 [data-theme="light"] .bg-slate-800\/40,
@@ -383,8 +468,9 @@ body::before {
 [data-theme="light"] .bg-slate-700 {
   background-color: #cbd5e1;
 }
-[data-theme="light"] .bg-black\/20 {
-  background-color: rgba(248, 250, 252, 0.5);
+[data-theme="light"] .bg-black\/20,
+[data-theme="light"] .bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.06);
 }
 
 /* Borders */
@@ -428,9 +514,90 @@ body::before {
 [data-theme="light"] .text-violet-100 {
   color: #4c1d95;
 }
+[data-theme="light"] .text-red-300 {
+  color: #b91c1c;
+}
+
+/* Placeholder & input bg di sidebar/forms */
+[data-theme="light"] .placeholder\:text-slate-600::placeholder {
+  color: #94a3b8;
+}
 
 /* Backdrop blur surfaces — tone down karena di light bg lebih kontras */
 [data-theme="light"] .backdrop-blur,
 [data-theme="light"] .backdrop-blur-xl {
   backdrop-filter: blur(8px) saturate(1.1);
 }
+
+/* ============================================================
+   Chat history sidebar + dropdown — explicit theme-aware surfaces
+   biar gak tergantung utility override yang kadang ke-cache.
+   ============================================================ */
+.helix-sidebar-surface {
+  background: linear-gradient(180deg,
+    rgba(15, 10, 35, 0.95) 0%,
+    rgba(10, 7, 26, 0.92) 50%,
+    rgba(7, 5, 13, 0.92) 100%);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+[data-theme="light"] .helix-sidebar-surface {
+  background: linear-gradient(180deg,
+    #ffffff 0%,
+    #f8f7ff 100%);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.helix-dropdown-surface {
+  background: linear-gradient(135deg,
+    rgba(20, 13, 45, 0.97) 0%,
+    rgba(11, 7, 28, 0.97) 60%,
+    rgba(7, 5, 13, 0.97) 100%);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+[data-theme="light"] .helix-dropdown-surface {
+  background: #ffffff;
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.18);
+}
+
+.helix-input-surface {
+  background-color: rgba(15, 10, 35, 0.6);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+[data-theme="light"] .helix-input-surface {
+  background-color: #f8fafc;
+  color: var(--text-primary);
+  border-color: #e2e8f0;
+}
+
+.helix-conv-active {
+  background: linear-gradient(90deg,
+    rgba(59, 130, 246, 0.22) 0%,
+    rgba(124, 58, 237, 0.22) 100%);
+  color: #ddd6fe;
+}
+[data-theme="light"] .helix-conv-active {
+  background: linear-gradient(90deg,
+    rgba(59, 130, 246, 0.12) 0%,
+    rgba(124, 58, 237, 0.12) 100%);
+  color: #5b21b6;
+}
+
+.helix-conv-hover:hover {
+  background-color: rgba(30, 41, 59, 0.6);
+  color: #f1f5f9;
+}
+[data-theme="light"] .helix-conv-hover:hover {
+  background-color: rgba(124, 58, 237, 0.06);
+  color: #1e293b;
+}
+
+.helix-section-divider {
+  border-color: var(--border-subtle);
+}
+
