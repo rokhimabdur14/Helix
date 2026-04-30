@@ -25,6 +25,7 @@ export function AppHeader({
 
   return (
     <header className="border-b border-slate-800/60 bg-slate-950/40 backdrop-blur-xl">
+      {backendStatus === "booting" && <BackendBootingBanner />}
       {backendStatus === "offline" && <BackendOfflineBanner />}
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
         <Link href="/" className="flex items-center gap-3">
@@ -113,6 +114,10 @@ const STATUS_META = {
     color: "bg-emerald-400 shadow-emerald-400/60",
     label: "Backend online",
   },
+  booting: {
+    color: "bg-amber-400 shadow-amber-400/60 animate-pulse",
+    label: "Backend lagi cold-start — tunggu ~10 detik",
+  },
   offline: {
     color: "bg-red-500 shadow-red-500/60 animate-pulse",
     label: "Backend offline — start uvicorn di port 8000",
@@ -131,6 +136,18 @@ function StatusDot({ status }) {
       aria-label={meta.label}
       className={`inline-block h-2 w-2 rounded-full shadow-md ${meta.color}`}
     />
+  );
+}
+
+function BackendBootingBanner() {
+  return (
+    <div className="border-b border-amber-900/50 bg-gradient-to-r from-amber-950/40 via-emerald-950/30 to-amber-950/40 px-4 py-2 text-center text-xs text-amber-200 sm:px-6">
+      <span className="mr-1 inline-block animate-spin">🔄</span>
+      <span className="font-semibold">Booting AI…</span>{" "}
+      <span className="text-amber-300/80">
+        Backend HF lagi bangun container, biasanya ~10 detik. Auto-retry on.
+      </span>
+    </div>
   );
 }
 

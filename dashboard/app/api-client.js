@@ -12,6 +12,18 @@ export class ApiNetworkError extends Error {
   }
 }
 
+// 502/503/504 dari HF Space proxy = container lagi cold-start atau LLM timeout.
+// Beda treatment dari error biasa (tampil amber "Booting AI…", bukan red).
+export class ApiUpstreamError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.name = "ApiUpstreamError";
+    this.status = status;
+  }
+}
+
+const COLD_START_STATUSES = new Set([502, 503, 504]);
+
 async function rawFetch(path, options) {
   return fetch(`${API_URL}${path}`, {
     headers: { "Content-Type": "application/json", ...options.headers },
@@ -38,6 +50,12 @@ export async function apiFetch(path, options = {}) {
   }
 
   if (!res.ok) {
+    if (COLD_START_STATUSES.has(res.status)) {
+      throw new ApiUpstreamError(
+        res.status,
+        `Backend HELIX lagi cold-start (HTTP ${res.status}).`
+      );
+    }
     let detail;
     try {
       const data = await res.json();
@@ -52,12 +70,18 @@ export async function apiFetch(path, options = {}) {
 }
 
 // Lightweight ping untuk health check — dipakai status indicator di header.
+// Returns: "online" | "booting" | "offline"
+//   - online: 2xx response
+//   - booting: 502/503/504 (HF proxy reachable, container belum siap)
+//   - offline: network fail / no response (Space stopped, DNS fail, dst)
 export async function pingBackend() {
   try {
     const res = await fetch(`${API_URL}/`, { method: "GET" });
-    return res.ok;
+    if (res.ok) return "online";
+    if (COLD_START_STATUSES.has(res.status)) return "booting";
+    return "offline";
   } catch {
-    return false;
+    return "offline";
   }
 }
 
@@ -118,6 +142,12 @@ export const api = {
       );
     }
     if (!res.ok) {
+      if (COLD_START_STATUSES.has(res.status)) {
+        throw new ApiUpstreamError(
+          res.status,
+          `Backend HELIX lagi cold-start (HTTP ${res.status}).`
+        );
+      }
       let detail;
       try {
         const data = await res.json();

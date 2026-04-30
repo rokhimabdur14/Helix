@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { pingBackend } from "./api-client";
 
-const POLL_INTERVAL = 15000; // 15s
+const POLL_INTERVAL = 15000; // 15s saat online
+const POLL_INTERVAL_BOOTING = 3000; // 3s saat booting — biar UI cepet flip ke online begitu siap
 const POLL_INTERVAL_DOWN = 4000; // poll lebih sering kalau lagi down
 
 export function useBackendStatus() {
-  const [status, setStatus] = useState("unknown"); // "online" | "offline" | "unknown"
+  const [status, setStatus] = useState("unknown"); // "online" | "booting" | "offline" | "unknown"
   const aliveRef = useRef(true);
 
   useEffect(() => {
@@ -15,17 +16,16 @@ export function useBackendStatus() {
     let timeoutId;
 
     async function check() {
-      const ok = await pingBackend();
+      const next = await pingBackend(); // "online" | "booting" | "offline"
       if (!aliveRef.current) return;
-      setStatus((prev) => {
-        const next = ok ? "online" : "offline";
-        // schedule next check sesuai status
-        timeoutId = setTimeout(
-          check,
-          ok ? POLL_INTERVAL : POLL_INTERVAL_DOWN
-        );
-        return next;
-      });
+      setStatus(next);
+      const delay =
+        next === "online"
+          ? POLL_INTERVAL
+          : next === "booting"
+          ? POLL_INTERVAL_BOOTING
+          : POLL_INTERVAL_DOWN;
+      timeoutId = setTimeout(check, delay);
     }
 
     check();

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AddBrandModal } from "./AddBrandModal";
-import { api, API_URL } from "./api-client";
+import { api, API_URL, ApiUpstreamError } from "./api-client";
 import { AppHeader } from "./AppHeader";
 import { useBrand } from "./use-brand";
 
@@ -23,7 +23,8 @@ export default function ChatPage() {
   const [history, setHistory] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // error shape: { type: "coldstart" | "generic", message: string } | null
+  const [error, setError] = useState(null);
   // mode: "brand" (pakai context brand aktif) | "free" (HELIX expertise saja, no brand)
   const [mode, setMode] = useState("brand");
   const messagesEndRef = useRef(null);
@@ -31,7 +32,7 @@ export default function ChatPage() {
   // Reset chat history kalau switch brand atau switch mode
   useEffect(() => {
     setHistory([]);
-    setError("");
+    setError(null);
   }, [activeBrandId, mode]);
 
   useEffect(() => {
@@ -41,52 +42,78 @@ export default function ChatPage() {
   // Free mode: nggak butuh brand. Brand mode: butuh activeBrandId.
   const canSend = mode === "free" || !!activeBrandId;
 
+  async function attemptSend(brandIdForRequest, prevHistory, message) {
+    let accumulated = "";
+    let assistantAppended = false;
+    await api.chatStream(brandIdForRequest, prevHistory, message, {
+      onChunk: (text) => {
+        accumulated += text;
+        setHistory((curr) => {
+          if (!assistantAppended) {
+            assistantAppended = true;
+            return [...curr, { role: "assistant", content: accumulated }];
+          }
+          const copy = curr.slice();
+          copy[copy.length - 1] = {
+            role: "assistant",
+            content: accumulated,
+          };
+          return copy;
+        });
+      },
+    });
+    // Edge case: stream selesai tanpa chunk (model balas empty string).
+    if (!assistantAppended) {
+      setHistory((curr) => [...curr, { role: "assistant", content: "" }]);
+    }
+  }
+
   async function sendMessage() {
     const message = input.trim();
     if (!message || loading || !canSend) return;
 
     setInput("");
-    setError("");
+    setError(null);
     setLoading(true);
 
     const prevHistory = history;
     // Append user message immediately. Assistant bubble di-append nanti pas
-    // chunk pertama dateng — gini LoadingBubble bisa show selama waiting TTFB,
-    // dan auto-hide saat bubble jawaban muncul.
+    // chunk pertama dateng — LoadingBubble visible sampai bubble jawaban muncul.
     setHistory([...prevHistory, { role: "user", content: message }]);
 
     const brandIdForRequest = mode === "free" ? null : activeBrandId;
-    let accumulated = "";
-    let assistantAppended = false;
 
     try {
-      await api.chatStream(brandIdForRequest, prevHistory, message, {
-        onChunk: (text) => {
-          accumulated += text;
-          setHistory((curr) => {
-            if (!assistantAppended) {
-              assistantAppended = true;
-              return [...curr, { role: "assistant", content: accumulated }];
-            }
-            const copy = curr.slice();
-            copy[copy.length - 1] = {
-              role: "assistant",
-              content: accumulated,
-            };
-            return copy;
-          });
-        },
-      });
-      // Edge case: stream selesai tanpa chunk (model balas empty string).
-      // Tetap append empty assistant biar history konsisten.
-      if (!assistantAppended) {
-        setHistory((curr) => [...curr, { role: "assistant", content: "" }]);
-      }
+      await attemptSend(brandIdForRequest, prevHistory, message);
     } catch (err) {
-      setError(err.message || "Gagal menghubungi server");
-      // Rollback: balik ke history sebelum user message kalau gagal sama sekali.
-      // Kalau partial response sudah masuk, user bisa re-send konteks lengkap.
-      setHistory(prevHistory);
+      // 502/503/504 = HF cold-start / proxy error. Tampilkan banner amber
+      // + auto-retry sekali setelah 6s (HF biasanya boot < 15s).
+      if (err instanceof ApiUpstreamError) {
+        setError({
+          type: "coldstart",
+          message: "Backend lagi bangun container, retry otomatis dalam 6 detik…",
+        });
+        await new Promise((r) => setTimeout(r, 6000));
+        try {
+          await attemptSend(brandIdForRequest, prevHistory, message);
+          setError(null);
+        } catch (err2) {
+          setError({
+            type: "coldstart",
+            message:
+              err2 instanceof ApiUpstreamError
+                ? "Backend masih boot. Tunggu ~10 detik lagi lalu kirim ulang."
+                : err2.message || "Gagal kirim setelah retry.",
+          });
+          setHistory(prevHistory);
+        }
+      } else {
+        setError({
+          type: "generic",
+          message: err.message || "Gagal menghubungi server",
+        });
+        setHistory(prevHistory);
+      }
     } finally {
       setLoading(false);
     }
@@ -161,9 +188,19 @@ export default function ChatPage() {
               <LoadingBubble />
             )}
 
-          {error && (
+          {error && error.type === "coldstart" && (
+            <div className="flex items-start gap-3 rounded-xl border border-amber-900/50 bg-gradient-to-r from-amber-950/40 via-emerald-950/30 to-amber-950/40 px-4 py-3 text-sm text-amber-200 backdrop-blur">
+              <span className="inline-block animate-spin">🔄</span>
+              <div>
+                <div className="font-semibold text-amber-100">Booting AI…</div>
+                <div className="text-xs text-amber-300/80">{error.message}</div>
+              </div>
+            </div>
+          )}
+
+          {error && error.type === "generic" && (
             <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300 backdrop-blur">
-              Error: {error}
+              Error: {error.message}
             </div>
           )}
 
