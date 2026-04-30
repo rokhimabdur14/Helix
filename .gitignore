@@ -37,6 +37,21 @@ data/*.xlsx
 !data/fotofusi_insights.json
 !data/fotofusi_website.json
 
+# Brand bundled HELIX — DI-COMMIT supaya persist di HF Space rebuild.
+# Tambah `_website.json` di sini saat add brand baru ke product.
+!data/arabi_website.json
+!data/edufio_website.json
+!data/edumisi_website.json
+!data/eduosmo_website.json
+!data/edusora_website.json
+!data/edubia_website.json
+!data/edulob_website.json
+!data/eduraya_website.json
+!data/edumoka_website.json
+!data/edubisa_website.json
+!data/edupoint_website.json
+!data/jelaja_website.json
+
 # Templates — DI-COMMIT (referensi user untuk format CSV insights)
 !data/templates/
 !data/templates/*
@@ -45,9 +60,22 @@ data/*.xlsx
 !data/expertise/
 data/expertise/_raw_*.txt
 
-# Brand configs — fotofusi demo committed, brand lain tidak
+# Brand configs — fotofusi demo + bundled HELIX brands committed.
+# Tambah `{brand_id}.config.json` di sini saat add brand baru ke product.
 config/brands/*.config.json
 !config/brands/fotofusi.config.json
+!config/brands/arabi.config.json
+!config/brands/edufio.config.json
+!config/brands/edumisi.config.json
+!config/brands/eduosmo.config.json
+!config/brands/edusora.config.json
+!config/brands/edubia.config.json
+!config/brands/edulob.config.json
+!config/brands/eduraya.config.json
+!config/brands/edumoka.config.json
+!config/brands/edubisa.config.json
+!config/brands/edupoint.config.json
+!config/brands/jelaja.config.json
 !config/brands/_schema.md
 
 # Source PDFs & screenshots di root — sengaja tidak di-commit

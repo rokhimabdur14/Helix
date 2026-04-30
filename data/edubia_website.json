@@ -1,0 +1,1322 @@
+{
+  "brand_id": "edubia",
+  "brand_name": "Edubia",
+  "base_url": "https://edubia.com",
+  "scraped_at": "2026-04-30T11:57:49.753353",
+  "pages_scraped": 5,
+  "pages": [
+    {
+      "url": "https://edubia.com/",
+      "title": "Les Privat Surabaya Terbaik | Belajar Tatap Muka atau Online - Edubia",
+      "meta_description": "Les privat Surabaya terbaik sejak 2018. 2.500+ tutor terseleksi, 50+ program. Belajar tatap muka atau online dengan sistem 1 tutor 1 siswa. Garansi uang kembali!",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Selamat Datang di Edubia!",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat Surabaya TerbaikBelajar Tatap Muka atau Online",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Komitmen Edubia",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Keunggulan Edubia Les Privat Surabaya",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program Les Unggulan",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Calistung",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Renang",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les UTBK SNBT",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Bahasa Mandarin",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les TOEFL",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Bahasa Inggris",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les SMP",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les SMA",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Belajar Nyaman dan Fleksibel Bersama Edubia",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Area Layanan Les Privat Surabaya",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Pusat",
+          "content": "Genteng, Tegalsari, Bubutan, Simokerto, Sawahan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Timur",
+          "content": "Gubeng, Sukolilo, Rungkut, Mulyorejo, Tambaksari, +1 lainnya",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Barat",
+          "content": "Tandes, Sukomanunggal, Lakarsantri, Sambikerep, Benowo, +1 lainnya",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Utara",
+          "content": "Semampir, Pabean Cantikan, Krembangan, Bulak, Asemrowo",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Selatan",
+          "content": "Wonokromo, Wonocolo, Gayungan, Jambangan, Tenggilis Mejoyo, +1 lainnya",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Online",
+          "content": "Seluruh Indonesia, Fleksibel, Zoom/Google Meet, Kapan Saja, Di Mana Saja",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Para Tutor Edubia",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Kak Adel",
+          "content": "SNBT",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kak Anggi",
+          "content": "Melukis",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kak Ardhan",
+          "content": "Olahraga",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kak Devi",
+          "content": "SD",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kak Sofi",
+          "content": "Komputer",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apa Kata Mereka?",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Ahmad Fauzi",
+          "content": "Orang Tua Siswa SMP - Surabaya Selatan",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Siti Rahayu",
+          "content": "Ibu Rumah Tangga - Surabaya Utara",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Hendro Prasetyo",
+          "content": "Orang Tua Siswa SMA - Surabaya Timur",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Budi Santoso",
+          "content": "Orang Tua Siswa SD - Surabaya Timur",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Rina Wijaya",
+          "content": "Mahasiswa - Surabaya Pusat",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Dewi Lestari",
+          "content": "Karyawan Swasta - Surabaya Barat",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Ahmad Fauzi",
+          "content": "Orang Tua Siswa SMP - Surabaya Selatan",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Siti Rahayu",
+          "content": "Ibu Rumah Tangga - Surabaya Utara",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Hendro Prasetyo",
+          "content": "Orang Tua Siswa SMA - Surabaya Timur",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Budi Santoso",
+          "content": "Orang Tua Siswa SD - Surabaya Timur",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Rina Wijaya",
+          "content": "Mahasiswa - Surabaya Pusat",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Dewi Lestari",
+          "content": "Karyawan Swasta - Surabaya Barat",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Proses Pendaftaran",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Daftar",
+          "content": "Sampaikan setiap kebutuhan belajar anda via Formulir Website ataupun whatsapp.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Asses",
+          "content": "Team kami akan mengases setiap kebutuhan les Anda dan mempersiapkan KBM.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor",
+          "content": "Kegiatan belajar di mulai dengan konsep KBM dan tutor yang dipersonalisasi.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "FAQ",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Blog",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat Renang Surabaya: Belajar Renang Dengan Mudah Bersama Edubia",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Jadi Ahli Dalam Bahasa Asing di Les Bahasa Inggris Edubia Surabaya",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kamu Harus Tahu! 10 Keunggulan Kursus Mandarin Surabaya di Edubia.",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mulai belajar bersamaEdubia!",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubiaadalahles privat terbaik di Surabayayang menyediakan pembelajarantatap mukadanonlinedengan sistem 1 tutor 1 siswa. Sejak 2018, kami telah melayani 1.200+ siswa dengan 2.500+ tutor terseleksi dan 50+ program les untuk semua jenjang."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia hadir di Surabaya untuk menjadi partner belajar terbaik anda."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia Les Privat Surabaya menyediakan aneka ragam program les yang bisa anda pilih sesuai dengan kebutuhan personal anda. Program les privat di Edubia variatif. Bukan sekedar program akademik saja, tersedia juga berbagai pilihan program lainnya. Cek pilihan program dan dapatkan program les privat terbaik sesuai kebutuhan anda."
+        },
+        {
+          "type": "paragraph",
+          "content": "Anda bisa mengatur banyak aspek terkait kebutuhan les privat Anda di Edubia. Hal ini karena Edubia menerapkan sistem individualized learning di mana Anda sendirilah yang menjadi patokan dalam seluruh proses pembelajaran.\nAnda bisa mengatur materi-materi yang Anda butuhkan, mengatur lamanya durasi setiap sesi, juga mengatur jumlah sesi yang akan Anda terima dalam satu kali masa program."
+        },
+        {
+          "type": "paragraph",
+          "content": "Lokasi dan jadwal sering kali menjadi halangan bagi sebagian orang untuk mengikuti les privat. Faktor ini yang akhirnya membuat Edubia menyediakan fleksibilitas tanpa batas bagi Anda yang mengikuti les privat di Edubia. Edubia akan menyesuaikan dengan mengatur tenaga pengajar yang sesuai dengan jadwal dan lokasi yang Anda tentukan."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia memiliki standar tinggi yang harus dilewati masing-masing tenaga pengajar. Bukan hanya ujian keahlian dan profesionalitas saja, melainkan ada ujian kemampuan mengajar untuk mengukur sejauh mana kemampuan tenaga pengajar dalam menyampaikan materi-materi les privat. Dengan begitu, setiap tenaga pengajar di Edubia sudah teruji dan tidak perlu diragukan lagi kualitasnya"
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia mewajibkan bagi guru les privat Surabaya agar memiliki metode pengajaran yang variatif. Di samping itu, metode pengajaran yang variatif juga sangat penting agar suasana pembelajaran menjadi lebih menyenangkan dan jauh dari kata membosankan."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia memberikan keleluasaan kepada Anda untuk mengatur segala aspeknya sendiri. Setelah Anda mengaturnya, pihak Edubia akan menawarkan banyak pilihan paket les privat dengan biaya yang ramah. Anda tinggal memilih program mana yang sesuai dengan kebutuhan dan anggaran Anda. Dan yang pasti, Anda juga bisa menghentikan program les privat Anda jika materi yang Anda dapatkan dirasakan sudah cukup."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia les privat Surabaya memberikan jaminan penggantian tenaga pengajar untuk Anda. Anda bisa mengajukan penggantian tutor jika merasa tenaga pengajar yang mengajar Anda kurang memuaskan. Tentu ada beberapa hal yang harus diperhatikan sampai pengajuan jaminan penggantian tenaga pengajar yang Anda ajukan bisa diterima oleh Edubia."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia les privat Surabaya siap mengembalikan deposit atau biaya les privat yang sebelumnya sudah Anda bayarkan. Untuk bisa mendapatkan jaminan ini, Anda juga harus memenuhi beberapa persyaratan yang berlaku. Namun terlepas dari itu semua, Edubia berusaha untuk menghadirkan pelayanan les privat yang benar-benar bisa memenuhi kebutuhan dan keinginan Anda."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia punya puluhan program unggulan yang dikembangkan maksimal untuk mendukung kesuksesan belajar kamu!"
+        },
+        {
+          "type": "paragraph",
+          "content": "Halo sobat Edu perlu kamu tahu nih bahwa les privat Edubia Surabaya merupakan jawaban buat kamu yang cari suasana belajar yang bebas plus nyaman. Kamu bisa belajar kapan saja dan di mana saja yang bikin hati senang."
+        },
+        {
+          "type": "paragraph",
+          "content": "Selain itu, kamu bisa merasakan memiliki guru yang benar-benar mengerti kamu. Mereka tahu apa kelebihanmu dan siap membantumu saat kesulitan belajar."
+        },
+        {
+          "type": "paragraph",
+          "content": "Kami punya tutor berkelas karena melakukan seleksi ketat demi hasil belajar terbaik. Pengalaman mereka sudah terbukti dengan jam terbang tinggi dan kualitas terbaik."
+        },
+        {
+          "type": "paragraph",
+          "content": "Di Edubia Surabaya, kami paham setiap orang itu unik, termasuk kamu. Kamu akan merasakan pendekatan belajar yang benar-benar sesuai dengan kebutuhanmu."
+        },
+        {
+          "type": "paragraph",
+          "content": "Kamu bisa memilih materi pelajaran hingga tutor yang cocok untukmu di Edubia Surabaya. Belajar jadi lebih seru dan sesuai ritme pribadi, ayo coba sendiri."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubiamelayaniles privat tatap mukadi seluruh wilayah Surabaya danles privat onlineuntuk siswa di mana saja."
+        },
+        {
+          "type": "paragraph",
+          "content": "Testimoni dari siswa dan orang tua yang telah merasakan manfaat belajar bersamales privat Edubia Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Tutor les mengaji Edubia sangat profesional. Anak saya yang awalnya belum lancar baca Iqro, sekarang sudah mulai baca Al-Quran dengan tartil.\""
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Les piano untuk anak saya sangat menyenangkan. Tutornya ramah dan sabar. Dalam 3 bulan sudah bisa mainkan lagu-lagu sederhana!\""
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Garansi ganti tutor Edubia benar-benar ada. Waktu tutor pertama kurang cocok, langsung diganti dan sekarang anak saya sangat nyaman belajar.\""
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Anak saya sekarang lebih semangat belajar. Tutor Edubia sabar dan metode mengajarnya mudah dipahami. Nilai matematika naik dari 65 jadi 90!\""
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Alhamdulillah lolos UTBK dan diterima di Teknik Informatika ITS! Tutor Edubia sangat membantu terutama di TPS dan Penalaran Matematika.\""
+        },
+        {
+          "type": "paragraph",
+          "content": "\"Belajar bahasa Inggris di Edubia sangat fleksibel. Bisa pilih les online saat sibuk kerja. Sekarang sudah PD presentasi pakai bahasa Inggris!\""
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubiaadalah les privat terbaik di Surabaya dengan 2.500+ tutor terseleksi yang telah melayani 1.200+ siswa sejak 2018. Edubia menawarkan pembelajarantatap mukadanonlinedengan sistem 1 tutor 1 siswa, sehingga setiap siswa mendapat perhatian penuh dan materi yang disesuaikan dengan kebutuhan."
+        },
+        {
+          "type": "paragraph",
+          "content": "Biaya les privat di Edubia Surabaya mulai dariRp87.000 per sesiuntuk program akademik dasar. Harga bervariasi tergantung program, tingkat kesulitan, dan kualifikasi tutor. Semua program sudah termasuk materi belajar dan laporan perkembangan siswa."
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat tatap mukaEdubia berarti tutor datang langsung ke rumah, sekolah, atau lokasi pilihan siswa di Surabaya. Sedangkanles privat onlinedilakukan via Zoom atau Google Meet, cocok untuk siswa yang membutuhkan fleksibilitas waktu dan lokasi. Keduanya tetap menggunakan sistem 1 tutor 1 siswa dengan kualitas pembelajaran yang sama."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia menyediakangaransi ganti tutor gratisjika siswa merasa tidak cocok dengan tutor yang ditugaskan. Kami juga memberikanjaminan uang kembalijika tidak puas dengan layanan. Kepuasan siswa adalah prioritas utama kami."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia menyediakan50+ program les privatmeliputi: les akademik (SD, SMP, SMA, UTBK SNBT, CPNS), les bahasa (Inggris, Mandarin, Jepang, Korea, Arab), les mengaji (Iqro, Al-Quran, Tajwid), les musik (piano, gitar, biola), les olahraga (renang, bulu tangkis), dan masih banyak lagi."
+        },
+        {
+          "type": "paragraph",
+          "content": "Cara daftar les privat Edubia sangat mudah:1)Hubungi admin via WhatsApp atau form pendaftaran,2)Konsultasi kebutuhan belajar dan pilih program,3)Pilih jadwal dan metode belajar (tatap muka/online),4)Admin akan mencarikan tutor yang sesuai,5)Mulai belajar!"
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia melayani les privat tatap muka diseluruh wilayah Surabayameliputi: Surabaya Pusat (Genteng, Tegalsari, Bubutan), Surabaya Timur (Gubeng, Sukolilo, Rungkut), Surabaya Barat (Tandes, Sukomanunggal), Surabaya Utara (Kenjeran, Semampir), dan Surabaya Selatan (Wonokromo, Gayungan). Untukles online, bisa diakses dari mana saja."
+        },
+        {
+          "type": "paragraph",
+          "content": "Tim Edubia siap menyiapkan guru privat terbaik dan kurikulum yang paling tepat dan sesuai dengan kebutuhan spesifik anda"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les Privat Tatap Muka dan Online di Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "©2026Edubia- All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        }
+      ],
+      "links_found": 19
+    },
+    {
+      "url": "https://edubia.com/about",
+      "title": "Laman tidak ditemukan – Les Edubia Surabaya",
+      "meta_description": "",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Halaman tidak dapat ditemukan.",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "paragraph",
+          "content": "Sepertinya tidak ada yang ditemukan di lokasi ini."
+        },
+        {
+          "type": "paragraph",
+          "content": "Les Privat Tatap Muka dan Online di Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "©2026Edubia- All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        }
+      ],
+      "links_found": 7
+    },
+    {
+      "url": "https://edubia.com/about-us",
+      "title": "Laman tidak ditemukan – Les Edubia Surabaya",
+      "meta_description": "",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Halaman tidak dapat ditemukan.",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "paragraph",
+          "content": "Sepertinya tidak ada yang ditemukan di lokasi ini."
+        },
+        {
+          "type": "paragraph",
+          "content": "Les Privat Tatap Muka dan Online di Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "©2026Edubia- All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        }
+      ],
+      "links_found": 7
+    },
+    {
+      "url": "https://edubia.com/tentang",
+      "title": "Tentang Kami – Les Edubia Surabaya",
+      "meta_description": "Lembaga les privat terpercaya di Surabaya sejak 2018 dengan 2.500+ tutor profesional, menyediakan 100+ program personalized learning untuk segala usia. Les",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Tentang Kami",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Edubia: Partner Belajar Terbaik Anda di Surabaya",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Visi & Misi Edubia",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "VISI",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "MISI",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kenapa Harus Pilih Edubia?",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Pilihan Program Lengkap",
+          "content": "Puluhan program tersedia mulai dari pelajaran akademis (Calistung, SD, SMP, SMA, Kuliah, SNBT, CPNS), bahasa asing, mengaji, komputer & IT, musik, melukis, keterampilan hidup, sampai olahraga. Mau belajar apa aja, Edubia siap!",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Profesional",
+          "content": "Setiap tutor melewati ujian keahlian, tes profesionalitas, dan evaluasi kemampuan mengajar yang ketat. Mereka punya jam terbang tinggi dan metode pengajaran yang bikin belajar jadi seru, nggak ngebosenin.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Fleksibilitas 100%",
+          "content": "Belajar di mana aja sesukamu — rumah, sekolah, kampus, cafe, co-learning space, atau online via Zoom/Google Meet. Jadwal? Kamu yang tentukan sendiri! Tutor nggak cocok? Ganti gratis tanpa ribet.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pembelajaran Dipersonalisasi",
+          "content": "Kamu yang atur semua aspeknya — mulai dari materi apa yang mau dipelajari, berapa lama durasi tiap pertemuan, sampai berapa kali mau ketemu dalam seminggu. Pembelajaran mengikuti ritme kamu, bukan kamu yang dipaksa ngikutin kurikulum kaku.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Garansi Kepuasan dan Harga Terjangkau",
+          "content": "Paket les privat dengan harga yang ramah di kantong dan bisa disesuaikan sama budget kamu. Kami kasih jaminan ganti tutor gratis kalau kamu merasa kurang sreg. Tim support Edubia juga selalu siap bantu kamu nemuin solusi belajar yang paling pas.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Wilayah Layanan Les Privat Edumisi",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Pusat",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Timur",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Barat",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Selatan",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya Utara",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat Online",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Yuk, Mulai Belajar Bareng Edubia! diSurabaya!",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Lembaga les privat terpercaya di Surabaya sejak 2018 dengan 2.500+ tutor profesional, menyediakan 100+ program personalized learning untuk segala usia. Les fleksibel ke rumah & online."
+        },
+        {
+          "type": "paragraph",
+          "content": "Edubia hadir sebagai platform les privat terlengkap di Surabaya yang siap menemani perjalanan belajar Anda dengan cara yang benar-benar nyaman dan menyenangkan. Sejak tahun 2018, kami telah dipercaya oleh 1.200+ siswa di Surabaya untuk meraih kesuksesan akademik dan menguasai berbagai keahlian baru."
+        },
+        {
+          "type": "paragraph",
+          "content": "Kami tahu setiap orang itu unik, termasuk kamu. Makanya Edubia menerapkan personalized learning — konsep belajar satu guru satu murid yang memberikan kebebasan penuh untuk menentukan apa, kapan, dan bagaimana kamu ingin belajar. Mau belajar di rumah sambil santai? Boleh! Mau di cafe favorit? Bisa juga! Atau lebih suka online dari kamar? Tentu saja!"
+        },
+        {
+          "type": "paragraph",
+          "content": "Didirikan oleh para akademisi, edukator, dan pendidik berpengalaman yang berpikiran sama, kami percaya bahwa bantuan terbaik datang langsung dari ahli yang benar-benar mengerti kebutuhanmu. Dengan 2.500+ tutor berkelas hasil seleksi ketat dan ratusan program unggulan, Edubia siap jadi teman belajarmu mencapai potensi maksimal."
+        },
+        {
+          "type": "paragraph",
+          "content": "Mewujudkan ekosistem pembelajaran yang mudah dijangkau, fleksibel, dan inklusif bagi semua kalangan melalui layanan les privat berkualitas tinggi dengan pendekatan individualized learning."
+        },
+        {
+          "type": "paragraph",
+          "content": "Berikut alasan 1200+ siswa di Surabaya jatuh cinta sama Edubia"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat ke rumah tersedia di berbagai wilayah Jakarta"
+        },
+        {
+          "type": "paragraph",
+          "content": "Tegalsari, Genteng, Bubutan, Simokerto, Pabean Cantikan, Semampir, Krembangan, Kenjeran"
+        },
+        {
+          "type": "paragraph",
+          "content": "Gubeng, Sukolilo, Rungkut, Tenggilis Mejoyo, Gunung Anyar, Tambaksari, Mulyorejo"
+        },
+        {
+          "type": "paragraph",
+          "content": "Asemrowo, Sukomanunggal, Tandes, Benowo, Pakal, Lakarsantri, Sambikerep"
+        },
+        {
+          "type": "paragraph",
+          "content": "Wonokromo, Wonocolo, Wiyung, Karang Pilang, Dukuh Pakis, Gayungan, Jambangan, Sawahan"
+        },
+        {
+          "type": "paragraph",
+          "content": "Bulak, Kenjeran, Pabean Cantikan, Semampir, Krembangan"
+        },
+        {
+          "type": "paragraph",
+          "content": "Buat kamu yang di luar Surabaya atau lebih nyaman belajar dari rumah, tersedia kelas online interaktif dengan kualitas pengajaran yang sama maksimalnya"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les Privat Tatap Muka dan Online di Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "©2026Edubia- All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Menumbuhkan semangat belajar– Membangun minat dan kecintaan terhadap proses pembelajaran, bukan hanya mengejar nilai",
+            "Akses mudah untuk semua– Menghadirkan layanan les privat yang terjangkau dan fleksibel tanpa batasan waktu dan tempat",
+            "Pendekatan individual– Menerapkan sistem satu guru satu murid agar setiap peserta mendapat perhatian penuh dan materi yang sesuai",
+            "Standar tutor tinggi– Memastikan setiap pengajar memiliki keahlian, pengalaman, dan kemampuan menyampaikan materi dengan metode variatif"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        }
+      ],
+      "links_found": 8
+    },
+    {
+      "url": "https://edubia.com/services",
+      "title": "Laman tidak ditemukan – Les Edubia Surabaya",
+      "meta_description": "",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Halaman tidak dapat ditemukan.",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "paragraph",
+          "content": "Sepertinya tidak ada yang ditemukan di lokasi ini."
+        },
+        {
+          "type": "paragraph",
+          "content": "Les Privat Tatap Muka dan Online di Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "©2026Edubia- All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Edubia",
+            "Program Les",
+            "LayananLes PrivatX-SchoolCorporate Training",
+            "Daftar",
+            "Tentang Kami",
+            "Daftar Tutor",
+            "Hubungi"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Les Privat",
+            "X-School",
+            "Corporate Training"
+          ]
+        }
+      ],
+      "links_found": 7
+    }
+  ]
+}

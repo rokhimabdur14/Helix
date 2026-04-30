@@ -1,0 +1,2525 @@
+{
+  "brand_id": "edupoint",
+  "brand_name": "EduPoint",
+  "base_url": "https://www.edupoint.id/id",
+  "scraped_at": "2026-04-30T11:59:00.956694",
+  "pages_scraped": 10,
+  "pages": [
+    {
+      "url": "https://www.edupoint.id/",
+      "title": "EduPoint - Les Privat & Bimbel Terbaik Indonesia | 60+ Kota | EduPoint Indonesia",
+      "meta_description": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, AI-powered learning, tatap muka & online. Tersedia di 60+ kota seluruh Indonesia. Garansi nilai naik!",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Les Privat & BimbelTerbaik Indonesia",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Dipercaya Sekolah Terbaik",
+          "content": "Puluhan institusi pendidikan terpercaya telah bermitra dengan EduPoint",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apa ituEduPoint?",
+          "content": "Human Expert + AI Technology",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Tim Ahli + Teknologi AI",
+          "content": "AI Membantu Tim Kami•Mempercepat analisis kebutuhan belajar•Memberikan rekomendasi tutor yang presisi•Memantau progress dan alert otomatis•Menyusun laporan kemajuan real-timeTim Ahli Kami Bekerja•Education Consultant: konsultasi personal•Matching Team: review & validasi pencocokan•Education Expert: rancang kurikulum khusus•Tutor: mengajar dengan empati & adaptasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Membantu Tim Kami",
+          "content": "",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Tim Ahli Kami Bekerja",
+          "content": "",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Kesulitan Mencari Les Privat yang Tepat?",
+          "content": "Kami memahami tantangan yang dihadapi orang tua dan pelajar dalam mencari solusi belajar yang efektif.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Susah Cari Tutor Berkualitas",
+          "content": "78% orang tua kesulitan menemukan tutor yang benar-benar kompeten dan cocok dengan anak.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Nilai Tidak Kunjung Naik",
+          "content": "Bimbel konvensional sering tidak efektif karena metode one-size-fits-all.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Jadwal Tidak Fleksibel",
+          "content": "Orang tua bekerja kesulitan mengatur jadwal les yang sesuai aktivitas keluarga.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Tidak Cocok",
+          "content": "Sering ganti tutor karena ketidakcocokan gaya mengajar dengan gaya belajar anak.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Biaya Tidak Transparan",
+          "content": "Banyak bimbel yang menyembunyikan biaya sebenarnya sampai pendaftaran.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tidak Ada Progress Tracking",
+          "content": "Sulit memantau perkembangan belajar anak tanpa sistem yang jelas.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mulai Belajar dalam 4 Langkah",
+          "content": "Proses pendaftaran yang mudah dan cepat untuk memulai perjalanan belajar Anda.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Pilih Program",
+          "content": "Pilih program belajar yang sesuai dengan kebutuhan dan tujuan akademik Anda.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Match Tutor",
+          "content": "Sistem AI kami akan mencocokkan Anda dengan tutor terbaik berdasarkan kebutuhan.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mulai Belajar",
+          "content": "Mulai sesi belajar dengan materi yang dipersonalisasi sesuai kemampuan Anda.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Raih Prestasi",
+          "content": "Pantau perkembangan dan raih prestasi akademik yang Anda impikan.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pilih Kategori Program",
+          "content": "Berbagai program les privat untuk semua kebutuhan belajar Anda.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Akademik",
+          "content": "SD, SMP, SMA, Kuliah",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bahasa",
+          "content": "Inggris, Mandarin, Jepang, dll",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Teknologi",
+          "content": "Programming, Desain, Digital",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Seni",
+          "content": "Lukis, Gambar, Kerajinan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Olahraga",
+          "content": "Renang, Badminton, Fitness",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bisnis",
+          "content": "Akuntansi, Public Speaking",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Hobi",
+          "content": "Fotografi, Memasak",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mengapa Pilih EduPoint?",
+          "content": "Platform les privat terpercaya dengan teknologi AI untuk hasil belajar yang optimal.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Sistem AI kami mencocokkan siswa dengan tutor yang paling sesuai berdasarkan gaya belajar, kebutuhan, dan preferensi.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Terseleksi",
+          "content": "Setiap tutor melalui proses seleksi ketat: verifikasi ijazah, tes mengajar, dan background check.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Personalized Learning",
+          "content": "Materi belajar yang dipersonalisasi sesuai kemampuan dan kecepatan belajar setiap siswa.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Progress Tracking",
+          "content": "Pantau perkembangan belajar real-time melalui dashboard yang mudah dipahami.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Garansi Hasil",
+          "content": "Kami yakin dengan kualitas layanan kami. Nilai tidak naik? Kami berikan sesi tambahan gratis.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Fleksibel",
+          "content": "Pilih mode belajar: tatap muka ke rumah, online interaktif, atau kombinasi keduanya.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tersedia di Berbagai Kota Indonesia",
+          "content": "Tutor terverifikasi siap datang ke rumah Anda atau mengajar secara online di 60+ kota.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Jakarta",
+          "content": "Jabodetabek 250+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bandung",
+          "content": "Jawa Barat 120+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya",
+          "content": "Jawa Timur 100+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Yogyakarta",
+          "content": "DIY 80+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Semarang",
+          "content": "Jawa Tengah 75+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Malang",
+          "content": "Jawa Timur 70+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Medan",
+          "content": "Sumatera Utara 60+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Makassar",
+          "content": "Sulawesi Selatan 55+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Online",
+          "content": "Belajar dari mana saja dengan tutor terbaik secara online.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Program Les Privat Unggulan",
+          "content": "Program-program les privat yang paling diminati siswa kami.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SD",
+          "content": "Pendampingan belajar untuk siswa SD kelas 1-6",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SMP",
+          "content": "Pendampingan belajar lengkap untuk siswa SMP",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SMA",
+          "content": "Pendalaman materi SMA untuk semua jurusan (IPA/IPS)",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Persiapan UTBK",
+          "content": "Program intensif persiapan masuk PTN favorit",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Bahasa Inggris",
+          "content": "TOEFL, IELTS, conversation, business English",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Programming",
+          "content": "Python, Web Development, Data Science, Mobile App",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kenali Tutor Terbaik EduPoint",
+          "content": "12,000+ tutor terseleksi dengan keahlian beragam, siap membantu Anda mencapai target belajar.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Destiana R.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Desy Putri R.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "M. Yogik M.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah & Institusi Terkemuka",
+          "content": "Siswa EduPoint berasal dari berbagai sekolah favorit dan institusi bergengsi di Indonesia.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah Favorit",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah Internasional",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Universitas & Institusi Terbaik",
+          "content": "Tutor EduPoint adalah alumni dari universitas top dan profesional dari perusahaan terkemuka.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Universitas Top",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan & Institusi",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apa Kata Mereka?",
+          "content": "Cerita sukses dari ribuan siswa dan orang tua yang telah merasakan manfaat les privat EduPoint.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Belajar Lebih Cerdas dengan AI",
+          "content": "EduPoint menggunakan teknologi AI terdepan untuk memberikan pengalaman belajar yang dipersonalisasi dan hasil yang optimal. Pelajari Teknologi Kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "AI Tutor Matching",
+          "content": "Algoritma AI mencocokkan siswa dengan tutor yang paling sesuai berdasarkan gaya belajar, preferensi, dan kebutuhan akademik.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Personalized Learning Path",
+          "content": "AI merancang jalur belajar yang unik untuk setiap siswa, menyesuaikan materi dengan kemampuan dan kecepatan belajar.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Predictive Analytics",
+          "content": "Sistem memprediksi area yang perlu ditingkatkan dan memberikan rekomendasi belajar yang tepat sasaran.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Tutor Assistant",
+          "content": "Asisten AI 24/7 yang siap membantu menjawab pertanyaan dan memberikan penjelasan tambahan kapan saja.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Adaptive Content",
+          "content": "Materi belajar yang secara otomatis menyesuaikan tingkat kesulitan berdasarkan performa siswa.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Smart Progress Reports",
+          "content": "Laporan perkembangan yang dihasilkan AI dengan insights mendalam dan rekomendasi actionable.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pertanyaan yang Sering Diajukan",
+          "content": "Temukan jawaban untuk pertanyaan umum tentang layanan les privat EduPoint.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana cara mendaftar les privat di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Berapa biaya les privat di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah bisa les online atau harus tatap muka?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana proses pencocokan tutor?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah ada garansi jika nilai tidak naik?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Di kota mana saja EduPoint tersedia?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Siap Memulai Perjalanan Belajar?",
+          "content": "Bergabung dengan 50,000+ siswa yang sudah merasakan manfaat les privat EduPoint. Daftar SekarangHubungi via WhatsApp atauTelepon: 0822-3333-0062",
+          "level": "h2"
+        },
+        {
+          "type": "paragraph",
+          "content": "Mulai Rp 50.000/sesi. 300+ program, 12,000+ tutor terverifikasi. AI kami menganalisis kebutuhan Anda dan merancang jalur belajar yang dipersonalisasi."
+        },
+        {
+          "type": "paragraph",
+          "content": "Dipercaya 50,000+ pelajar & 100+ instansi • Rating 4.9/5"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPointadalah platform les privat dan bimbingan belajar terpercaya di Indonesia yang mengutamakan sentuhan manusia (human touch) yang diperkuat teknologi AI. Berbeda dari platform EdTech murni yang menggantikan manusia dengan teknologi, EduPoint mempertahankan peran manusia di setiap tahap: Education Consultant yang memberikan konsultasi personal, tim matching yang memahami kebutuhan unik setiap siswa, Education Expert yang merancang kurikulum, hingga tutor terseleksi yang mengajar dengan empati. AI hadir sebagai alat bantu untuk mempercepat dan mempresisi kerja tim ahli kami—bukan menggantikan mereka."
+        },
+        {
+          "type": "paragraph",
+          "content": "Biaya bervariasi berdasarkan jenjang dan program"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Sastra Inggris UNY yang humoris dan supel. Senang berinteraksi dan membuat suasana belajar menyenangkan."
+        },
+        {
+          "type": "paragraph",
+          "content": "Lulusan PGSD UNJ yang kreatif dan teliti. Aktif mengikuti pelatihan Coursera untuk meningkatkan kualitas mengajar."
+        },
+        {
+          "type": "paragraph",
+          "content": "Tutor Kimia & Biologi"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Kimia ITB dengan kemampuan analitis kuat. Aktif di Himpunan Mahasiswa dan kegiatan pengajaran sosial."
+        },
+        {
+          "type": "paragraph",
+          "content": "“Nilai matematika anak saya naik dari 65 menjadi 90 hanya dalam 3 bulan. Tutornya sabar dan metode mengajarnya mudah dipahami. Sangat recommended!”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SMP - Jakarta"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Berkat EduPoint, saya berhasil lolos UTBK dan diterima di Teknik ITB. Program persiapan UTBK-nya sangat comprehensive dan tutornya berpengalaman.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Siswa•Diterima di ITB"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Sebagai working mom, saya sangat terbantu dengan fleksibilitas jadwal les EduPoint. Tutornya bisa datang ke rumah atau online sesuai kebutuhan kami.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SD - Bandung"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Program les bahasa Inggris EduPoint membantu saya lulus IELTS dengan skor 7.5. Tutornya native speaker dan materinya sangat terstruktur.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Mahasiswa•Persiapan S2 Luar Negeri"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Anak saya dulunya takut matematika, sekarang malah jadi pelajaran favoritnya. Terima kasih EduPoint untuk tutor yang memahami kebutuhan anak.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SD - Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "“AI matching EduPoint sangat akurat. Tutor yang dipilihkan untuk anak saya benar-benar cocok dengan gaya belajarnya. Progress tracking-nya juga memudahkan saya memantau.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SMA - Yogyakarta"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "•Mempercepat analisis kebutuhan belajar",
+            "•Memberikan rekomendasi tutor yang presisi",
+            "•Memantau progress dan alert otomatis",
+            "•Menyusun laporan kemajuan real-time"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "•Education Consultant: konsultasi personal",
+            "•Matching Team: review & validasi pencocokan",
+            "•Education Expert: rancang kurikulum khusus",
+            "•Tutor: mengajar dengan empati & adaptasi"
+          ]
+        }
+      ],
+      "links_found": 32
+    },
+    {
+      "url": "https://www.edupoint.id/about",
+      "title": "About EduPoint - #1 Tutoring Platform in Indonesia | EduPoint Indonesia",
+      "meta_description": "EduPoint is Indonesia's #1 private tutoring platform with 12,000+ verified tutors across 60+ cities. AI-powered matching for optimal results, 100,000+ happy students.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "#1 Tutoring Platform in Indonesia",
+          "content": "Helping millions of Indonesian students reach their full potential through effective and enjoyable personalized learning. 12,000+Verified Tutors60+Cities in Indonesia100,000+Active Students4.9/5Satisfaction Rating",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "What Is EduPoint?",
+          "content": "EduPoint is Indonesia's most trustedprivate tutoringand learning platform connecting students with quality tutors. We provide face-to-face andonline tutoringservices in60+ citieswith12,000+ verified tutors. Using AI-powered matching technology, we ensure every student gets the most suitable tutor for their needs, learning style, and location. EduPoint is committed to providing an effective personalized learning experience with guaranteed results.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Our Mission & Vision",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Mission",
+          "content": "Empowering Indonesian students to reach their maximum potential through effective personalized learning, innovative technology, and high-quality tutors.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Vision",
+          "content": "To become Indonesia's leading education platform that transforms how students learn and achieve academic success.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Our Story",
+          "content": "EduPoint's journey in transforming Indonesian education",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "The Beginning",
+          "content": "EduPoint was founded in July 2019 with a vision to make quality education accessible to all students in Indonesia. Started in Jakarta and quickly expanded to 10 major cities with 500+ tutors.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Digital Transformation",
+          "content": "The pandemic pushed us to innovate with interactive online tutoring. Student numbers increased 5x.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Launched AI system to match students with the best tutors based on needs and learning styles.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "10,000+ Tutors",
+          "content": "Reached milestone of 10,000 verified tutors and serving 50+ cities across Indonesia.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Learning Results Guarantee",
+          "content": "Launched Results Guarantee program - no grade improvement, we provide free additional sessions.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "#1 Platform in Indonesia",
+          "content": "Became #1 tutoring platform in Indonesia with 12,000+ tutors in 60+ cities and 100,000+ active students.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Our Values",
+          "content": "Principles that guide every decision we make",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Best Quality",
+          "content": "We are committed to providing the highest quality tutoring services with selected and verified tutors.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Student-Focused",
+          "content": "Student needs and success are our top priority in every decision we make.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Continuous Innovation",
+          "content": "We continuously innovate using the latest technology to enhance the learning experience.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Trustworthy & Transparent",
+          "content": "We build trust through transparency, integrity, and commitment to results.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Why Choose EduPoint?",
+          "content": "Advantages that set us apart from other platforms",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Verified Tutors",
+          "content": "Every tutor goes through rigorous selection: diploma verification, teaching tests, and background checks. View Tutors→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Our AI technology matches students with the most suitable tutors based on needs and learning styles.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Location Flexibility",
+          "content": "Learn at home, cafe, library, or online - you decide! Find Tutoring Near You→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Flexible Schedule",
+          "content": "Set your tutoring schedule according to your activities. Morning, afternoon, evening, or weekend.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Results Guarantee",
+          "content": "No grade improvement after 3 months? We provide free additional tutoring sessions.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "24/7 Customer Support",
+          "content": "Our support team is ready to help you anytime via chat, phone, or WhatsApp. Contact Us→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Real Results from Our Students",
+          "content": "Verified achievements from thousands of students across Indonesia",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Admitted to UI Computer Science",
+          "content": "+170 points UTBKFrom score 550 → 720 in 4 months High school student in Jakarta",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Admitted to SMAN 3 Bandung",
+          "content": "+25 points MathFrom score 65 → 92 Middle school student in Bandung",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Top 5 in Class",
+          "content": "Up 20 ranksFrom rank 25 → rank 5 Elementary student in Surabaya",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Scholarship to Netherlands",
+          "content": "+2.0 band IELTSFrom score 5.5 → 7.5 in 3 months University student in Yogyakarta",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Admitted to UGM Medical",
+          "content": "Passed SNBT pathway6 months intensive prep High school student in Semarang",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "OSN Math Medal",
+          "content": "Provincial Level8 months coaching High school student in Medan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Frequently Asked Questions",
+          "content": "Find answers to common questions about EduPoint",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Ready to Start Your Learning Journey?",
+          "content": "Join 100,000+ students who have experienced learning transformation with EduPoint Register NowFree Consultation",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Programs",
+          "content": "All ProgramsPrivate TutoringPrivate Tutoring JakartaBlog",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Company",
+          "content": "About UsServicesBecome a TutorContact Us",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Support",
+          "content": "AI ChatRegisterWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Privacy PolicyTerms of Service",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPoint is available in 60+ cities across Indonesia including Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Medan, Makassar, Denpasar, and other major cities. For online tutoring, we serve all of Indonesia and even overseas. Check our city pages to see availability in your area."
+        },
+        {
+          "type": "paragraph",
+          "content": "Every EduPoint tutor goes through a rigorous selection process with only 8% acceptance rate. The process includes: diploma and transcript verification, subject competency tests, micro teaching with our expert team, personality interviews, and background checks. We ensure every tutor has verified academic competence and teaching ability."
+        },
+        {
+          "type": "paragraph",
+          "content": "We provide a tutor satisfaction guarantee. If you feel the assigned tutor is not a good fit, you can request a tutor change at no additional cost. Our Education Consultant team will find a replacement tutor better suited to your preferences and learning style."
+        },
+        {
+          "type": "paragraph",
+          "content": "Our AI system analyzes student profiles (learning style, preferences, academic needs, schedule, location) and matches them with our database of 12,000+ tutors. The AI considers tutor track records, subject expertise, teaching style, and previous student feedback. The result is 95% better matching compared to manual assignment."
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPoint guarantees that if learning targets are not achieved within 3 months (such as agreed grade improvements), students are entitled to free additional sessions. Terms and conditions apply according to the contract agreed at the start of the program."
+        },
+        {
+          "type": "paragraph",
+          "content": "Yes, EduPoint offers flexible learning locations. You can choose to have lessons at home, cafes, libraries, co-working spaces, or any comfortable location agreed upon with your tutor. Online tutoring is also available for maximum convenience."
+        },
+        {
+          "type": "paragraph",
+          "content": "Still have questions?Contact us"
+        },
+        {
+          "type": "paragraph",
+          "content": "Trusted private tutoring in Indonesia. Carefully selected tutors, in-person & online. Available in 15+ cities: Jakarta, Bandung, Surabaya, Jogja, Semarang, and more."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "12,000+ verified tutorswith the best educational backgrounds",
+            "Available in60+ citiesacross Indonesia",
+            "AI-powered matching for optimal learning results",
+            "Location flexibility: home, cafe, library, oronline",
+            "Learning results guarantee - no improvement, free additional sessions",
+            "More than 100,000 students have joined and experienced results"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "All Programs",
+            "Private Tutoring",
+            "Private Tutoring Jakarta",
+            "Blog"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "About Us",
+            "Services",
+            "Become a Tutor",
+            "Contact Us"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Register",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Privacy Policy",
+            "Terms of Service"
+          ]
+        }
+      ],
+      "links_found": 14
+    },
+    {
+      "url": "https://www.edupoint.id/tentang",
+      "title": "Tentang EduPoint - Platform Les Privat #1 Indonesia | EduPoint Indonesia",
+      "meta_description": "EduPoint adalah platform les privat #1 Indonesia dengan 12.000+ tutor terverifikasi di 60+ kota. Fitur AI matching untuk hasil optimal, 100.000+ siswa puas, garansi nilai naik.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Platform Les Privat #1 di Indonesia",
+          "content": "Membantu jutaan siswa Indonesia mencapai potensi terbaik mereka melalui pembelajaran personal yang efektif dan menyenangkan. 12.000+Tutor Terverifikasi60+Kota di Indonesia100.000+Siswa Aktif4.9/5Rating Kepuasan",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Apa Itu EduPoint?",
+          "content": "EduPoint adalah platformles privatdan bimbingan belajar terpercaya di Indonesia yang menghubungkan siswa dengan tutor berkualitas. Kami menyediakan layanan les privat tatap muka danonlinedi60+ kotadengan12.000+ tutor terverifikasi. Menggunakan teknologi AI-powered matching, kami memastikan setiap siswa mendapatkan tutor yang paling sesuai dengan kebutuhan, gaya belajar, dan lokasi mereka. EduPoint berkomitmen memberikan pengalaman belajar personal yang efektif dengan garansi hasil.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Misi & Visi Kami",
+          "content": "",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Misi",
+          "content": "Memberdayakan siswa Indonesia untuk mencapai potensi maksimal mereka melalui pembelajaran personal yang efektif, teknologi inovatif, dan tutor berkualitas tinggi.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Visi",
+          "content": "Menjadi platform pendidikan terdepan di Indonesia yang mentransformasi cara siswa belajar dan mencapai kesuksesan akademik.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Cerita Kami",
+          "content": "Perjalanan EduPoint dalam mentransformasi pendidikan Indonesia",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Awal Perjalanan",
+          "content": "EduPoint didirikan pada Juli 2019 dengan visi untuk membuat pendidikan berkualitas dapat diakses oleh semua siswa di Indonesia. Dimulai di Jakarta dan langsung ekspansi ke 10 kota besar dengan 500+ tutor.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Transformasi Digital",
+          "content": "Pandemi mendorong kami berinovasi dengan les online interaktif. Jumlah siswa meningkat 5x lipat.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Meluncurkan sistem AI untuk mencocokkan siswa dengan tutor terbaik berdasarkan kebutuhan dan gaya belajar.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "10.000+ Tutor",
+          "content": "Mencapai milestone 10.000 tutor terverifikasi dan melayani 50+ kota di seluruh Indonesia.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Garansi Hasil Belajar",
+          "content": "Meluncurkan program Garansi Hasil - nilai tidak naik, kami berikan sesi tambahan gratis.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Platform #1 Indonesia",
+          "content": "Menjadi platform les privat #1 di Indonesia dengan 12.000+ tutor di 60+ kota dan 100.000+ siswa aktif.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Nilai-Nilai Kami",
+          "content": "Prinsip yang memandu setiap keputusan kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Kualitas Terbaik",
+          "content": "Kami berkomitmen memberikan layanan les privat berkualitas tertinggi dengan tutor terseleksi dan terverifikasi.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Berfokus pada Siswa",
+          "content": "Kebutuhan dan kesuksesan siswa adalah prioritas utama kami dalam setiap keputusan yang kami buat.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Inovasi Berkelanjutan",
+          "content": "Kami terus berinovasi menggunakan teknologi terkini untuk meningkatkan pengalaman belajar.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Terpercaya & Transparan",
+          "content": "Kami membangun kepercayaan melalui transparansi, integritas, dan komitmen pada hasil.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mengapa Memilih EduPoint?",
+          "content": "Keunggulan yang membedakan kami dari platform lain",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Terverifikasi",
+          "content": "Setiap tutor melalui proses seleksi ketat: verifikasi ijazah, tes mengajar, dan background check. Lihat Tutor→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Teknologi AI kami mencocokkan siswa dengan tutor paling sesuai berdasarkan kebutuhan dan gaya belajar.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Fleksibilitas Lokasi",
+          "content": "Belajar di rumah, cafe, perpustakaan, atau online - Anda yang menentukan! Cari Les di Kota Anda→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Jadwal Fleksibel",
+          "content": "Atur jadwal les sesuai aktivitas Anda. Pagi, siang, sore, malam, atau weekend.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Garansi Hasil",
+          "content": "Nilai tidak naik setelah 3 bulan? Kami berikan sesi les tambahan gratis.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Customer Support 24/7",
+          "content": "Tim support kami siap membantu Anda kapan saja melalui chat, telepon, atau WhatsApp. Hubungi Kami→",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Hasil Nyata dari Siswa Kami",
+          "content": "Pencapaian terverifikasi dari ribuan siswa di seluruh Indonesia",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Diterima UI Teknik Informatika",
+          "content": "+170 poin UTBKDari skor 550 → 720 dalam 4 bulan Siswa SMA di Jakarta",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Lolos SMAN 3 Bandung",
+          "content": "+25 poin MatematikaDari nilai 65 → 92 Siswa SMP di Bandung",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Masuk 5 Besar",
+          "content": "Naik 20 peringkatDari ranking 25 → ranking 5 Siswa SD di Surabaya",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Beasiswa ke Belanda",
+          "content": "+2.0 band IELTSDari score 5.5 → 7.5 dalam 3 bulan Mahasiswi di Yogyakarta",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Diterima FK UGM",
+          "content": "Lolos jalur SNBTPersiapan intensif 6 bulan Siswa SMA di Semarang",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Medali OSN Matematika",
+          "content": "Tingkat ProvinsiPembinaan 8 bulan Siswa SMA di Medan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pertanyaan yang Sering Diajukan",
+          "content": "Temukan jawaban untuk pertanyaan umum tentang EduPoint",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Siap Memulai Perjalanan Belajar Anda?",
+          "content": "Bergabunglah dengan 100.000+ siswa yang telah merasakan transformasi belajar bersama EduPoint Daftar SekarangKonsultasi Gratis",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPoint tersedia di 60+ kota di seluruh Indonesia termasuk Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Medan, Makassar, Denpasar, dan kota besar lainnya. Untuk les online, kami melayani seluruh Indonesia bahkan luar negeri. Cek halaman kota kami untuk melihat ketersediaan di wilayah Anda."
+        },
+        {
+          "type": "paragraph",
+          "content": "Setiap tutor EduPoint melalui proses seleksi ketat dengan acceptance rate hanya 8%. Proses meliputi: verifikasi ijazah dan transkrip nilai, tes kemampuan materi, micro teaching dengan tim expert, interview kepribadian, dan background check. Kami memastikan setiap tutor memiliki kompetensi akademik dan kemampuan mengajar yang terverifikasi."
+        },
+        {
+          "type": "paragraph",
+          "content": "Kami menyediakan garansi kepuasan tutor. Jika Anda merasa tidak cocok dengan tutor yang ditugaskan, Anda bisa request ganti tutor tanpa biaya tambahan. Tim Education Consultant kami akan mencarikan tutor pengganti yang lebih sesuai dengan preferensi dan gaya belajar Anda."
+        },
+        {
+          "type": "paragraph",
+          "content": "Sistem AI kami menganalisis profil siswa (gaya belajar, preferensi, kebutuhan akademik, jadwal, lokasi) dan mencocokkan dengan database 12,000+ tutor. AI mempertimbangkan track record tutor, keahlian subjek, gaya mengajar, dan feedback siswa sebelumnya. Hasilnya, siswa mendapat tutor yang 95% lebih cocok dibanding matching manual."
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPoint memberikan garansi bahwa jika target pembelajaran tidak tercapai dalam 3 bulan (misalnya kenaikan nilai yang disepakati), siswa berhak mendapat sesi tambahan gratis. Syarat dan ketentuan berlaku sesuai kontrak yang disepakati di awal program."
+        },
+        {
+          "type": "paragraph",
+          "content": "Ya, EduPoint menawarkan fleksibilitas lokasi belajar. Anda bisa memilih les di rumah, cafe, perpustakaan, co-working space, atau lokasi nyaman lainnya sesuai kesepakatan dengan tutor. Tersedia juga opsi les online untuk kenyamanan maksimal."
+        },
+        {
+          "type": "paragraph",
+          "content": "Masih punya pertanyaan?Hubungi kami"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "12.000+ tutor terverifikasidengan latar belakang pendidikan terbaik",
+            "Tersedia di60+ kotadi seluruh Indonesia",
+            "AI-powered matching untuk hasil pembelajaran optimal",
+            "Fleksibilitas lokasi: rumah, cafe, perpustakaan, atauonline",
+            "Garansi hasil belajar - nilai tidak naik, sesi tambahan gratis",
+            "Lebih dari 100.000 siswa telah bergabung dan merasakan hasilnya"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 13
+    },
+    {
+      "url": "https://www.edupoint.id/services",
+      "title": "Layanan Kami | EduPoint | EduPoint Indonesia",
+      "meta_description": "Solusi website lengkap untuk kebutuhan digital bisnis Anda.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Layanan Kami",
+          "content": "Solusi website lengkap untuk kebutuhan digital bisnis Anda.",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 13
+    },
+    {
+      "url": "https://www.edupoint.id/contact",
+      "title": "Contact Us - Free Private Tutoring Consultation | EduPoint | EduPoint Indonesia",
+      "meta_description": "Contact EduPoint for free consultation about private tutoring programs. WhatsApp +6282233330062 or email circle@edupoint.id. We are ready to help your learning needs.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Contact EduPoint",
+          "content": "Get free consultation for your learning needs. Our team is ready to help you find the right private tutoring program.",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Contact Us",
+          "content": "Choose the best way to reach us",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Frequently Asked Questions",
+          "content": "Find quick answers to common questions",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "How long is the response time?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Is the consultation really free?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "How do I register for a private tutoring program?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Can I meet with the EduPoint team in person?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "What if I want to become a tutor at EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Still Have Questions?",
+          "content": "Our team is ready to help you. Contact us now for free consultation! Chat WhatsApp Now",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Programs",
+          "content": "All ProgramsPrivate TutoringPrivate Tutoring JakartaBlog",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Company",
+          "content": "About UsServicesBecome a TutorContact Us",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Support",
+          "content": "AI ChatRegisterWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Privacy PolicyTerms of Service",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Trusted private tutoring in Indonesia. Carefully selected tutors, in-person & online. Available in 15+ cities: Jakarta, Bandung, Surabaya, Jogja, Semarang, and more."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. All rights reserved."
+        },
+        {
+          "type": "list",
+          "items": [
+            "All Programs",
+            "Private Tutoring",
+            "Private Tutoring Jakarta",
+            "Blog"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "About Us",
+            "Services",
+            "Become a Tutor",
+            "Contact Us"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Register",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Privacy Policy",
+            "Terms of Service"
+          ]
+        }
+      ],
+      "links_found": 13
+    },
+    {
+      "url": "https://www.edupoint.id/hubungi",
+      "title": "Hubungi Kami - Konsultasi Gratis Les Privat | EduPoint | EduPoint Indonesia",
+      "meta_description": "Hubungi EduPoint untuk konsultasi gratis tentang program les privat. WhatsApp +6282233330062 atau email circle@edupoint.id. Kami siap membantu kebutuhan belajar Anda.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Hubungi EduPoint",
+          "content": "Dapatkan konsultasi gratis untuk kebutuhan belajar Anda. Tim kami siap membantu Anda menemukan program les privat yang tepat.",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Hubungi Kami",
+          "content": "Pilih cara terbaik untuk menghubungi kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Pertanyaan Umum",
+          "content": "Temukan jawaban cepat untuk pertanyaan yang sering diajukan",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Berapa lama waktu respons tim EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah konsultasi benar-benar gratis?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana cara mendaftar program les privat?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah bisa bertemu langsung dengan tim EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana jika saya ingin menjadi tutor di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Masih Ada Pertanyaan?",
+          "content": "Tim kami siap membantu Anda. Hubungi kami sekarang untuk konsultasi gratis! Chat WhatsApp Sekarang",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 12
+    },
+    {
+      "url": "https://www.edupoint.id/id",
+      "title": "EduPoint - Les Privat & Bimbel Terbaik Indonesia | 60+ Kota | EduPoint Indonesia",
+      "meta_description": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, AI-powered learning, tatap muka & online. Tersedia di 60+ kota seluruh Indonesia. Garansi nilai naik!",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Les Privat & BimbelTerbaik Indonesia",
+          "content": "",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Dipercaya Sekolah Terbaik",
+          "content": "Puluhan institusi pendidikan terpercaya telah bermitra dengan EduPoint",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apa ituEduPoint?",
+          "content": "Human Expert + AI Technology",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Tim Ahli + Teknologi AI",
+          "content": "AI Membantu Tim Kami•Mempercepat analisis kebutuhan belajar•Memberikan rekomendasi tutor yang presisi•Memantau progress dan alert otomatis•Menyusun laporan kemajuan real-timeTim Ahli Kami Bekerja•Education Consultant: konsultasi personal•Matching Team: review & validasi pencocokan•Education Expert: rancang kurikulum khusus•Tutor: mengajar dengan empati & adaptasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Membantu Tim Kami",
+          "content": "",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Tim Ahli Kami Bekerja",
+          "content": "",
+          "level": "h4"
+        },
+        {
+          "type": "section",
+          "heading": "Kesulitan Mencari Les Privat yang Tepat?",
+          "content": "Kami memahami tantangan yang dihadapi orang tua dan pelajar dalam mencari solusi belajar yang efektif.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Susah Cari Tutor Berkualitas",
+          "content": "78% orang tua kesulitan menemukan tutor yang benar-benar kompeten dan cocok dengan anak.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Nilai Tidak Kunjung Naik",
+          "content": "Bimbel konvensional sering tidak efektif karena metode one-size-fits-all.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Jadwal Tidak Fleksibel",
+          "content": "Orang tua bekerja kesulitan mengatur jadwal les yang sesuai aktivitas keluarga.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Tidak Cocok",
+          "content": "Sering ganti tutor karena ketidakcocokan gaya mengajar dengan gaya belajar anak.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Biaya Tidak Transparan",
+          "content": "Banyak bimbel yang menyembunyikan biaya sebenarnya sampai pendaftaran.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tidak Ada Progress Tracking",
+          "content": "Sulit memantau perkembangan belajar anak tanpa sistem yang jelas.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mulai Belajar dalam 4 Langkah",
+          "content": "Proses pendaftaran yang mudah dan cepat untuk memulai perjalanan belajar Anda.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Pilih Program",
+          "content": "Pilih program belajar yang sesuai dengan kebutuhan dan tujuan akademik Anda.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Match Tutor",
+          "content": "Sistem AI kami akan mencocokkan Anda dengan tutor terbaik berdasarkan kebutuhan.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mulai Belajar",
+          "content": "Mulai sesi belajar dengan materi yang dipersonalisasi sesuai kemampuan Anda.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Raih Prestasi",
+          "content": "Pantau perkembangan dan raih prestasi akademik yang Anda impikan.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pilih Kategori Program",
+          "content": "Berbagai program les privat untuk semua kebutuhan belajar Anda.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Akademik",
+          "content": "SD, SMP, SMA, Kuliah",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bahasa",
+          "content": "Inggris, Mandarin, Jepang, dll",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Teknologi",
+          "content": "Programming, Desain, Digital",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Seni",
+          "content": "Lukis, Gambar, Kerajinan",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Olahraga",
+          "content": "Renang, Badminton, Fitness",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bisnis",
+          "content": "Akuntansi, Public Speaking",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Hobi",
+          "content": "Fotografi, Memasak",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Mengapa Pilih EduPoint?",
+          "content": "Platform les privat terpercaya dengan teknologi AI untuk hasil belajar yang optimal.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "AI-Powered Matching",
+          "content": "Sistem AI kami mencocokkan siswa dengan tutor yang paling sesuai berdasarkan gaya belajar, kebutuhan, dan preferensi.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tutor Terseleksi",
+          "content": "Setiap tutor melalui proses seleksi ketat: verifikasi ijazah, tes mengajar, dan background check.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Personalized Learning",
+          "content": "Materi belajar yang dipersonalisasi sesuai kemampuan dan kecepatan belajar setiap siswa.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Progress Tracking",
+          "content": "Pantau perkembangan belajar real-time melalui dashboard yang mudah dipahami.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Garansi Hasil",
+          "content": "Kami yakin dengan kualitas layanan kami. Nilai tidak naik? Kami berikan sesi tambahan gratis.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Fleksibel",
+          "content": "Pilih mode belajar: tatap muka ke rumah, online interaktif, atau kombinasi keduanya.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Tersedia di Berbagai Kota Indonesia",
+          "content": "Tutor terverifikasi siap datang ke rumah Anda atau mengajar secara online di 60+ kota.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Jakarta",
+          "content": "Jabodetabek 250+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bandung",
+          "content": "Jawa Barat 120+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Surabaya",
+          "content": "Jawa Timur 100+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Yogyakarta",
+          "content": "DIY 80+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Semarang",
+          "content": "Jawa Tengah 75+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Malang",
+          "content": "Jawa Timur 70+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Medan",
+          "content": "Sumatera Utara 60+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Makassar",
+          "content": "Sulawesi Selatan 55+TutorLihat",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Online",
+          "content": "Belajar dari mana saja dengan tutor terbaik secara online.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Program Les Privat Unggulan",
+          "content": "Program-program les privat yang paling diminati siswa kami.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SD",
+          "content": "Pendampingan belajar untuk siswa SD kelas 1-6",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SMP",
+          "content": "Pendampingan belajar lengkap untuk siswa SMP",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Privat SMA",
+          "content": "Pendalaman materi SMA untuk semua jurusan (IPA/IPS)",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Persiapan UTBK",
+          "content": "Program intensif persiapan masuk PTN favorit",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Bahasa Inggris",
+          "content": "TOEFL, IELTS, conversation, business English",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Les Programming",
+          "content": "Python, Web Development, Data Science, Mobile App",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Kenali Tutor Terbaik EduPoint",
+          "content": "12,000+ tutor terseleksi dengan keahlian beragam, siap membantu Anda mencapai target belajar.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Destiana R.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Desy Putri R.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "M. Yogik M.",
+          "content": "Terverifikasi",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah & Institusi Terkemuka",
+          "content": "Siswa EduPoint berasal dari berbagai sekolah favorit dan institusi bergengsi di Indonesia.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah Favorit",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Sekolah Internasional",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Universitas & Institusi Terbaik",
+          "content": "Tutor EduPoint adalah alumni dari universitas top dan profesional dari perusahaan terkemuka.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Universitas Top",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan & Institusi",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apa Kata Mereka?",
+          "content": "Cerita sukses dari ribuan siswa dan orang tua yang telah merasakan manfaat les privat EduPoint.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Belajar Lebih Cerdas dengan AI",
+          "content": "EduPoint menggunakan teknologi AI terdepan untuk memberikan pengalaman belajar yang dipersonalisasi dan hasil yang optimal. Pelajari Teknologi Kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "AI Tutor Matching",
+          "content": "Algoritma AI mencocokkan siswa dengan tutor yang paling sesuai berdasarkan gaya belajar, preferensi, dan kebutuhan akademik.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Personalized Learning Path",
+          "content": "AI merancang jalur belajar yang unik untuk setiap siswa, menyesuaikan materi dengan kemampuan dan kecepatan belajar.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Predictive Analytics",
+          "content": "Sistem memprediksi area yang perlu ditingkatkan dan memberikan rekomendasi belajar yang tepat sasaran.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "AI Tutor Assistant",
+          "content": "Asisten AI 24/7 yang siap membantu menjawab pertanyaan dan memberikan penjelasan tambahan kapan saja.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Adaptive Content",
+          "content": "Materi belajar yang secara otomatis menyesuaikan tingkat kesulitan berdasarkan performa siswa.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Smart Progress Reports",
+          "content": "Laporan perkembangan yang dihasilkan AI dengan insights mendalam dan rekomendasi actionable.",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Pertanyaan yang Sering Diajukan",
+          "content": "Temukan jawaban untuk pertanyaan umum tentang layanan les privat EduPoint.",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana cara mendaftar les privat di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Berapa biaya les privat di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah bisa les online atau harus tatap muka?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana proses pencocokan tutor?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah ada garansi jika nilai tidak naik?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Di kota mana saja EduPoint tersedia?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Siap Memulai Perjalanan Belajar?",
+          "content": "Bergabung dengan 50,000+ siswa yang sudah merasakan manfaat les privat EduPoint. Daftar SekarangHubungi via WhatsApp atauTelepon: 0822-3333-0062",
+          "level": "h2"
+        },
+        {
+          "type": "paragraph",
+          "content": "Mulai Rp 50.000/sesi. 300+ program, 12,000+ tutor terverifikasi. AI kami menganalisis kebutuhan Anda dan merancang jalur belajar yang dipersonalisasi."
+        },
+        {
+          "type": "paragraph",
+          "content": "Dipercaya 50,000+ pelajar & 100+ instansi • Rating 4.9/5"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "paragraph",
+          "content": "EduPointadalah platform les privat dan bimbingan belajar terpercaya di Indonesia yang mengutamakan sentuhan manusia (human touch) yang diperkuat teknologi AI. Berbeda dari platform EdTech murni yang menggantikan manusia dengan teknologi, EduPoint mempertahankan peran manusia di setiap tahap: Education Consultant yang memberikan konsultasi personal, tim matching yang memahami kebutuhan unik setiap siswa, Education Expert yang merancang kurikulum, hingga tutor terseleksi yang mengajar dengan empati. AI hadir sebagai alat bantu untuk mempercepat dan mempresisi kerja tim ahli kami—bukan menggantikan mereka."
+        },
+        {
+          "type": "paragraph",
+          "content": "Biaya bervariasi berdasarkan jenjang dan program"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Sastra Inggris UNY yang humoris dan supel. Senang berinteraksi dan membuat suasana belajar menyenangkan."
+        },
+        {
+          "type": "paragraph",
+          "content": "Lulusan PGSD UNJ yang kreatif dan teliti. Aktif mengikuti pelatihan Coursera untuk meningkatkan kualitas mengajar."
+        },
+        {
+          "type": "paragraph",
+          "content": "Tutor Kimia & Biologi"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Kimia ITB dengan kemampuan analitis kuat. Aktif di Himpunan Mahasiswa dan kegiatan pengajaran sosial."
+        },
+        {
+          "type": "paragraph",
+          "content": "“Nilai matematika anak saya naik dari 65 menjadi 90 hanya dalam 3 bulan. Tutornya sabar dan metode mengajarnya mudah dipahami. Sangat recommended!”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SMP - Jakarta"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Berkat EduPoint, saya berhasil lolos UTBK dan diterima di Teknik ITB. Program persiapan UTBK-nya sangat comprehensive dan tutornya berpengalaman.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alumni Siswa•Diterima di ITB"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Sebagai working mom, saya sangat terbantu dengan fleksibilitas jadwal les EduPoint. Tutornya bisa datang ke rumah atau online sesuai kebutuhan kami.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SD - Bandung"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Program les bahasa Inggris EduPoint membantu saya lulus IELTS dengan skor 7.5. Tutornya native speaker dan materinya sangat terstruktur.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Mahasiswa•Persiapan S2 Luar Negeri"
+        },
+        {
+          "type": "paragraph",
+          "content": "“Anak saya dulunya takut matematika, sekarang malah jadi pelajaran favoritnya. Terima kasih EduPoint untuk tutor yang memahami kebutuhan anak.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SD - Surabaya"
+        },
+        {
+          "type": "paragraph",
+          "content": "“AI matching EduPoint sangat akurat. Tutor yang dipilihkan untuk anak saya benar-benar cocok dengan gaya belajarnya. Progress tracking-nya juga memudahkan saya memantau.”"
+        },
+        {
+          "type": "paragraph",
+          "content": "Orang Tua•Siswa SMA - Yogyakarta"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "•Mempercepat analisis kebutuhan belajar",
+            "•Memberikan rekomendasi tutor yang presisi",
+            "•Memantau progress dan alert otomatis",
+            "•Menyusun laporan kemajuan real-time"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "•Education Consultant: konsultasi personal",
+            "•Matching Team: review & validasi pencocokan",
+            "•Education Expert: rancang kurikulum khusus",
+            "•Tutor: mengajar dengan empati & adaptasi"
+          ]
+        }
+      ],
+      "links_found": 32
+    },
+    {
+      "url": "https://www.edupoint.id/id/ai-chat",
+      "title": "AI Chat - Tanya & Daftar Les | EduPoint | EduPoint Indonesia",
+      "meta_description": "Tanya AI Chat soal program les, harga, kendala belajar, atau langsung daftar. EduPoint carikan tutor terbaik!",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Mau cari tutor atau tanya tentang les privat?",
+          "content": "Aku bantu carikan yang terbaik untuk kamu.",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "AI dapat membuat kesalahan. Verifikasi informasi penting."
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 12
+    },
+    {
+      "url": "https://www.edupoint.id/id/artikel",
+      "title": "Blog | Artikel & Insight Terbaru | EduPoint Indonesia",
+      "meta_description": "Baca artikel terbaru kami tentang pengembangan web, SEO, digital marketing, dan tren teknologi.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Blog EduPoint",
+          "content": "Temukan tips belajar efektif, panduan memilih les privat, strategi persiapan ujian, dan insight pendidikan terbaru untuk membantu anak mencapai prestasi terbaik. 50+Artikel10+Topik25K+Pembaca",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Semua Artikel",
+          "content": "Jelajahi koleksi lengkap artikel kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Belum ada artikel. Segera hadir!"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 12
+    },
+    {
+      "url": "https://www.edupoint.id/id/hubungi",
+      "title": "Hubungi Kami - Konsultasi Gratis Les Privat | EduPoint | EduPoint Indonesia",
+      "meta_description": "Hubungi EduPoint untuk konsultasi gratis tentang program les privat. WhatsApp +6282233330062 atau email circle@edupoint.id. Kami siap membantu kebutuhan belajar Anda.",
+      "blocks": [
+        {
+          "type": "section",
+          "heading": "Hubungi EduPoint",
+          "content": "Dapatkan konsultasi gratis untuk kebutuhan belajar Anda. Tim kami siap membantu Anda menemukan program les privat yang tepat.",
+          "level": "h1"
+        },
+        {
+          "type": "section",
+          "heading": "Hubungi Kami",
+          "content": "Pilih cara terbaik untuk menghubungi kami",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Pertanyaan Umum",
+          "content": "Temukan jawaban cepat untuk pertanyaan yang sering diajukan",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Berapa lama waktu respons tim EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah konsultasi benar-benar gratis?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana cara mendaftar program les privat?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Apakah bisa bertemu langsung dengan tim EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bagaimana jika saya ingin menjadi tutor di EduPoint?",
+          "content": "",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Masih Ada Pertanyaan?",
+          "content": "Tim kami siap membantu Anda. Hubungi kami sekarang untuk konsultasi gratis! Chat WhatsApp Sekarang",
+          "level": "h2"
+        },
+        {
+          "type": "section",
+          "heading": "Program",
+          "content": "Semua ProgramLes PrivatLes Privat JakartaArtikel",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Perusahaan",
+          "content": "Tentang KamiLayananJadi TutorHubungi Kami",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Bantuan",
+          "content": "AI ChatDaftar LesWhatsAppEmail",
+          "level": "h3"
+        },
+        {
+          "type": "section",
+          "heading": "Legal",
+          "content": "Kebijakan PrivasiSyarat & Ketentuan",
+          "level": "h3"
+        },
+        {
+          "type": "paragraph",
+          "content": "Les privat dan bimbel terpercaya di Indonesia. Tutor terseleksi, tatap muka & online. Tersedia di 15+ kota: Jakarta, Bandung, Surabaya, Jogja, Semarang, dan lainnya."
+        },
+        {
+          "type": "paragraph",
+          "content": "© 2026 EduPoint Indonesia. Hak cipta dilindungi."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Semua Program",
+            "Les Privat",
+            "Les Privat Jakarta",
+            "Artikel"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Tentang Kami",
+            "Layanan",
+            "Jadi Tutor",
+            "Hubungi Kami"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "AI Chat",
+            "Daftar Les",
+            "WhatsApp",
+            "Email"
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "Kebijakan Privasi",
+            "Syarat & Ketentuan"
+          ]
+        }
+      ],
+      "links_found": 12
+    }
+  ]
+}
