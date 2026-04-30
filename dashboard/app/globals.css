@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-:root {
-  /* HELIX brand tokens — elegant deep violet */
+/* ========== Brand tokens (default = dark) ========== */
+:root,
+[data-theme="dark"] {
   --bg-base: #07050d;
   --bg-deep: #0d0820;
   --bg-violet: #1a0f33;
@@ -22,6 +23,59 @@
 
   --danger: #ef4444;
   --success: #10b981;
+
+  /* Body background composition (per theme) */
+  --bg-gradient: linear-gradient(
+    180deg,
+    #07050d 0%,
+    #0d0820 35%,
+    #1a0f33 55%,
+    #0d0820 80%,
+    #07050d 100%
+  );
+  --glow-1: rgba(124, 58, 237, 0.22);
+  --glow-2: rgba(167, 139, 250, 0.14);
+
+  /* Wordmark gradient stops (per theme) */
+  --wm-1: #f8fafc;
+  --wm-2: #c4b5fd;
+  --wm-3: #a78bfa;
+}
+
+/* ========== Light theme overrides ========== */
+[data-theme="light"] {
+  --bg-base: #fafaf9;
+  --bg-deep: #f5f3ff;
+  --bg-violet: #ede9fe;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f9fafb;
+  --bg-panel: #f3f4f6;
+  --border-subtle: #e4e4e7;
+  --border-strong: #cbd5e1;
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  /* Brand accents tetap — biar identitas violet kuat */
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
+  --accent-lavender: #8b5cf6;
+
+  --bg-gradient: linear-gradient(
+    180deg,
+    #fafaf9 0%,
+    #f5f3ff 35%,
+    #ede9fe 55%,
+    #f5f3ff 80%,
+    #fafaf9 100%
+  );
+  --glow-1: rgba(124, 58, 237, 0.06);
+  --glow-2: rgba(167, 139, 250, 0.05);
+
+  --wm-1: #1e1b4b;
+  --wm-2: #6d28d9;
+  --wm-3: #1e1b4b;
 }
 
 @theme inline {
@@ -38,7 +92,7 @@
   --color-accent-purple: var(--accent-purple);
   --color-accent-lavender: var(--accent-lavender);
   --font-display: var(--font-display, "Orbitron", system-ui, sans-serif);
-  --font-sans: var(--font-sans, "Space Grotesk", system-ui, sans-serif);
+  --font-sans: var(--font-sans, "Geist", "Inter", system-ui, sans-serif);
 }
 
 html {
@@ -46,34 +100,24 @@ html {
 }
 
 body {
-  /* Vertikal gradient hitam → ungu deep → hitam.
-     Single layer, fixed, gak scroll, gak butuh extra div backdrop. */
-  background:
-    linear-gradient(
-      180deg,
-      #07050d 0%,
-      #0d0820 35%,
-      #1a0f33 55%,
-      #0d0820 80%,
-      #07050d 100%
-    );
+  background: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss01";
+  font-feature-settings: "cv11", "ss01", "ss03";
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
   overflow-x: hidden;
 }
 
-/* ========== Ambient violet glow (calm, single layer) ==========
-   Dua radial glow super-soft + slow drift. Cukup untuk kasih depth tanpa
-   distract. Semua gerakan animasi <0.5% per detik, super halus. */
+/* ========== Ambient glow (theme-aware) ========== */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 25% 20%, rgba(124, 58, 237, 0.22), transparent 65%),
-    radial-gradient(ellipse 50% 45% at 75% 80%, rgba(167, 139, 250, 0.14), transparent 65%);
+    radial-gradient(ellipse 60% 50% at 25% 20%, var(--glow-1), transparent 65%),
+    radial-gradient(ellipse 50% 45% at 75% 80%, var(--glow-2), transparent 65%);
   pointer-events: none;
   z-index: 0;
   animation: ambient-breathe 28s ease-in-out infinite alternate;
@@ -108,15 +152,15 @@ body::before {
   100% { transform: rotate(360deg); }
 }
 
-/* ========== Wordmark gradient text animation ========== */
+/* ========== Wordmark gradient (theme-aware) ========== */
 .wordmark {
   background: linear-gradient(
     120deg,
-    #f8fafc 0%,
-    #c4b5fd 25%,
-    #a78bfa 50%,
-    #c4b5fd 75%,
-    #f8fafc 100%
+    var(--wm-1) 0%,
+    var(--wm-2) 25%,
+    var(--wm-3) 50%,
+    var(--wm-2) 75%,
+    var(--wm-1) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -138,11 +182,7 @@ body::before {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ========== Stagger fade-in (untuk hasil generation list) ==========
-   Explicit `opacity: 0` baseline + `forwards` fill = bulletproof terhadap
-   paint race (nggak ada flash sebelum animation kick in).
-   Setiap item set inline style: style={{ "--stagger-i": i }}
-   Delay = i × 60ms. */
+/* ========== Stagger fade-in ========== */
 .stagger-in {
   opacity: 0;
   animation: stagger-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -159,7 +199,6 @@ body::before {
   }
 }
 
-/* Variant untuk panel besar — slide dari atas */
 .reveal-in {
   opacity: 0;
   animation: reveal-down 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -176,8 +215,6 @@ body::before {
 }
 
 /* ========== Regen-section feedback ========== */
-/* Shimmer sweep menutupi section yang lagi di-regenerate.
-   Visual hint: gradien diagonal lewat dari kiri ke kanan, loop. */
 .shimmer-sweep {
   background: linear-gradient(
     105deg,
@@ -191,21 +228,15 @@ body::before {
   animation: shimmer-pan 1.4s linear infinite;
 }
 @keyframes shimmer-pan {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 .spin-loop {
   display: inline-block;
   animation: spin-loop 0.9s linear infinite;
 }
 @keyframes spin-loop {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 /* ========== Button glow (primary) ========== */
@@ -253,8 +284,6 @@ body::before {
   transition: transform 0.1s ease;
 }
 
-/* Generic interactive lift — apply via class .lift-on-hover.
-   Durations under 200ms supaya tab & card transitions snappy. */
 .lift-on-hover {
   transition:
     transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -268,7 +297,6 @@ body::before {
     0 0 0 1px rgba(167, 139, 250, 0.25);
 }
 
-/* ========== Input focus glow ========== */
 .input-glow:focus {
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15), 0 0 24px -4px rgba(124, 58, 237, 0.3);
 }
@@ -316,7 +344,7 @@ body::before {
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ========== DNA helix loader (for loading states) ========== */
+/* ========== DNA helix loader ========== */
 @keyframes dna-bounce {
   0%, 80%, 100% { transform: scaleY(0.4); opacity: 0.5; }
   40%           { transform: scaleY(1); opacity: 1; }
@@ -326,3 +354,83 @@ body::before {
 }
 .dna-dot:nth-child(2) { animation-delay: 0.15s; }
 .dna-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* ============================================================
+   Light-theme utility overrides — flip dark-slate surfaces
+   ke clean light tone tanpa harus refactor 87 tempat di komponen.
+   Specificity [data-theme="light"] .X (0,2,0) > .X (0,1,0), jadi
+   override naturally win tanpa !important.
+   ============================================================ */
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-slate-900 {
+  background-color: #ffffff;
+}
+[data-theme="light"] .bg-slate-950\/40 {
+  background-color: rgba(248, 250, 252, 0.7);
+}
+[data-theme="light"] .bg-slate-900\/40 {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+[data-theme="light"] .bg-slate-900\/50,
+[data-theme="light"] .bg-slate-900\/60 {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] .bg-slate-800\/40,
+[data-theme="light"] .bg-slate-800\/60 {
+  background-color: rgba(241, 245, 249, 0.7);
+}
+[data-theme="light"] .bg-slate-700 {
+  background-color: #cbd5e1;
+}
+[data-theme="light"] .bg-black\/20 {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+/* Borders */
+[data-theme="light"] .border-slate-700,
+[data-theme="light"] .border-slate-700\/60 {
+  border-color: #cbd5e1;
+}
+[data-theme="light"] .border-slate-800 {
+  border-color: #e2e8f0;
+}
+[data-theme="light"] .border-slate-800\/40,
+[data-theme="light"] .border-slate-800\/50,
+[data-theme="light"] .border-slate-800\/60 {
+  border-color: rgba(226, 232, 240, 0.8);
+}
+
+/* Text — invert to dark slate so it's readable on light bg */
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300 {
+  color: #1e293b;
+}
+[data-theme="light"] .text-slate-400 {
+  color: #475569;
+}
+[data-theme="light"] .text-slate-500 {
+  color: #64748b;
+}
+[data-theme="light"] .text-slate-600 {
+  color: #94a3b8;
+}
+
+/* Violet/blue accent text — perdalam shade biar contrast cukup di light */
+[data-theme="light"] .text-violet-200,
+[data-theme="light"] .text-violet-300 {
+  color: #6d28d9;
+}
+[data-theme="light"] .text-violet-400 {
+  color: #7c3aed;
+}
+[data-theme="light"] .text-violet-100 {
+  color: #4c1d95;
+}
+
+/* Backdrop blur surfaces — tone down karena di light bg lebih kontras */
+[data-theme="light"] .backdrop-blur,
+[data-theme="light"] .backdrop-blur-xl {
+  backdrop-filter: blur(8px) saturate(1.1);
+}

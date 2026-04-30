@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { API_URL } from "./api-client";
 import { BrandSwitcher } from "./BrandSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { useBackendStatus } from "./use-backend-status";
 
 const NAV = [
@@ -67,7 +68,8 @@ export function AppHeader({
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <StatusDot status={backendStatus} />
           <BrandSwitcher
             brands={brands}
