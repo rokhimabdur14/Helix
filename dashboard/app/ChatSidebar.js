@@ -19,6 +19,8 @@ export function ChatSidebar({
   onDelete,
   isOpen,
   onClose,
+  desktopHidden = false,
+  onCollapse,
 }) {
   const [search, setSearch] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
@@ -57,23 +59,41 @@ export function ChatSidebar({
       )}
 
       <aside
-        className={`helix-sidebar-surface fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r backdrop-blur-xl transition-transform md:static md:translate-x-0 ${
+        className={`helix-sidebar-surface fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r backdrop-blur-xl transition-all duration-300 md:static ${
           isOpen ? "translate-x-0" : "-translate-x-full"
+        } ${
+          desktopHidden
+            ? "md:w-0 md:-translate-x-full md:overflow-hidden md:border-r-0"
+            : "md:w-72 md:translate-x-0"
         }`}
       >
         <div className="helix-section-divider flex items-center justify-between border-b px-4 py-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             Riwayat Chat
           </h2>
-          <button
-            onClick={onClose}
-            className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:hidden"
-            aria-label="Tutup sidebar"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={onCollapse}
+              className="hidden rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:block"
+              aria-label="Sembunyikan sidebar"
+              title="Sembunyikan sidebar"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <path d="M9 4v16" />
+                <path d="M14 9l-2 3 2 3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              onClick={onClose}
+              className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:hidden"
+              aria-label="Tutup sidebar"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="helix-section-divider border-b p-3">

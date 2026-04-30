@@ -38,6 +38,7 @@ export default function ChatPage() {
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarHiddenDesktop, setSidebarHiddenDesktop] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Load conversation list dari localStorage tiap kali switch brand/mode
@@ -205,7 +206,7 @@ export default function ChatPage() {
         onDelete={deleteBrand}
       />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative z-0 flex flex-1 overflow-hidden">
         <ChatSidebar
           conversations={conversations}
           activeId={activeConversationId}
@@ -214,23 +215,41 @@ export default function ChatPage() {
           onDelete={handleDeleteConversation}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          desktopHidden={sidebarHiddenDesktop}
+          onCollapse={() => setSidebarHiddenDesktop(true)}
         />
 
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-800/40 px-3 py-2 md:hidden">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="flex items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-              aria-label="Buka riwayat chat"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
-              </svg>
-              Riwayat
-            </button>
+          <div className="flex items-center justify-between border-b border-slate-800/40 px-3 py-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="flex items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:hidden"
+                aria-label="Buka riwayat chat"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
+                </svg>
+                Riwayat
+              </button>
+              {sidebarHiddenDesktop && (
+                <button
+                  onClick={() => setSidebarHiddenDesktop(false)}
+                  className="hidden items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:flex"
+                  aria-label="Tampilkan riwayat chat"
+                  title="Tampilkan riwayat (Ctrl+B)"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                    <path d="M9 4v16" />
+                  </svg>
+                  Riwayat
+                </button>
+              )}
+            </div>
             <button
               onClick={handleNewChat}
-              className="rounded-md px-2 py-1 text-xs text-violet-300 hover:bg-violet-500/10"
+              className="rounded-md px-2 py-1 text-xs text-violet-500 hover:bg-violet-500/10 md:hidden"
             >
               + Chat Baru
             </button>
