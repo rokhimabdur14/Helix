@@ -5,6 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { AddBrandModal } from "./AddBrandModal";
 import { api, API_URL, ApiUpstreamError } from "./api-client";
 import { AppHeader } from "./AppHeader";
+import { ChatSidebar } from "./ChatSidebar";
+import {
+  createConversation,
+  deleteConversation,
+  getConversation,
+  listConversations,
+  updateConversation,
+} from "./lib/conversation-store";
 import { useBrand } from "./use-brand";
 
 export default function ChatPage() {
@@ -27,12 +35,21 @@ export default function ChatPage() {
   const [error, setError] = useState(null);
   // mode: "brand" (pakai context brand aktif) | "free" (HELIX expertise saja, no brand)
   const [mode, setMode] = useState("brand");
+  const [conversations, setConversations] = useState([]);
+  const [activeConversationId, setActiveConversationId] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Reset chat history kalau switch brand atau switch mode
+  // Load conversation list dari localStorage tiap kali switch brand/mode
   useEffect(() => {
     setHistory([]);
     setError(null);
+    setActiveConversationId(null);
+    if (mode === "brand" && !activeBrandId) {
+      setConversations([]);
+      return;
+    }
+    setConversations(listConversations(mode, activeBrandId));
   }, [activeBrandId, mode]);
 
   useEffect(() => {
@@ -41,6 +58,30 @@ export default function ChatPage() {
 
   // Free mode: nggak butuh brand. Brand mode: butuh activeBrandId.
   const canSend = mode === "free" || !!activeBrandId;
+
+  function handleNewChat() {
+    setHistory([]);
+    setActiveConversationId(null);
+    setError(null);
+    setInput("");
+  }
+
+  function handleSelectConversation(id) {
+    const conv = getConversation(id, mode, activeBrandId);
+    if (!conv) return;
+    setActiveConversationId(id);
+    setHistory(conv.messages || []);
+    setError(null);
+  }
+
+  function handleDeleteConversation(id) {
+    deleteConversation(id, mode, activeBrandId);
+    setConversations((curr) => curr.filter((c) => c.id !== id));
+    if (id === activeConversationId) {
+      setHistory([]);
+      setActiveConversationId(null);
+    }
+  }
 
   async function attemptSend(brandIdForRequest, prevHistory, message) {
     let accumulated = "";
@@ -66,6 +107,23 @@ export default function ChatPage() {
     if (!assistantAppended) {
       setHistory((curr) => [...curr, { role: "assistant", content: "" }]);
     }
+    return accumulated;
+  }
+
+  function persistConversation(convId, prevHistory, userMessage, assistantContent) {
+    if (!convId) return;
+    const finalHistory = [
+      ...prevHistory,
+      { role: "user", content: userMessage },
+      { role: "assistant", content: assistantContent },
+    ];
+    const saved = updateConversation(convId, mode, activeBrandId, finalHistory);
+    if (saved) {
+      setConversations((curr) => {
+        const others = curr.filter((c) => c.id !== convId);
+        return [saved, ...others];
+      });
+    }
   }
 
   async function sendMessage() {
@@ -76,6 +134,15 @@ export default function ChatPage() {
     setError(null);
     setLoading(true);
 
+    // Bikin conversation baru kalau belum ada yang aktif
+    let convId = activeConversationId;
+    if (!convId) {
+      const newConv = createConversation(mode, activeBrandId, message);
+      convId = newConv.id;
+      setActiveConversationId(convId);
+      setConversations((curr) => [newConv, ...curr]);
+    }
+
     const prevHistory = history;
     // Append user message immediately. Assistant bubble di-append nanti pas
     // chunk pertama dateng — LoadingBubble visible sampai bubble jawaban muncul.
@@ -84,7 +151,8 @@ export default function ChatPage() {
     const brandIdForRequest = mode === "free" ? null : activeBrandId;
 
     try {
-      await attemptSend(brandIdForRequest, prevHistory, message);
+      const assistantContent = await attemptSend(brandIdForRequest, prevHistory, message);
+      persistConversation(convId, prevHistory, message, assistantContent);
     } catch (err) {
       // 502/503/504 = HF cold-start / proxy error. Tampilkan banner amber
       // + auto-retry sekali setelah 6s (HF biasanya boot < 15s).
@@ -95,7 +163,8 @@ export default function ChatPage() {
         });
         await new Promise((r) => setTimeout(r, 6000));
         try {
-          await attemptSend(brandIdForRequest, prevHistory, message);
+          const assistantContent = await attemptSend(brandIdForRequest, prevHistory, message);
+          persistConversation(convId, prevHistory, message, assistantContent);
           setError(null);
         } catch (err2) {
           setError({
@@ -136,8 +205,39 @@ export default function ChatPage() {
         onDelete={deleteBrand}
       />
 
-      <main className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
-        <div className="mx-auto max-w-3xl space-y-4">
+      <div className="flex flex-1 overflow-hidden">
+        <ChatSidebar
+          conversations={conversations}
+          activeId={activeConversationId}
+          onSelect={handleSelectConversation}
+          onNew={handleNewChat}
+          onDelete={handleDeleteConversation}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-800/40 px-3 py-2 md:hidden">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="flex items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+              aria-label="Buka riwayat chat"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
+              </svg>
+              Riwayat
+            </button>
+            <button
+              onClick={handleNewChat}
+              className="rounded-md px-2 py-1 text-xs text-violet-300 hover:bg-violet-500/10"
+            >
+              + Chat Baru
+            </button>
+          </div>
+
+          <main className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+            <div className="mx-auto max-w-3xl space-y-4">
           <ModeToggle mode={mode} onChange={setMode} />
 
           {brandsLoading && mode === "brand" && (
@@ -204,41 +304,43 @@ export default function ChatPage() {
             </div>
           )}
 
-          <div ref={messagesEndRef} />
-        </div>
-      </main>
+              <div ref={messagesEndRef} />
+            </div>
+          </main>
 
-      <footer className="border-t border-slate-800/60 bg-slate-950/40 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
-        <div className="mx-auto max-w-3xl">
-          <div className="flex gap-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKey}
-              placeholder={
-                mode === "free"
-                  ? "Tanya apa saja tentang strategi sosmed..."
-                  : activeBrandId
-                  ? `Tanya strategi sosmed untuk ${activeBrand?.brand_name}...`
-                  : "Pilih brand dulu (atau switch ke Free Chat)..."
-              }
-              rows={1}
-              disabled={loading || !canSend}
-              className="input-glow flex-1 resize-none rounded-xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none transition disabled:opacity-50"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || loading || !canSend}
-              className="btn-primary rounded-xl px-6 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Kirim
-            </button>
-          </div>
-          <p className="mt-2 text-center text-xs text-slate-600">
-            Enter untuk kirim · Shift+Enter untuk baris baru
-          </p>
+          <footer className="border-t border-slate-800/60 bg-slate-950/40 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
+            <div className="mx-auto max-w-3xl">
+              <div className="flex gap-2">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKey}
+                  placeholder={
+                    mode === "free"
+                      ? "Tanya apa saja tentang strategi sosmed..."
+                      : activeBrandId
+                      ? `Tanya strategi sosmed untuk ${activeBrand?.brand_name}...`
+                      : "Pilih brand dulu (atau switch ke Free Chat)..."
+                  }
+                  rows={1}
+                  disabled={loading || !canSend}
+                  className="input-glow flex-1 resize-none rounded-xl border border-slate-700/60 bg-slate-900/60 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none transition disabled:opacity-50"
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={!input.trim() || loading || !canSend}
+                  className="btn-primary rounded-xl px-6 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Kirim
+                </button>
+              </div>
+              <p className="mt-2 text-center text-xs text-slate-600">
+                Enter untuk kirim · Shift+Enter untuk baris baru
+              </p>
+            </div>
+          </footer>
         </div>
-      </footer>
+      </div>
 
       <AddBrandModal
         open={addOpen}
