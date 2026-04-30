@@ -211,6 +211,43 @@ ATURAN OUTPUT:
 """
 
 
+def _system_prompt_free(role_intro: str) -> str:
+    """Free-mode system prompt: HELIX expertise only, no brand context.
+
+    Dipakai saat user akses Studio tanpa pilih brand (mirip Free Chat).
+    Output tetap solid karena role + expertise + user-supplied topic
+    udah cukup bahan, tapi gak punya brand DNA jadi otomatis lebih generic.
+    User bertanggung jawab kasih konteks (topic, angle) yang detail.
+    """
+    expertise_text, _ = load_expertise()
+    expertise_block = ""
+    if expertise_text:
+        expertise_block = f"""
+
+=== HELIX EXPERTISE (knowledge base umum, pakai sebagai prinsip) ===
+{expertise_text}
+"""
+
+    return f"""{role_intro}
+
+ATURAN OUTPUT (FREE MODE — tanpa brand context):
+- Output WAJIB valid JSON sesuai schema yang diminta
+- Bahasa Indonesia kasual-profesional (boleh campur istilah marketing Inggris)
+- Gunakan emoji secukupnya untuk readability
+- Karena belum ada brand context, ekstrak SEMUA cue dari topik/input user
+- Kalau topik ambigu, kasih versi paling reusable + sebut asumsi yang dipakai
+- Terapkan prinsip dari HELIX expertise (algoritma, growth tactics, storytelling)
+- Jangan invent fakta brand spesifik (nama, harga, lokasi) — stay topic-grounded
+{expertise_block}"""
+
+
+def _system_prompt(brand_id: str | None, role_intro: str) -> str:
+    """Pick brand-aware atau free system prompt based on brand_id."""
+    if brand_id:
+        return _system_prompt_with_brand(brand_id, role_intro)
+    return _system_prompt_free(role_intro)
+
+
 def _generate_json(
     system: str,
     user: str,
@@ -241,18 +278,20 @@ pattern interrupt, dan curiosity gap."""
 
 
 def generate_hooks(
-    brand_id: str,
+    brand_id: str | None,
     topic: str,
     format_type: Literal["reel", "tiktok", "story"] = "reel",
     count: int = 5,
 ) -> dict:
     """Generate scroll-stopping hooks untuk video.
 
+    brand_id None = free mode (HELIX expertise only, no brand DNA).
+
     Returns:
         {"hooks": [{"text": "...", "type": "question|shock|promise|story",
                      "reasoning": "..."}]}
     """
-    system = _system_prompt_with_brand(brand_id, HOOK_ROLE)
+    system = _system_prompt(brand_id, HOOK_ROLE)
     user = f"""Buat {count} hook (3-5 detik pertama) untuk video {format_type.upper()} tentang:
 
 TOPIK: {topic}
@@ -284,7 +323,7 @@ struktur storytelling, dan CTA yang convert."""
 
 
 def generate_caption(
-    brand_id: str,
+    brand_id: str | None,
     post_context: str,
     goal: Literal["awareness", "engagement", "sales", "education"] = "engagement",
     length: Literal["short", "medium", "long"] = "medium",
@@ -308,7 +347,7 @@ def generate_caption(
         "education": "Fokus ke value/insight, positioning expert",
     }
 
-    system = _system_prompt_with_brand(brand_id, CAPTION_ROLE)
+    system = _system_prompt(brand_id, CAPTION_ROLE)
     user = f"""Buat caption Instagram untuk post ini:
 
 KONTEKS POST: {post_context}
@@ -340,7 +379,7 @@ CTA slide terakhir. Kamu paham swipe psychology."""
 
 
 def generate_carousel(
-    brand_id: str,
+    brand_id: str | None,
     topic: str,
     num_slides: int = 5,
     goal: Literal["education", "storytelling", "listicle", "promotion"] = "education",
@@ -360,7 +399,7 @@ def generate_carousel(
         "promotion": "Slide 1 problem, slide 2-N benefit/solution, slide terakhir offer+CTA",
     }
 
-    system = _system_prompt_with_brand(brand_id, CAROUSEL_ROLE)
+    system = _system_prompt(brand_id, CAROUSEL_ROLE)
     user = f"""Buat Instagram carousel {num_slides} slides tentang:
 
 TOPIK: {topic}
@@ -424,7 +463,7 @@ def _load_brand_insights(brand_id: str) -> str | None:
 
 
 def generate_plan(
-    brand_id: str,
+    brand_id: str | None,
     period: Literal["week", "month"] = "week",
     posts_per_week: int = 4,
     start_date: str | None = None,
@@ -460,10 +499,11 @@ def generate_plan(
         else "balanced mix (awareness, engagement, education, sales)"
     )
 
-    insights_section = _load_brand_insights(brand_id)
+    # Insights cuma ada per-brand; di free mode skip
+    insights_section = _load_brand_insights(brand_id) if brand_id else None
     insights_block = f"\n\n{insights_section}" if insights_section else ""
 
-    system = _system_prompt_with_brand(brand_id, PLAN_ROLE) + insights_block
+    system = _system_prompt(brand_id, PLAN_ROLE) + insights_block
 
     theme_clean = (theme or "").strip()
     theme_block = ""
@@ -742,7 +782,7 @@ Output JSON valid:
 
 
 def generate_brief(
-    brand_id: str,
+    brand_id: str | None,
     format_type: Literal["reel", "carousel_foto", "single_foto", "story"],
     topic: str,
     mode: Literal["tiru", "modifikasi", "original"] = "original",
@@ -754,10 +794,16 @@ def generate_brief(
 ) -> dict:
     """Generate brief eksekusi lengkap untuk 1 post.
 
+    brand_id None = free mode: targeted refs (per-brand library) di-skip,
+    user wajib pakai reference_text manual kalau mau mode tiru/modifikasi.
+
     Returns format-specific dict (lihat _brief_user_prompt schemas).
     """
-    system = _system_prompt_with_brand(brand_id, BRIEF_ROLE)
-    targeted_refs = _load_specific_references(brand_id, reference_ids)
+    system = _system_prompt(brand_id, BRIEF_ROLE)
+    # Reference library per-brand → skip kalau free mode
+    targeted_refs = (
+        _load_specific_references(brand_id, reference_ids) if brand_id else ""
+    )
 
     user = _brief_user_prompt(
         format_type=format_type,

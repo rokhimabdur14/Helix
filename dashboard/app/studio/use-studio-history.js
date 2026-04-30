@@ -3,13 +3,19 @@
 import { useCallback, useEffect, useState } from "react";
 
 const MAX_ENTRIES = 10;
+// brandId null/undefined = free studio mode → simpan di scope global per-tool
+const FREE_SCOPE = "__free__";
+
+function scopeOf(brandId) {
+  return brandId || FREE_SCOPE;
+}
 
 function storageKey(tool, brandId) {
-  return `helix.studio.history.${tool}.${brandId}`;
+  return `helix.studio.history.${tool}.${scopeOf(brandId)}`;
 }
 
 function readHistory(tool, brandId) {
-  if (typeof window === "undefined" || !brandId) return [];
+  if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(storageKey(tool, brandId));
     if (!raw) return [];
@@ -21,7 +27,7 @@ function readHistory(tool, brandId) {
 }
 
 function writeHistory(tool, brandId, entries) {
-  if (typeof window === "undefined" || !brandId) return;
+  if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(
       storageKey(tool, brandId),
@@ -39,7 +45,6 @@ export function useStudioHistory(tool, brandId) {
 
   const save = useCallback(
     (input, output) => {
-      if (!brandId) return;
       const entry = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         ts: Date.now(),

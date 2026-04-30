@@ -54,6 +54,11 @@ const TABS = [
 
 const VALID_TAB_IDS = TABS.map((t) => t.id);
 const DEFAULT_TAB = "plan";
+// References tab disable di free mode (per-brand library — gak relevan tanpa brand)
+const FREE_MODE_TAB_IDS = TABS.filter((t) => t.id !== "references").map(
+  (t) => t.id
+);
+const VALID_MODES = ["brand", "free"];
 
 // Wrapper supaya useSearchParams muat di Suspense boundary (Next.js 16 req).
 export default function StudioPage() {
@@ -81,12 +86,23 @@ function StudioPageInner() {
   const searchParams = useSearchParams();
 
   const [addOpen, setAddOpen] = useState(false);
-  // Initialize from URL: ?tab=hook → activeTab "hook" (validated)
+  // Initialize from URL: ?tab=hook → activeTab "hook" (validated).
+  // ?mode=free → free studio (no brand). Default brand mode.
+  const initialMode = (() => {
+    const m = searchParams.get("mode");
+    return VALID_MODES.includes(m) ? m : "brand";
+  })();
   const initialTab = (() => {
     const t = searchParams.get("tab");
-    return VALID_TAB_IDS.includes(t) ? t : DEFAULT_TAB;
+    const allowed =
+      initialMode === "free" ? FREE_MODE_TAB_IDS : VALID_TAB_IDS;
+    return allowed.includes(t) ? t : DEFAULT_TAB;
   })();
+  const [mode, setMode] = useState(initialMode);
   const [activeTab, setActiveTab] = useState(initialTab);
+  // Effective brand id passed ke API + history. Null = free mode → backend
+  // pakai HELIX expertise saja, history per-tool global di scope "__free__".
+  const studioBrandId = mode === "free" ? null : activeBrandId;
   // Prefill: payload yang dikirim dari PlanTab → tab tujuan untuk pre-fill input
   // Shape: { tool: "hook|caption|carousel", payload: {...} }
   const [prefill, setPrefill] = useState(null);
@@ -97,8 +113,14 @@ function StudioPageInner() {
 
   // Sync URL → state untuk back/forward browser navigation
   useEffect(() => {
+    const m = searchParams.get("mode");
+    const nextMode = VALID_MODES.includes(m) ? m : "brand";
+    if (nextMode !== mode) setMode(nextMode);
+
     const t = searchParams.get("tab");
-    const next = VALID_TAB_IDS.includes(t) ? t : DEFAULT_TAB;
+    const allowed =
+      nextMode === "free" ? FREE_MODE_TAB_IDS : VALID_TAB_IDS;
+    const next = allowed.includes(t) ? t : DEFAULT_TAB;
     if (next !== activeTab) {
       setActiveTab(next);
     }
@@ -108,20 +130,47 @@ function StudioPageInner() {
   // Wrapper: update state + URL (replace, no scroll, no history spam)
   const changeTab = useCallback(
     (tab) => {
-      if (!VALID_TAB_IDS.includes(tab)) return;
+      const allowed = mode === "free" ? FREE_MODE_TAB_IDS : VALID_TAB_IDS;
+      if (!allowed.includes(tab)) return;
       setActiveTab(tab);
       const params = new URLSearchParams(searchParams.toString());
       params.set("tab", tab);
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams]
+    [mode, pathname, router, searchParams]
   );
+
+  const changeMode = useCallback(
+    (nextMode) => {
+      if (!VALID_MODES.includes(nextMode) || nextMode === mode) return;
+      setMode(nextMode);
+      const params = new URLSearchParams(searchParams.toString());
+      if (nextMode === "free") {
+        params.set("mode", "free");
+        // References tab gak ada di free → reset ke plan kalau lagi di refs
+        if (activeTab === "references") {
+          params.set("tab", DEFAULT_TAB);
+          setActiveTab(DEFAULT_TAB);
+        }
+      } else {
+        params.delete("mode");
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [activeTab, mode, pathname, router, searchParams]
+  );
+
+  // Visible tabs depend on mode — Free mode hide References tab.
+  const visibleTabs = mode === "free"
+    ? TABS.filter((t) => t.id !== "references")
+    : TABS;
+  const visibleTabIds = visibleTabs.map((t) => t.id);
 
   // Tab refs untuk keyboard nav: Arrow/Home/End cycle + focus management.
   const tabRefs = useRef([]);
   const handleTabKeyDown = useCallback(
     (event, currentIdx) => {
-      const last = VALID_TAB_IDS.length - 1;
+      const last = visibleTabIds.length - 1;
       let nextIdx = null;
       switch (event.key) {
         case "ArrowRight":
@@ -140,11 +189,11 @@ function StudioPageInner() {
           return;
       }
       event.preventDefault();
-      const nextTab = VALID_TAB_IDS[nextIdx];
+      const nextTab = visibleTabIds[nextIdx];
       changeTab(nextTab);
       tabRefs.current[nextIdx]?.focus();
     },
-    [changeTab]
+    [changeTab, visibleTabIds]
   );
 
   useEffect(() => {
@@ -153,17 +202,16 @@ function StudioPageInner() {
       .catch(() => setExpertise([]));
   }, []);
 
-  // Fetch social counts saat brand berubah, supaya indicator SOCIAL DNA muncul
-  // di tab Plan/Hook/Caption/Carousel walau user belum pernah ke References tab.
+  // Fetch social counts saat brand berubah. Skip di free mode (per-brand only).
   useEffect(() => {
-    if (!activeBrandId) {
+    if (!studioBrandId) {
       setSocialCounts({ references: 0, profiles: 0 });
       return;
     }
     let cancelled = false;
     Promise.all([
-      api.social.getProfile(activeBrandId).catch(() => ({ snapshots: [] })),
-      api.social.listReferences(activeBrandId).catch(() => ({ references: [] })),
+      api.social.getProfile(studioBrandId).catch(() => ({ snapshots: [] })),
+      api.social.listReferences(studioBrandId).catch(() => ({ references: [] })),
     ]).then(([p, r]) => {
       if (cancelled) return;
       const profiles = (p.snapshots || []).filter((s) => s.status === "ready").length;
@@ -173,7 +221,7 @@ function StudioPageInner() {
     return () => {
       cancelled = true;
     };
-  }, [activeBrandId]);
+  }, [studioBrandId]);
 
   const sendToTool = useCallback(
     (tool, payload) => {
@@ -202,17 +250,27 @@ function StudioPageInner() {
 
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2 className="wordmark font-display text-2xl font-bold uppercase md:text-3xl">
                 Content Studio
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Generate konten sosmed untuk{" "}
-                <span className="text-violet-300">
-                  {activeBrand?.brand_name || "—"}
-                </span>{" "}
-                · powered by HELIX
+                {mode === "free" ? (
+                  <>
+                    <span className="text-violet-300">Free Studio</span> —
+                    generate konten tanpa brand context, powered by HELIX
+                    expertise
+                  </>
+                ) : (
+                  <>
+                    Generate konten sosmed untuk{" "}
+                    <span className="text-violet-300">
+                      {activeBrand?.brand_name || "—"}
+                    </span>{" "}
+                    · powered by HELIX
+                  </>
+                )}
               </p>
             </div>
             {expertise.length > 0 && (
@@ -220,42 +278,68 @@ function StudioPageInner() {
             )}
           </div>
 
-          {brandsLoading && (
+          <div className="mb-6">
+            <StudioModeToggle mode={mode} onChange={changeMode} />
+          </div>
+
+          {brandsLoading && mode === "brand" && (
             <div className="mt-12 text-center text-sm text-slate-500">
               Loading brands...
             </div>
           )}
 
-          {brandsError && (
+          {brandsError && mode === "brand" && (
             <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300">
               Gagal load brands: {brandsError}
             </div>
           )}
 
-          {!brandsLoading && brands.length === 0 && (
-            <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/40 p-10 text-center backdrop-blur">
-              <p className="text-sm text-slate-400">
-                Belum ada brand. Tambahkan brand dulu di header untuk mulai
-                generate konten.
-              </p>
-              <button
-                onClick={() => setAddOpen(true)}
-                className="btn-primary mt-4 rounded-lg px-6 py-2 text-sm font-semibold text-white"
-              >
-                + Tambah brand
-              </button>
-            </div>
-          )}
+          {mode === "brand" &&
+            !brandsLoading &&
+            brands.length === 0 && (
+              <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/40 p-10 text-center backdrop-blur">
+                <p className="text-sm text-slate-400">
+                  Belum ada brand. Tambahkan brand untuk Studio dengan brand
+                  context, atau{" "}
+                  <button
+                    onClick={() => changeMode("free")}
+                    className="text-violet-300 underline-offset-2 hover:underline"
+                  >
+                    coba Free Studio
+                  </button>{" "}
+                  dulu tanpa setup.
+                </p>
+                <button
+                  onClick={() => setAddOpen(true)}
+                  className="btn-primary mt-4 rounded-lg px-6 py-2 text-sm font-semibold text-white"
+                >
+                  + Tambah brand
+                </button>
+              </div>
+            )}
 
-          {!brandsLoading && activeBrandId && (
+          {mode === "brand" &&
+            !brandsLoading &&
+            brands.length > 0 &&
+            !activeBrandId && (
+              <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/40 p-10 text-center backdrop-blur">
+                <p className="text-sm text-slate-400">
+                  Pilih brand dulu di header untuk mulai generate konten.
+                </p>
+              </div>
+            )}
+
+          {(mode === "free" || (!brandsLoading && activeBrandId)) && (
             <>
               <div
                 role="tablist"
                 aria-label="Studio tools"
                 aria-orientation="horizontal"
-                className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6"
+                className={`grid grid-cols-2 gap-2 md:grid-cols-3 ${
+                  mode === "free" ? "lg:grid-cols-5" : "lg:grid-cols-6"
+                }`}
               >
-                {TABS.map((tab, idx) => {
+                {visibleTabs.map((tab, idx) => {
                   const Icon = tab.icon;
                   const active = activeTab === tab.id;
                   return (
@@ -303,7 +387,8 @@ function StudioPageInner() {
                 })}
               </div>
 
-              {(socialCounts.references > 0 || socialCounts.profiles > 0) &&
+              {mode === "brand" &&
+                (socialCounts.references > 0 || socialCounts.profiles > 0) &&
                 activeTab !== "references" && (
                   <button
                     onClick={() => changeTab("references")}
@@ -337,37 +422,37 @@ function StudioPageInner() {
               >
                 {activeTab === "plan" && (
                   <PlanTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     onSendToTool={sendToTool}
                   />
                 )}
                 {activeTab === "brief" && (
                   <BriefTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     consumePrefill={consumePrefill}
                   />
                 )}
                 {activeTab === "hook" && (
                   <HookTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     consumePrefill={consumePrefill}
                   />
                 )}
                 {activeTab === "caption" && (
                   <CaptionTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     consumePrefill={consumePrefill}
                   />
                 )}
                 {activeTab === "carousel" && (
                   <CarouselTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     consumePrefill={consumePrefill}
                   />
                 )}
-                {activeTab === "references" && (
+                {activeTab === "references" && mode === "brand" && (
                   <ReferencesTab
-                    brandId={activeBrandId}
+                    brandId={studioBrandId}
                     onCountChange={setSocialCounts}
                   />
                 )}
@@ -383,6 +468,47 @@ function StudioPageInner() {
         onCreate={createBrand}
       />
     </div>
+  );
+}
+
+function StudioModeToggle({ mode, onChange }) {
+  return (
+    <div className="inline-flex items-center gap-1 rounded-xl border border-slate-800/60 bg-slate-900/40 p-1 backdrop-blur">
+      <ModeButton
+        active={mode === "brand"}
+        onClick={() => onChange("brand")}
+        label="Brand Studio"
+        sub="dengan brand DNA + social refs"
+      />
+      <ModeButton
+        active={mode === "free"}
+        onClick={() => onChange("free")}
+        label="Free Studio"
+        sub="HELIX expertise saja"
+      />
+    </div>
+  );
+}
+
+function ModeButton({ active, onClick, label, sub }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-lg px-4 py-2 text-left transition ${
+        active
+          ? "bg-gradient-to-r from-blue-600/30 to-violet-600/30 text-violet-100 shadow-inner shadow-violet-900/30"
+          : "text-slate-400 hover:text-violet-300"
+      }`}
+    >
+      <div className="text-sm font-semibold">{label}</div>
+      <div
+        className={`text-[10px] ${
+          active ? "text-violet-300/80" : "text-slate-600"
+        }`}
+      >
+        {sub}
+      </div>
+    </button>
   );
 }
 

@@ -563,28 +563,29 @@ def chat_stream(req: ChatRequest):
 # ========== Content Studio endpoints ==========
 
 class HookRequest(BaseModel):
-    brand_id: str
+    # brand_id None = free mode (HELIX expertise saja, no brand DNA)
+    brand_id: str | None = None
     topic: str = Field(..., min_length=3, max_length=500)
     format_type: Literal["reel", "tiktok", "story"] = "reel"
     count: int = Field(5, ge=3, le=10)
 
 
 class CaptionRequest(BaseModel):
-    brand_id: str
+    brand_id: str | None = None
     post_context: str = Field(..., min_length=5, max_length=1000)
     goal: Literal["awareness", "engagement", "sales", "education"] = "engagement"
     length: Literal["short", "medium", "long"] = "medium"
 
 
 class CarouselRequest(BaseModel):
-    brand_id: str
+    brand_id: str | None = None
     topic: str = Field(..., min_length=3, max_length=500)
     num_slides: int = Field(5, ge=3, le=10)
     goal: Literal["education", "storytelling", "listicle", "promotion"] = "education"
 
 
 class PlanRequest(BaseModel):
-    brand_id: str
+    brand_id: str | None = None
     period: Literal["week", "month"] = "week"
     posts_per_week: int = Field(4, ge=2, le=7)
     start_date: str | None = None  # YYYY-MM-DD; default today
@@ -593,7 +594,7 @@ class PlanRequest(BaseModel):
 
 
 class BriefRequest(BaseModel):
-    brand_id: str
+    brand_id: str | None = None
     format_type: Literal["reel", "carousel_foto", "single_foto", "story"]
     topic: str = Field(..., min_length=3, max_length=500)
     mode: Literal["tiru", "modifikasi", "original"] = "original"
@@ -627,7 +628,8 @@ def _load_brand_pillars(brand_id: str) -> list[str]:
 
 @app.post("/studio/hook")
 def studio_hook(req: HookRequest):
-    _ensure_brand(req.brand_id)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
     try:
         return studio.generate_hooks(
             req.brand_id, req.topic, req.format_type, req.count
@@ -638,7 +640,8 @@ def studio_hook(req: HookRequest):
 
 @app.post("/studio/caption")
 def studio_caption(req: CaptionRequest):
-    _ensure_brand(req.brand_id)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
     try:
         return studio.generate_caption(
             req.brand_id, req.post_context, req.goal, req.length
@@ -649,7 +652,8 @@ def studio_caption(req: CaptionRequest):
 
 @app.post("/studio/carousel")
 def studio_carousel(req: CarouselRequest):
-    _ensure_brand(req.brand_id)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
     try:
         return studio.generate_carousel(
             req.brand_id, req.topic, req.num_slides, req.goal
@@ -750,7 +754,8 @@ def remove_reference(brand_id: str, ref_id: str):
 
 @app.post("/studio/plan")
 def studio_plan(req: PlanRequest):
-    _ensure_brand(req.brand_id)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
     try:
         return studio.generate_plan(
             req.brand_id,
@@ -768,7 +773,8 @@ def studio_plan(req: PlanRequest):
 
 @app.post("/studio/brief")
 def studio_brief(req: BriefRequest):
-    _ensure_brand(req.brand_id)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
     try:
         return studio.generate_brief(
             req.brand_id,
