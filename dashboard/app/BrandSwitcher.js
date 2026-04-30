@@ -26,7 +26,8 @@ export function BrandSwitcher({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-lg border border-slate-700/60 bg-slate-900/60 px-3 py-1.5 text-sm text-slate-200 backdrop-blur transition hover:border-violet-500/60 hover:bg-slate-800/60"
+        aria-expanded={open}
+        className="btn-soft flex items-center gap-2 rounded-lg border border-slate-700/60 bg-slate-900/60 px-3 py-1.5 text-sm text-slate-200 backdrop-blur hover:border-violet-500/60 hover:bg-slate-800/60"
       >
         <span className="text-xs text-slate-500">Brand:</span>
         <span className="font-medium text-violet-300">
@@ -37,7 +38,8 @@ export function BrandSwitcher({
           height="10"
           viewBox="0 0 10 10"
           fill="none"
-          className={`transition ${open ? "rotate-180" : ""}`}
+          data-open={open}
+          className="chevron-rotate"
         >
           <path
             d="M2 4l3 3 3-3"
@@ -59,7 +61,7 @@ export function BrandSwitcher({
                 Belum ada brand.
               </div>
             )}
-            {brands.map((b) => {
+            {brands.map((b, i) => {
               const isActive = b.brand_id === activeBrandId;
               const isDemo = b.brand_id === "fotofusi";
               const isPending = b.scrape_status === "pending";
@@ -67,7 +69,9 @@ export function BrandSwitcher({
               return (
                 <div
                   key={b.brand_id}
-                  className={`group flex items-center gap-2 px-3 py-2.5 transition ${
+                  data-active={isActive}
+                  style={{ "--menu-i": i }}
+                  className={`menu-item group flex items-center gap-2 px-3 py-2.5 ${
                     isActive ? "bg-violet-500/10" : "hover:bg-slate-800/60"
                   }`}
                 >
@@ -130,7 +134,7 @@ export function BrandSwitcher({
                         }
                       }}
                       title="Hapus brand"
-                      className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-slate-600 opacity-0 transition hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+                      className="fade-on-hover flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-slate-600 opacity-0 hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
                     >
                       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                         <path
@@ -151,7 +155,8 @@ export function BrandSwitcher({
               onAdd();
               setOpen(false);
             }}
-            className="helix-section-divider flex w-full items-center gap-2 border-t px-3 py-3 text-sm text-violet-300 transition hover:bg-violet-500/10"
+            style={{ "--menu-i": brands.length }}
+            className="menu-item helix-section-divider flex w-full items-center gap-2 border-t px-3 py-3 text-sm text-violet-300 hover:bg-violet-500/10"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path

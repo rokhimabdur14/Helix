@@ -224,7 +224,7 @@ export default function ChatPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="flex items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:hidden"
+                className="btn-soft flex items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:hidden"
                 aria-label="Buka riwayat chat"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -235,7 +235,7 @@ export default function ChatPage() {
               {sidebarHiddenDesktop && (
                 <button
                   onClick={() => setSidebarHiddenDesktop(false)}
-                  className="hidden items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:flex"
+                  className="btn-soft hidden items-center gap-2 rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-800/60 hover:text-slate-200 md:flex"
                   aria-label="Tampilkan riwayat chat"
                   title="Tampilkan riwayat (Ctrl+B)"
                 >
@@ -249,7 +249,7 @@ export default function ChatPage() {
             </div>
             <button
               onClick={handleNewChat}
-              className="rounded-md px-2 py-1 text-xs text-violet-500 hover:bg-violet-500/10 md:hidden"
+              className="btn-soft rounded-md px-2 py-1 text-xs text-violet-500 hover:bg-violet-500/10 md:hidden"
             >
               + Chat Baru
             </button>

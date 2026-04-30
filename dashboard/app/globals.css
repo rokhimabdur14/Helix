@@ -356,6 +356,167 @@ body::before {
 .dna-dot:nth-child(3) { animation-delay: 0.3s; }
 
 /* ============================================================
+   Motion utilities — smooth feedback untuk button/menu/icon
+   yang sebelumnya cuma `transition` generic. Pair dengan class
+   utility Tailwind yang udah ada di komponen.
+   ============================================================ */
+
+/* Icon-only button — close X, trash, hamburger, dst.
+   Tactile scale + bg fade pas hover/tap. */
+.icon-btn {
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.icon-btn:hover {
+  transform: scale(1.08);
+}
+.icon-btn:active {
+  transform: scale(0.94);
+  transition: transform 0.08s ease;
+}
+
+/* Soft button — buat trigger/secondary action (BrandSwitcher trigger,
+   API link, dst). Lift halus tanpa heavy glow. */
+.btn-soft {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease;
+}
+.btn-soft:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -8px rgba(124, 58, 237, 0.4);
+}
+.btn-soft:active:not(:disabled) {
+  transform: translateY(0);
+  transition: transform 0.08s ease;
+}
+
+/* Top-bar nav link — underline glide indicator yang slide dari tengah
+   keluar saat hover. Active state pakai background gradient (Tailwind
+   class), underline disable di active biar gak double-mark. */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  bottom: 2px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 2px;
+  opacity: 0;
+  transition:
+    left 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  left: 18%;
+  right: 18%;
+  opacity: 1;
+}
+/* Aktif: skip underline animation, active state udah punya bg gradient */
+.nav-link[data-active="true"]::after {
+  display: none;
+}
+
+/* Menu item (dropdown items, sidebar conversation items, dst).
+   Left-bar indicator yang slide naik dari bottom saat hover, plus
+   bg shift smooth. Active state full bar + bg highlight. */
+.menu-item {
+  position: relative;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.menu-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2.5px;
+  height: 0;
+  background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 0 3px 3px 0;
+  transform: translateY(-50%);
+  transition: height 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.menu-item:hover::before {
+  height: 55%;
+}
+.menu-item[data-active="true"]::before {
+  height: 75%;
+}
+
+/* Spring-rotate untuk chevron / caret dropdown — smoother dari `transition` */
+.chevron-rotate {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.chevron-rotate[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+/* Tap-scale — buat ThemeToggle buttons + segmented controls kasih
+   tactile feedback saat di-klik tanpa heavy lift. */
+.tap-scale {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.tap-scale:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+.tap-scale:active:not(:disabled) {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* Fade-in untuk delete trash icon yang muncul on group-hover (di
+   ChatSidebar item + BrandSwitcher item). Pair dengan
+   `opacity-0 group-hover:opacity-100` Tailwind. */
+.fade-on-hover {
+  transition:
+    opacity 0.2s ease,
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fade-on-hover:hover {
+  transform: scale(1.08);
+}
+.fade-on-hover:active {
+  transform: scale(0.94);
+}
+
+/* Stagger fade-in untuk dropdown items — saat parent .dropdown-in
+   muncul, anak2 .menu-item di dalamnya cascade muncul satu per satu. */
+.dropdown-in .menu-item {
+  opacity: 0;
+  animation: menu-item-fade 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(0.05s + var(--menu-i, 0) * 0.035s);
+}
+@keyframes menu-item-fade {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
    Dark-theme surface enrichment — gradasi subtle di sidebar /
    modal / header biar gak flat. Body gradient udah ada di :root.
    Specificity [data-theme="dark"] .X (0,2,0) > .X (0,1,0).

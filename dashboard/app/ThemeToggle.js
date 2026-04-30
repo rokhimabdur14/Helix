@@ -28,7 +28,7 @@ export function ThemeToggle() {
             aria-label={opt.label}
             title={opt.label}
             onClick={() => setTheme(opt.value)}
-            className={`flex h-7 w-7 items-center justify-center rounded-md transition ${
+            className={`tap-scale flex h-7 w-7 items-center justify-center rounded-md ${
               active
                 ? "bg-gradient-to-br from-blue-600/40 to-violet-600/40 text-violet-100 shadow-inner shadow-violet-900/30"
                 : "text-slate-400 hover:text-violet-300 hover:bg-slate-800/40"

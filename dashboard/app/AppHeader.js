@@ -56,7 +56,8 @@ export function AppHeader({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-lg px-4 py-1.5 text-sm font-medium transition ${
+                data-active={active}
+                className={`nav-link rounded-lg px-4 py-1.5 text-sm font-medium ${
                   active
                     ? "bg-gradient-to-r from-blue-600/30 to-violet-600/30 text-violet-200 shadow-inner shadow-violet-900/30"
                     : "text-slate-400 hover:text-violet-300"
@@ -82,7 +83,7 @@ export function AppHeader({
             href={`${API_URL}/docs`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden text-xs text-slate-500 transition hover:text-violet-400 sm:block"
+            className="nav-link hidden rounded-md px-1 text-xs text-slate-500 hover:text-violet-400 sm:block"
           >
             API ↗
           </a>
@@ -96,7 +97,8 @@ export function AppHeader({
             <Link
               key={item.href}
               href={item.href}
-              className={`flex-1 rounded-lg px-3 py-2 text-center text-sm font-medium transition ${
+              data-active={active}
+              className={`nav-link flex-1 rounded-lg px-3 py-2 text-center text-sm font-medium ${
                 active
                   ? "bg-gradient-to-r from-blue-600/30 to-violet-600/30 text-violet-200"
                   : "text-slate-400 hover:text-violet-300"

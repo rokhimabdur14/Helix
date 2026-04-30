@@ -74,7 +74,7 @@ export function ChatSidebar({
           <div className="flex items-center gap-1">
             <button
               onClick={onCollapse}
-              className="hidden rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:block"
+              className="icon-btn hidden rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:block"
               aria-label="Sembunyikan sidebar"
               title="Sembunyikan sidebar"
             >
@@ -86,7 +86,7 @@ export function ChatSidebar({
             </button>
             <button
               onClick={onClose}
-              className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:hidden"
+              className="icon-btn rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-700 md:hidden"
               aria-label="Tutup sidebar"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -196,7 +196,8 @@ function ConversationItem({ conv, active, confirmDelete, onSelect, onDelete }) {
     <li>
       <button
         onClick={onSelect}
-        className={`group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${
+        data-active={active}
+        className={`menu-item group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs ${
           active ? "helix-conv-active" : "helix-conv-hover"
         }`}
       >
@@ -205,10 +206,10 @@ function ConversationItem({ conv, active, confirmDelete, onSelect, onDelete }) {
         </span>
         <span
           onClick={onDelete}
-          className={`shrink-0 rounded p-1 transition ${
+          className={`shrink-0 rounded p-1 ${
             confirmDelete
               ? "bg-red-500/20 text-red-300"
-              : "opacity-0 text-slate-500 hover:bg-slate-700 hover:text-red-300 group-hover:opacity-100"
+              : "fade-on-hover opacity-0 text-slate-500 hover:bg-slate-700 hover:text-red-300 group-hover:opacity-100"
           }`}
           title={confirmDelete ? "Klik lagi untuk konfirmasi" : "Hapus"}
           role="button"
