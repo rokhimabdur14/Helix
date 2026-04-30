@@ -603,6 +603,35 @@ class BriefRequest(BaseModel):
     reference_text: str | None = Field(None, max_length=2000)
     pillar: str | None = Field(None, max_length=100)
     goal: Literal["awareness", "engagement", "sales", "education"] | None = None
+    # 2-step workflow: kalau user udah pilih judul di step 1, lock ke judul itu
+    chosen_title: str | None = Field(None, max_length=200)
+    # REEL only: paksa exactly N scenes (3-10). None = LLM bebas (default 5-8)
+    scene_count: int | None = Field(None, ge=3, le=10)
+
+
+class BriefTitlesRequest(BaseModel):
+    brand_id: str | None = None
+    format_type: Literal["reel", "carousel_foto", "single_foto", "story"]
+    topic: str = Field(..., min_length=3, max_length=500)
+    mode: Literal["tiru", "modifikasi", "original"] = "original"
+    angle: str | None = Field(None, max_length=500)
+    reference_ids: list[str] | None = None
+    reference_text: str | None = Field(None, max_length=2000)
+    pillar: str | None = Field(None, max_length=100)
+    goal: Literal["awareness", "engagement", "sales", "education"] | None = None
+    count: int = Field(5, ge=3, le=7)
+
+
+class BriefSceneRegenRequest(BaseModel):
+    brand_id: str | None = None
+    title: str = Field(..., min_length=2, max_length=200)
+    topic: str = Field(..., min_length=3, max_length=500)
+    scenes_so_far: list[dict] = Field(..., min_length=1)
+    scene_no: int = Field(..., ge=1, le=20)
+    hint: str | None = Field(None, max_length=300)
+    angle: str | None = Field(None, max_length=500)
+    pillar: str | None = Field(None, max_length=100)
+    goal: Literal["awareness", "engagement", "sales", "education"] | None = None
 
 
 def _ensure_brand(brand_id: str):
@@ -771,6 +800,53 @@ def studio_plan(req: PlanRequest):
         raise HTTPException(status_code=502, detail=f"AI error: {e}")
 
 
+@app.post("/studio/brief/titles")
+def studio_brief_titles(req: BriefTitlesRequest):
+    """Step 1 of 2-step Brief workflow — return N rekomendasi judul."""
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
+    try:
+        return studio.generate_titles(
+            req.brand_id,
+            format_type=req.format_type,
+            topic=req.topic,
+            mode=req.mode,
+            angle=req.angle,
+            reference_ids=req.reference_ids,
+            reference_text=req.reference_text,
+            pillar=req.pillar,
+            goal=req.goal,
+            count=req.count,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI error: {e}")
+
+
+@app.post("/studio/brief/scene/regen")
+def studio_brief_scene_regen(req: BriefSceneRegenRequest):
+    """Regen 1 scene specific dari brief reel yang udah ada (per-scene fine-tune)."""
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
+    try:
+        return studio.regen_one_scene(
+            req.brand_id,
+            title=req.title,
+            topic=req.topic,
+            scenes_so_far=req.scenes_so_far,
+            scene_no=req.scene_no,
+            hint=req.hint,
+            angle=req.angle,
+            pillar=req.pillar,
+            goal=req.goal,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI error: {e}")
+
+
 @app.post("/studio/brief")
 def studio_brief(req: BriefRequest):
     if req.brand_id:
@@ -786,6 +862,8 @@ def studio_brief(req: BriefRequest):
             reference_text=req.reference_text,
             pillar=req.pillar,
             goal=req.goal,
+            chosen_title=req.chosen_title,
+            scene_count=req.scene_count,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

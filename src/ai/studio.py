@@ -181,12 +181,19 @@ brand sendiri, dan replicate pattern dari reference yang user kurasi (terutama
 yang tag "inspiration" / "own"). Jangan jadi generik."""
 
 
-def _system_prompt_with_brand(brand_id: str, role_intro: str) -> str:
-    """Build system prompt: role intro + expertise + brand profile + social DNA."""
-    # Compress brand profile lebih agresif krn expertise dibawa juga
-    profile = load_brand_profile(brand_id, max_chars=3500)
-    expertise_text, _ = load_expertise()
-    social_block = _load_social_context(brand_id)
+def _system_prompt_with_brand(brand_id: str, role_intro: str, compact: bool = False) -> str:
+    """Build system prompt: role intro + expertise + brand profile + social DNA.
+
+    compact=True (untuk model 8b TPM 6000): trim hard biar request muat.
+    """
+    if compact:
+        profile = load_brand_profile(brand_id, max_chars=1400)
+        expertise_text, _ = load_expertise(max_chars_per_file=500)
+        social_block = _load_social_context(brand_id, max_refs=2)
+    else:
+        profile = load_brand_profile(brand_id, max_chars=3500)
+        expertise_text, _ = load_expertise()
+        social_block = _load_social_context(brand_id)
 
     expertise_block = ""
     if expertise_text:
@@ -211,15 +218,17 @@ ATURAN OUTPUT:
 """
 
 
-def _system_prompt_free(role_intro: str) -> str:
+def _system_prompt_free(role_intro: str, compact: bool = False) -> str:
     """Free-mode system prompt: HELIX expertise only, no brand context.
 
     Dipakai saat user akses Studio tanpa pilih brand (mirip Free Chat).
     Output tetap solid karena role + expertise + user-supplied topic
     udah cukup bahan, tapi gak punya brand DNA jadi otomatis lebih generic.
     User bertanggung jawab kasih konteks (topic, angle) yang detail.
+
+    compact=True: expertise di-truncate lebih agresif untuk model 8b TPM 6000.
     """
-    expertise_text, _ = load_expertise()
+    expertise_text, _ = load_expertise(max_chars_per_file=500 if compact else 1500)
     expertise_block = ""
     if expertise_text:
         expertise_block = f"""
@@ -241,11 +250,14 @@ ATURAN OUTPUT (FREE MODE — tanpa brand context):
 {expertise_block}"""
 
 
-def _system_prompt(brand_id: str | None, role_intro: str) -> str:
-    """Pick brand-aware atau free system prompt based on brand_id."""
+def _system_prompt(brand_id: str | None, role_intro: str, compact: bool = False) -> str:
+    """Pick brand-aware atau free system prompt based on brand_id.
+
+    compact=True: trim expertise/profile/social biar muat di 8b TPM (6000 token).
+    """
     if brand_id:
-        return _system_prompt_with_brand(brand_id, role_intro)
-    return _system_prompt_free(role_intro)
+        return _system_prompt_with_brand(brand_id, role_intro, compact=compact)
+    return _system_prompt_free(role_intro, compact=compact)
 
 
 def _generate_json(
@@ -634,6 +646,8 @@ def _brief_user_prompt(
     goal: str | None,
     reference_text: str | None,
     targeted_refs_block: str,
+    chosen_title: str | None = None,
+    scene_count: int | None = None,
 ) -> str:
     """Build format-aware user prompt + JSON schema."""
     mode_guide = {
@@ -651,10 +665,31 @@ def _brief_user_prompt(
         if reference_text
         else ""
     )
+    title_block = (
+        f"""
+
+=== JUDUL TERPILIH (LOCKED — wajib pakai persis) ===
+"{chosen_title}"
+
+Aturan:
+- output `title` field WAJIB sama persis dengan judul di atas
+- Hook, narrative_arc, scenes, caption — semua harus nyambung & mendukung judul ini
+- Jangan bikin judul beda/variasi"""
+        if chosen_title
+        else ""
+    )
+    scene_count_block = ""
+    if scene_count and format_type == "reel":
+        n = max(3, min(int(scene_count), 10))
+        scene_count_block = f"""
+
+=== SCENE COUNT (LOCKED) ===
+Output `scenes` array WAJIB exactly {n} item (tidak boleh kurang/lebih).
+Distribusi durasi total tetap 15-45 detik, bagi rata sesuai jumlah scene."""
 
     common_input = f"""TOPIK: {topic}
 FORMAT: {format_type}
-MODE: {mode} — {mode_text}{angle_block}{pillar_block}{goal_block}{ref_text_block}{targeted_refs_block}"""
+MODE: {mode} — {mode_text}{angle_block}{pillar_block}{goal_block}{ref_text_block}{targeted_refs_block}{title_block}{scene_count_block}"""
 
     if format_type == "reel":
         schema_json = """{
@@ -791,15 +826,26 @@ def generate_brief(
     reference_text: str | None = None,
     pillar: str | None = None,
     goal: str | None = None,
+    chosen_title: str | None = None,
+    scene_count: int | None = None,
 ) -> dict:
     """Generate brief eksekusi lengkap untuk 1 post.
 
     brand_id None = free mode: targeted refs (per-brand library) di-skip,
     user wajib pakai reference_text manual kalau mau mode tiru/modifikasi.
 
+    chosen_title (opsional): kalau ada, dipakai sebagai brief.title final +
+    bias seluruh hook/scene/caption agar nyambung judul itu. Kalau None,
+    LLM bikin judul sendiri (default behavior).
+
+    scene_count (opsional, REEL only): paksa exactly N scenes. Range valid 3-10.
+    Kalau None default 5-8 (range bebas LLM).
+
     Returns format-specific dict (lihat _brief_user_prompt schemas).
     """
-    system = _system_prompt(brand_id, BRIEF_ROLE)
+    # Compact mode untuk 8b TPM 6000 — trim expertise/profile/social biar muat.
+    # Saat 70b TPD reset, ganti compact=False + STUDIO_MODEL → PLAN_MODEL.
+    system = _system_prompt(brand_id, BRIEF_ROLE, compact=True)
     # Reference library per-brand → skip kalau free mode
     targeted_refs = (
         _load_specific_references(brand_id, reference_ids) if brand_id else ""
@@ -814,13 +860,212 @@ def generate_brief(
         goal=goal,
         reference_text=reference_text,
         targeted_refs_block=targeted_refs,
+        chosen_title=chosen_title,
+        scene_count=scene_count,
     )
 
-    # Brief lebih kompleks (multi-section reasoning + integrate sources) → 70b
+    # Brief lebih kompleks (multi-section reasoning + integrate sources)
+    # TEMP: pindah ke 8b sementara karena 70b TPD limit hit. max_tokens
+    # diturunkan dari 4500 → 2500 + system prompt compact mode → fit di TPM 6000.
+    # Quality multi-section turun sedikit tapi acceptable utk free tier.
+    # Revert ke PLAN_MODEL + max_tokens 4500 + compact=False saat 70b lega.
     return _generate_json(
         system,
         user,
-        max_tokens=4500,
-        model=PLAN_MODEL,
+        max_tokens=2500,
+        model=STUDIO_MODEL,
         temperature=0.75,
+    )
+
+
+# ========== 5b. Title generator (step 1 of 2-step Brief workflow) ==========
+
+TITLE_ROLE = """Kamu adalah HELIX Title Director — ahli bikin judul/concept anchor
+untuk post sosmed. Judul yang lo bikin bukan caption hook — ini "anchor konsep"
+yang nge-capture esensi post dalam 1 kalimat ringkas, jadi bisa dipakai content
+team buat align hook, scene, caption, visual ke arah yang sama.
+
+PRINSIP:
+- Judul MAX 12 kata, ringkas tapi specific
+- Setiap judul punya angle/sudut pandang BERBEDA — jangan 5 variasi yang mirip
+- Variasi tipe hook angle: question / contrarian / promise / story / shock / how-to /
+  behind-the-scenes / data-driven / personal / list
+- Judul harus brand-fit (cek DATA BRAND di system prompt) — bukan generik
+- Reasoning tiap judul = 1 kalimat, jelaskan kenapa angle ini effective untuk
+  topik+brand ini, bukan deskripsi judulnya"""
+
+
+def generate_titles(
+    brand_id: str | None,
+    format_type: Literal["reel", "carousel_foto", "single_foto", "story"],
+    topic: str,
+    mode: Literal["tiru", "modifikasi", "original"] = "original",
+    angle: str | None = None,
+    reference_ids: list[str] | None = None,
+    reference_text: str | None = None,
+    pillar: str | None = None,
+    goal: str | None = None,
+    count: int = 5,
+) -> dict:
+    """Generate N rekomendasi judul/concept anchor untuk brief.
+
+    Returns:
+        {"titles": [{"text": str, "hook_angle": str, "reasoning": str}, ...]}
+    """
+    count = max(3, min(int(count), 7))
+    system = _system_prompt(brand_id, TITLE_ROLE)
+    targeted_refs = (
+        _load_specific_references(brand_id, reference_ids) if brand_id else ""
+    )
+
+    angle_block = f"\nCUSTOM ANGLE: {angle}" if angle else ""
+    pillar_block = f"\nPILLAR: {pillar}" if pillar else ""
+    goal_block = f"\nGOAL: {goal}" if goal else ""
+    ref_text_block = (
+        f"\n\n=== REFERENSI MANUAL (deskripsi user) ===\n{reference_text}"
+        if reference_text
+        else ""
+    )
+    mode_guide = {
+        "tiru": "ambil pattern judul dari REFERENSI TARGET, ganti substansi brand-fit",
+        "modifikasi": "modifikasi referensi pattern, belokin sesuai angle custom",
+        "original": "fresh dari brand DNA + topik",
+    }
+    mode_text = mode_guide.get(mode, mode_guide["original"])
+
+    user = f"""Buat {count} rekomendasi JUDUL/concept anchor untuk post {format_type.upper()}:
+
+TOPIK: {topic}
+MODE: {mode} — {mode_text}{angle_block}{pillar_block}{goal_block}{ref_text_block}{targeted_refs}
+
+Aturan output:
+- Tepat {count} judul, masing-masing dengan ANGLE BERBEDA (jangan mirip-mirip)
+- Setiap judul max 12 kata, hook-able tapi gak tabloid clickbait
+- hook_angle = label tipe angle: question | contrarian | promise | story | shock | how-to | behind-the-scenes | data-driven | personal | list
+- reasoning 1 kalimat: kenapa angle ini cocok untuk topik+brand ini
+
+Output JSON valid:
+{{
+  "titles": [
+    {{
+      "text": "judul ringkas (max 12 kata)",
+      "hook_angle": "tipe angle",
+      "reasoning": "kenapa angle ini effective untuk topik+brand ini"
+    }}
+  ]
+}}"""
+
+    # Titles = simple list generation, 8b cukup. Hemat TPD 70b buat Brief penuh.
+    return _generate_json(
+        system,
+        user,
+        max_tokens=1800,
+        model=STUDIO_MODEL,
+        temperature=0.85,
+    )
+
+
+# ========== 5c. Single-scene regen (REEL only — fine-tune workflow) ==========
+
+SCENE_REGEN_ROLE = """Kamu adalah HELIX Scene Doctor — ahli regen 1 scene specific
+dalam reel/video pendek tanpa ngerusak continuity scene-scene lain.
+
+PRINSIP:
+- Output cuma SATU scene baru (bukan array)
+- Scene baru harus NYAMBUNG dengan scenes sebelum & sesudahnya (cek context yang dikasih)
+- Pertahankan no scene + duration_s sama dengan scene yang di-regen (kecuali user kasih hint beda)
+- Kalau ada hint dari user, tafsirin sebagai DIRECTION TWEAK (e.g. "lebih dramatic" =
+  pacing tegang, visual kontras tinggi, VO punch — bukan ganti substansi total)
+- Jaga konsistensi tone, voice, brand DNA yang ada di scene lain"""
+
+
+def regen_one_scene(
+    brand_id: str | None,
+    title: str,
+    topic: str,
+    scenes_so_far: list[dict],
+    scene_no: int,
+    hint: str | None = None,
+    angle: str | None = None,
+    pillar: str | None = None,
+    goal: str | None = None,
+) -> dict:
+    """Regenerate 1 scene dari brief reel yang sudah ada.
+
+    scenes_so_far = full scenes array dari brief existing (untuk continuity context).
+    scene_no = nomor scene yang mau di-regen (1-indexed).
+    hint = optional direction tweak ("lebih dramatic", "tambah humor", dst).
+
+    Returns:
+        {"scene": {"no": int, "duration_s": int, "visual": str, "voiceover": str, "on_screen_text": str}}
+    """
+    system = _system_prompt(brand_id, SCENE_REGEN_ROLE)
+
+    # Find target + neighboring scenes
+    target = next(
+        (s for s in scenes_so_far if int(s.get("no", 0)) == int(scene_no)),
+        None,
+    )
+    if not target:
+        raise ValueError(f"Scene #{scene_no} tidak ditemukan di scenes_so_far")
+
+    other_scenes_text = "\n".join(
+        f"  Scene {s.get('no')}: {s.get('visual', '')} | VO: {s.get('voiceover', '')} | OST: {s.get('on_screen_text', '')}"
+        for s in scenes_so_far
+        if int(s.get("no", 0)) != int(scene_no)
+    )
+    target_text = (
+        f"  Scene {target.get('no')}: {target.get('visual', '')} | VO: {target.get('voiceover', '')} | OST: {target.get('on_screen_text', '')}"
+    )
+
+    angle_block = f"\nCUSTOM ANGLE: {angle}" if angle else ""
+    pillar_block = f"\nPILLAR: {pillar}" if pillar else ""
+    goal_block = f"\nGOAL: {goal}" if goal else ""
+    hint_block = (
+        f"""
+
+=== HINT REGEN DARI USER ===
+"{hint}"
+
+Pakai hint ini sebagai direction tweak. Jangan ganti substansi total — adjust pacing/tone/visual sesuai hint."""
+        if hint and hint.strip()
+        else ""
+    )
+
+    user = f"""Regen 1 scene specific dari reel berikut.
+
+JUDUL: {title}
+TOPIK: {topic}{angle_block}{pillar_block}{goal_block}
+
+=== SCENES YANG SUDAH ADA (jangan diubah, untuk context continuity) ===
+{other_scenes_text}
+
+=== SCENE YANG DI-REGEN (Scene #{scene_no}) ===
+{target_text}{hint_block}
+
+Aturan:
+- Output 1 scene SAJA, bukan array
+- `no` WAJIB sama: {scene_no}
+- `duration_s` boleh sama atau adjust 1-2 detik kalau perlu (max 8s per scene)
+- Scene baru harus connect smooth ke scene sebelumnya & sesudahnya
+- Beda dari versi lama (jangan rewrite hampir sama persis), tapi tetep tone konsisten
+
+Output JSON valid:
+{{
+  "scene": {{
+    "no": {scene_no},
+    "duration_s": 3,
+    "visual": "deskripsi shot konkret",
+    "voiceover": "VO/narasi (kosong kalau silent)",
+    "on_screen_text": "teks layar"
+  }}
+}}"""
+
+    # Single scene regen = scoped task, 8b cukup. Hemat TPD 70b.
+    return _generate_json(
+        system,
+        user,
+        max_tokens=600,
+        model=STUDIO_MODEL,
+        temperature=0.8,
     )

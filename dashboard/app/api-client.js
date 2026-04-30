@@ -277,6 +277,42 @@ export const api = {
           reference_text: payload.reference_text?.trim() || null,
           pillar: payload.pillar?.trim() || null,
           goal: payload.goal || null,
+          chosen_title: payload.chosen_title?.trim() || null,
+          scene_count: payload.scene_count || null,
+        }),
+      }),
+    briefTitles: (brandId, payload) =>
+      apiFetch("/studio/brief/titles", {
+        method: "POST",
+        body: JSON.stringify({
+          brand_id: brandId,
+          format_type: payload.format_type,
+          topic: payload.topic,
+          mode: payload.mode || "original",
+          angle: payload.angle?.trim() || null,
+          reference_ids:
+            payload.reference_ids && payload.reference_ids.length > 0
+              ? payload.reference_ids
+              : null,
+          reference_text: payload.reference_text?.trim() || null,
+          pillar: payload.pillar?.trim() || null,
+          goal: payload.goal || null,
+          count: payload.count || 5,
+        }),
+      }),
+    briefSceneRegen: (brandId, payload) =>
+      apiFetch("/studio/brief/scene/regen", {
+        method: "POST",
+        body: JSON.stringify({
+          brand_id: brandId,
+          title: payload.title,
+          topic: payload.topic,
+          scenes_so_far: payload.scenes_so_far,
+          scene_no: payload.scene_no,
+          hint: payload.hint?.trim() || null,
+          angle: payload.angle?.trim() || null,
+          pillar: payload.pillar?.trim() || null,
+          goal: payload.goal || null,
         }),
       }),
   },

@@ -61,11 +61,24 @@ export function BriefTab({ brandId, consumePrefill }) {
   // Input snapshot yang produce `result` — dipakai buat regen-section
   // (bukan input current form state, krn user mungkin sudah ubah field setelah generate)
   const [lastInput, setLastInput] = useState(null);
-  // Section key yang lagi di-regenerate (e.g. "hooks" / "scenes") atau null
+  // Section key yang lagi di-regenerate (e.g. "hooks" / "caption") atau null
   const [regeneratingSection, setRegeneratingSection] = useState(null);
-  // Banner dismiss state — per brand. Re-baca tiap brand berubah supaya
-  // brand A yang sudah dismiss gak ngumpetin banner di brand B.
+  // Per-scene regen (REEL only): { sceneNo, hint } untuk yang lagi di-regen
+  const [regeneratingSceneNo, setRegeneratingSceneNo] = useState(null);
+  // Banner dismiss state — per brand
   const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  // 2-step wizard state:
+  //   "input" → user fill form
+  //   "titles" → 5 title cards visible, pilih satu
+  //   "scenes" → judul terpilih, atur scene count + generate brief
+  const [phase, setPhase] = useState("input");
+  const [titles, setTitles] = useState([]);
+  const [titlesLoading, setTitlesLoading] = useState(false);
+  const [chosenTitle, setChosenTitle] = useState("");
+  const [manualTitle, setManualTitle] = useState("");
+  const [sceneCount, setSceneCount] = useState(5);
+
   const history = useStudioHistory("brief", brandId);
 
   // Load references library — dipakai di mode tiru/modifikasi
@@ -124,9 +137,14 @@ export function BriefTab({ brandId, consumePrefill }) {
     if (p.mode) setMode(p.mode);
     setResult(null);
     setError("");
+    setPhase("input");
+    setTitles([]);
+    setChosenTitle("");
+    setManualTitle("");
   }, [consumePrefill]);
 
   const showRefPicker = mode === "tiru" || mode === "modifikasi";
+  const isReel = formatType === "reel";
 
   function toggleRef(id) {
     setSelectedRefIds((prev) =>
@@ -134,12 +152,8 @@ export function BriefTab({ brandId, consumePrefill }) {
     );
   }
 
-  async function generate() {
-    if (!topic.trim() || loading) return;
-    setError("");
-    setLoading(true);
-    setResult(null);
-    const input = {
+  function buildBaseInput() {
+    return {
       format_type: formatType,
       topic: topic.trim(),
       mode,
@@ -148,6 +162,55 @@ export function BriefTab({ brandId, consumePrefill }) {
       goal: goal || null,
       reference_ids: showRefPicker && selectedRefIds.length > 0 ? selectedRefIds : null,
       reference_text: showRefPicker && referenceText.trim() ? referenceText.trim() : null,
+    };
+  }
+
+  // Step 1: fetch 5 title recommendations
+  async function fetchTitles() {
+    if (!topic.trim() || titlesLoading) return;
+    setError("");
+    setTitlesLoading(true);
+    try {
+      const data = await api.studio.briefTitles(brandId, {
+        ...buildBaseInput(),
+        count: 5,
+      });
+      setTitles(data.titles || []);
+      setPhase("titles");
+    } catch (e) {
+      setError(e.message || "Gagal generate judul");
+    } finally {
+      setTitlesLoading(false);
+    }
+  }
+
+  // Step 2: pick title (from card or manual) → advance to scene config
+  function selectTitle(title) {
+    if (!title?.trim()) return;
+    setChosenTitle(title.trim());
+    setPhase("scenes");
+    setResult(null);
+  }
+
+  // Step 3: skip auto — bypass titles, generate brief direct (no chosen_title)
+  async function skipAndGenerate() {
+    if (!topic.trim() || loading) return;
+    setChosenTitle("");
+    setManualTitle("");
+    setPhase("scenes");
+    await generateBrief({ skipTitle: true });
+  }
+
+  // Step 3 main: generate full brief, with optional chosen_title + scene_count
+  async function generateBrief({ skipTitle = false } = {}) {
+    if (!topic.trim() || loading) return;
+    setError("");
+    setLoading(true);
+    setResult(null);
+    const input = {
+      ...buildBaseInput(),
+      chosen_title: skipTitle ? null : chosenTitle || null,
+      scene_count: isReel ? sceneCount : null,
     };
     try {
       const data = await api.studio.brief(brandId, input);
@@ -161,8 +224,7 @@ export function BriefTab({ brandId, consumePrefill }) {
     }
   }
 
-  // Regen 1 section: re-call backend dengan input yang sama, lalu merge HANYA
-  // section yang diminta ke result. Section lain tetap (stabil di mata user).
+  // Regen 1 section (non-scenes) — re-call full brief & cherry-pick that section
   async function regenSection(sectionKey) {
     if (!lastInput || !result || regeneratingSection) return;
     setRegeneratingSection(sectionKey);
@@ -177,6 +239,47 @@ export function BriefTab({ brandId, consumePrefill }) {
     }
   }
 
+  // Regen 1 scene specific (REEL only) — pakai endpoint baru /scene/regen
+  async function regenOneScene(sceneNo, hint) {
+    if (!result?.scenes || regeneratingSceneNo) return;
+    setRegeneratingSceneNo(sceneNo);
+    setError("");
+    try {
+      const data = await api.studio.briefSceneRegen(brandId, {
+        title: result.title || chosenTitle || topic,
+        topic: topic.trim(),
+        scenes_so_far: result.scenes,
+        scene_no: sceneNo,
+        hint: hint || null,
+        angle: angle.trim() || null,
+        pillar: pillar.trim() || null,
+        goal: goal || null,
+      });
+      const newScene = data.scene;
+      if (!newScene) throw new Error("Response gak ada scene");
+      setResult((prev) => ({
+        ...prev,
+        scenes: prev.scenes.map((s) =>
+          Number(s.no) === Number(sceneNo) ? { ...s, ...newScene } : s
+        ),
+      }));
+    } catch (e) {
+      setError(e.message || `Gagal regen scene #${sceneNo}`);
+    } finally {
+      setRegeneratingSceneNo(null);
+    }
+  }
+
+  function backToInput() {
+    setPhase("input");
+    setError("");
+  }
+
+  function regenTitles() {
+    setTitles([]);
+    fetchTitles();
+  }
+
   function restore(entry) {
     setFormatType(entry.input.format_type || "reel");
     setMode(entry.input.mode || "original");
@@ -189,189 +292,71 @@ export function BriefTab({ brandId, consumePrefill }) {
     setResult(entry.output);
     setLastInput(entry.input);
     setError("");
+    setPhase("scenes");
+    setChosenTitle(entry.input.chosen_title || entry.output?.title || "");
+    setSceneCount(entry.input.scene_count || 5);
   }
 
   return (
     <div>
       {showBanner && <BriefEmptyBanner onDismiss={dismissBanner} />}
 
-      <div className="grid gap-4">
-        <Field label="Format konten">
-          <SegmentedControl
-            value={formatType}
-            onChange={setFormatType}
-            options={FORMAT_OPTIONS}
-            disabled={loading}
-          />
-        </Field>
+      <PhaseStepper phase={phase} hasResult={!!result} />
 
-        <Field label="Mode">
-          <SegmentedControl
-            value={mode}
-            onChange={setMode}
-            options={MODE_OPTIONS}
-            disabled={loading}
-          />
-        </Field>
+      {phase === "input" && (
+        <InputPhase
+          formatType={formatType}
+          setFormatType={setFormatType}
+          mode={mode}
+          setMode={setMode}
+          topic={topic}
+          setTopic={setTopic}
+          pillar={pillar}
+          setPillar={setPillar}
+          goal={goal}
+          setGoal={setGoal}
+          angle={angle}
+          setAngle={setAngle}
+          referenceText={referenceText}
+          setReferenceText={setReferenceText}
+          showRefPicker={showRefPicker}
+          refs={refs}
+          refsLoading={refsLoading}
+          selectedRefIds={selectedRefIds}
+          toggleRef={toggleRef}
+          loading={titlesLoading || loading}
+          onGenerateTitles={fetchTitles}
+          onSkip={skipAndGenerate}
+          titlesLoading={titlesLoading}
+        />
+      )}
 
-        <Field label="Topik / tema post" hint={`${topic.length}/500`}>
-          <TextArea
-            value={topic}
-            onChange={setTopic}
-            placeholder="Contoh: workshop corporate Fotofusi — tunjukkan tim kerja saat shoot live event"
-            rows={2}
-            disabled={loading}
-          />
-        </Field>
+      {phase === "titles" && (
+        <TitlesPhase
+          titles={titles}
+          chosenTitle={chosenTitle}
+          manualTitle={manualTitle}
+          setManualTitle={setManualTitle}
+          onSelect={selectTitle}
+          onRegen={regenTitles}
+          onBack={backToInput}
+          loading={titlesLoading}
+        />
+      )}
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Pillar (opsional)" hint="ngiket ke brand pillar">
-            <input
-              type="text"
-              value={pillar}
-              onChange={(e) => setPillar(e.target.value)}
-              disabled={loading}
-              placeholder="Corporate Event"
-              className="input-glow w-full rounded-xl border border-slate-700/60 bg-slate-950/40 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none disabled:opacity-50"
-            />
-          </Field>
-          <Field label="Goal (opsional)">
-            <div className="flex flex-wrap gap-2">
-              {GOAL_OPTIONS.map((g) => {
-                const active = goal === g.value;
-                return (
-                  <button
-                    key={g.value}
-                    type="button"
-                    disabled={loading}
-                    onClick={() => setGoal(active ? "" : g.value)}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
-                      active
-                        ? "border-violet-500/60 bg-violet-500/15 text-violet-200"
-                        : "border-slate-800 bg-slate-900/40 text-slate-400 hover:border-violet-500/30 hover:text-violet-300"
-                    }`}
-                  >
-                    {g.label}
-                  </button>
-                );
-              })}
-            </div>
-          </Field>
-        </div>
-
-        {showRefPicker && (
-          <div className="rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-blue-500/5 p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-violet-300">
-                Referensi target ({selectedRefIds.length} dipilih)
-              </span>
-              <a
-                href="?tab=references"
-                className="text-[11px] text-violet-300 hover:text-violet-200"
-              >
-                Manage library →
-              </a>
-            </div>
-
-            {refsLoading && (
-              <p className="text-xs text-slate-500">Loading library...</p>
-            )}
-
-            {!refsLoading && refs.length === 0 && (
-              <p className="text-xs text-slate-500">
-                Belum ada reference di library. Tambah dulu URL post viral di
-                tab References, atau pakai &quot;Reference manual&quot; di bawah.
-              </p>
-            )}
-
-            {refs.length > 0 && (
-              <div className="grid gap-2 sm:grid-cols-2">
-                {refs.map((r) => {
-                  const ana = r.analysis || {};
-                  const active = selectedRefIds.includes(r.id);
-                  return (
-                    <button
-                      key={r.id}
-                      type="button"
-                      disabled={loading}
-                      onClick={() => toggleRef(r.id)}
-                      className={`group flex gap-2 rounded-lg border p-2 text-left transition disabled:opacity-50 ${
-                        active
-                          ? "border-violet-500/60 bg-violet-500/10"
-                          : "border-slate-800 bg-slate-950/40 hover:border-violet-500/30"
-                      }`}
-                    >
-                      {r.thumbnail && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={r.thumbnail}
-                          alt=""
-                          className="h-14 w-14 flex-shrink-0 rounded object-cover object-top"
-                        />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase ${
-                              r.tag === "own"
-                                ? "bg-emerald-500/20 text-emerald-300"
-                                : r.tag === "competitor"
-                                ? "bg-amber-500/20 text-amber-300"
-                                : "bg-violet-500/20 text-violet-300"
-                            }`}
-                          >
-                            {r.tag || "ref"}
-                          </span>
-                          <span className="text-[10px] text-slate-500 truncate">
-                            {r.platform || "—"}
-                          </span>
-                        </div>
-                        <p className="mt-1 line-clamp-2 text-[11px] text-slate-400">
-                          {ana.hook_or_first_frame ||
-                            ana.visual_summary ||
-                            r.url}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="mt-3">
-              <Field label="Atau reference manual (paste deskripsi)">
-                <TextArea
-                  value={referenceText}
-                  onChange={setReferenceText}
-                  placeholder="Contoh: Reel @brandX viral 200K view — opening freeze frame text 'Saya cuma bayar 2jt buat ini', cut ke BTS, twist di akhir reveal hasil. Pattern: hook shock-stat → BTS → reveal."
-                  rows={3}
-                  disabled={loading}
-                />
-              </Field>
-            </div>
-          </div>
-        )}
-
-        {mode === "modifikasi" && (
-          <Field label="Custom angle modifikasi" hint="apa yang mau lo ubah dari pattern referensi">
-            <TextArea
-              value={angle}
-              onChange={setAngle}
-              placeholder="Contoh: ganti audience jadi HR korporat (bukan UMKM), tone lebih profesional, twist soft-sell ke jasa Fotofusi"
-              rows={2}
-              disabled={loading}
-            />
-          </Field>
-        )}
-
-        <GenerateButton
-          onClick={generate}
+      {phase === "scenes" && (
+        <ScenesPhase
+          chosenTitle={chosenTitle}
+          isReel={isReel}
+          sceneCount={sceneCount}
+          setSceneCount={setSceneCount}
           loading={loading}
-          disabled={!topic.trim()}
-        >
-          Generate Brief
-        </GenerateButton>
-      </div>
+          onGenerate={() => generateBrief()}
+          onBack={backToInput}
+          onChangeTitle={() => setPhase("titles")}
+          hasResult={!!result}
+        />
+      )}
 
       <ErrorBox message={error} />
 
@@ -390,6 +375,8 @@ export function BriefTab({ brandId, consumePrefill }) {
           result={result}
           regenerating={regeneratingSection}
           onRegen={regenSection}
+          regeneratingSceneNo={regeneratingSceneNo}
+          onRegenScene={regenOneScene}
           canRegen={!!lastInput}
         />
       )}
@@ -397,9 +384,520 @@ export function BriefTab({ brandId, consumePrefill }) {
   );
 }
 
-function BriefResult({ result, regenerating, onRegen, canRegen }) {
+function PhaseStepper({ phase, hasResult }) {
+  const steps = [
+    { id: "input", label: "1. Input" },
+    { id: "titles", label: "2. Pilih Judul" },
+    { id: "scenes", label: hasResult ? "3. Brief" : "3. Atur Scene" },
+  ];
+  const currentIdx = steps.findIndex((s) => s.id === phase);
+  return (
+    <div className="reveal-in mb-5 flex items-center gap-2 text-[11px]">
+      {steps.map((s, i) => {
+        const active = i === currentIdx;
+        const done = i < currentIdx;
+        return (
+          <div key={s.id} className="flex items-center gap-2">
+            <span
+              className={`rounded-full px-2.5 py-1 font-semibold uppercase tracking-wider transition ${
+                active
+                  ? "bg-gradient-to-r from-blue-600/30 to-violet-600/30 text-violet-100"
+                  : done
+                  ? "bg-emerald-500/15 text-emerald-300"
+                  : "bg-slate-900/60 text-slate-500"
+              }`}
+            >
+              {s.label}
+            </span>
+            {i < steps.length - 1 && (
+              <span
+                className={`h-px w-6 transition ${
+                  done ? "bg-emerald-500/40" : "bg-slate-800"
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function InputPhase({
+  formatType,
+  setFormatType,
+  mode,
+  setMode,
+  topic,
+  setTopic,
+  pillar,
+  setPillar,
+  goal,
+  setGoal,
+  angle,
+  setAngle,
+  referenceText,
+  setReferenceText,
+  showRefPicker,
+  refs,
+  refsLoading,
+  selectedRefIds,
+  toggleRef,
+  loading,
+  onGenerateTitles,
+  onSkip,
+  titlesLoading,
+}) {
+  return (
+    <div className="grid gap-4">
+      <Field label="Format konten">
+        <SegmentedControl
+          value={formatType}
+          onChange={setFormatType}
+          options={FORMAT_OPTIONS}
+          disabled={loading}
+        />
+      </Field>
+
+      <Field label="Mode">
+        <SegmentedControl
+          value={mode}
+          onChange={setMode}
+          options={MODE_OPTIONS}
+          disabled={loading}
+        />
+      </Field>
+
+      <Field label="Topik / tema post" hint={`${topic.length}/500`}>
+        <TextArea
+          value={topic}
+          onChange={setTopic}
+          placeholder="Contoh: workshop corporate Fotofusi — tunjukkan tim kerja saat shoot live event"
+          rows={2}
+          disabled={loading}
+        />
+      </Field>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Pillar (opsional)" hint="ngiket ke brand pillar">
+          <input
+            type="text"
+            value={pillar}
+            onChange={(e) => setPillar(e.target.value)}
+            disabled={loading}
+            placeholder="Corporate Event"
+            className="input-glow w-full rounded-xl border border-slate-700/60 bg-slate-950/40 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none disabled:opacity-50"
+          />
+        </Field>
+        <Field label="Goal (opsional)">
+          <div className="flex flex-wrap gap-2">
+            {GOAL_OPTIONS.map((g) => {
+              const active = goal === g.value;
+              return (
+                <button
+                  key={g.value}
+                  type="button"
+                  disabled={loading}
+                  onClick={() => setGoal(active ? "" : g.value)}
+                  className={`tap-scale rounded-full border px-3 py-1.5 text-xs font-medium disabled:opacity-50 ${
+                    active
+                      ? "border-violet-500/60 bg-violet-500/15 text-violet-200"
+                      : "border-slate-800 bg-slate-900/40 text-slate-400 hover:border-violet-500/30 hover:text-violet-300"
+                  }`}
+                >
+                  {g.label}
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+      </div>
+
+      {showRefPicker && (
+        <div className="rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-blue-500/5 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-violet-300">
+              Referensi target ({selectedRefIds.length} dipilih)
+            </span>
+            <a
+              href="?tab=references"
+              className="text-[11px] text-violet-300 hover:text-violet-200"
+            >
+              Manage library →
+            </a>
+          </div>
+
+          {refsLoading && (
+            <p className="text-xs text-slate-500">Loading library...</p>
+          )}
+
+          {!refsLoading && refs.length === 0 && (
+            <p className="text-xs text-slate-500">
+              Belum ada reference di library. Tambah dulu URL post viral di tab
+              References, atau pakai &quot;Reference manual&quot; di bawah.
+            </p>
+          )}
+
+          {refs.length > 0 && (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {refs.map((r) => {
+                const ana = r.analysis || {};
+                const active = selectedRefIds.includes(r.id);
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    disabled={loading}
+                    onClick={() => toggleRef(r.id)}
+                    className={`group flex gap-2 rounded-lg border p-2 text-left transition disabled:opacity-50 ${
+                      active
+                        ? "border-violet-500/60 bg-violet-500/10"
+                        : "border-slate-800 bg-slate-950/40 hover:border-violet-500/30"
+                    }`}
+                  >
+                    {r.thumbnail && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={r.thumbnail}
+                        alt=""
+                        className="h-14 w-14 flex-shrink-0 rounded object-cover object-top"
+                      />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase ${
+                            r.tag === "own"
+                              ? "bg-emerald-500/20 text-emerald-300"
+                              : r.tag === "competitor"
+                              ? "bg-amber-500/20 text-amber-300"
+                              : "bg-violet-500/20 text-violet-300"
+                          }`}
+                        >
+                          {r.tag || "ref"}
+                        </span>
+                        <span className="text-[10px] text-slate-500 truncate">
+                          {r.platform || "—"}
+                        </span>
+                      </div>
+                      <p className="mt-1 line-clamp-2 text-[11px] text-slate-400">
+                        {ana.hook_or_first_frame ||
+                          ana.visual_summary ||
+                          r.url}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-3">
+            <Field label="Atau reference manual (paste deskripsi)">
+              <TextArea
+                value={referenceText}
+                onChange={setReferenceText}
+                placeholder="Contoh: Reel @brandX viral 200K view — opening freeze frame text 'Saya cuma bayar 2jt buat ini', cut ke BTS, twist di akhir reveal hasil. Pattern: hook shock-stat → BTS → reveal."
+                rows={3}
+                disabled={loading}
+              />
+            </Field>
+          </div>
+        </div>
+      )}
+
+      {mode === "modifikasi" && (
+        <Field
+          label="Custom angle modifikasi"
+          hint="apa yang mau lo ubah dari pattern referensi"
+        >
+          <TextArea
+            value={angle}
+            onChange={setAngle}
+            placeholder="Contoh: ganti audience jadi HR korporat (bukan UMKM), tone lebih profesional, twist soft-sell ke jasa Fotofusi"
+            rows={2}
+            disabled={loading}
+          />
+        </Field>
+      )}
+
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <GenerateButton
+          onClick={onGenerateTitles}
+          loading={titlesLoading}
+          disabled={!topic.trim()}
+        >
+          {titlesLoading ? "Generating judul…" : "Generate Judul →"}
+        </GenerateButton>
+        <button
+          type="button"
+          onClick={onSkip}
+          disabled={!topic.trim() || loading}
+          className="btn-soft rounded-xl border border-slate-700/60 bg-slate-900/40 px-5 py-2.5 text-sm font-medium text-slate-300 hover:border-violet-500/40 hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-40"
+          title="Skip rekomendasi judul, langsung generate brief lengkap"
+        >
+          Skip — auto judul
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const ANGLE_COLORS = {
+  question: "border-blue-500/40 bg-blue-500/5 text-blue-200",
+  contrarian: "border-violet-500/40 bg-violet-500/5 text-violet-200",
+  promise: "border-emerald-500/40 bg-emerald-500/5 text-emerald-200",
+  story: "border-amber-500/40 bg-amber-500/5 text-amber-200",
+  shock: "border-red-500/40 bg-red-500/5 text-red-200",
+  "how-to": "border-cyan-500/40 bg-cyan-500/5 text-cyan-200",
+  "behind-the-scenes": "border-fuchsia-500/40 bg-fuchsia-500/5 text-fuchsia-200",
+  "data-driven": "border-sky-500/40 bg-sky-500/5 text-sky-200",
+  personal: "border-pink-500/40 bg-pink-500/5 text-pink-200",
+  list: "border-teal-500/40 bg-teal-500/5 text-teal-200",
+};
+
+function TitlesPhase({
+  titles,
+  chosenTitle,
+  manualTitle,
+  setManualTitle,
+  onSelect,
+  onRegen,
+  onBack,
+  loading,
+}) {
+  return (
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm text-slate-400">
+          Pilih 1 judul yang paling resonate. Bisa{" "}
+          <span className="text-violet-300">regen</span> kalau gak ada yang pas,
+          atau ketik judul sendiri di bawah.
+        </p>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            disabled={loading}
+            className="btn-soft rounded-md border border-slate-700/60 bg-slate-900/40 px-3 py-1.5 text-xs text-slate-300 hover:text-violet-200 disabled:opacity-50"
+          >
+            ← Ubah input
+          </button>
+          <button
+            type="button"
+            onClick={onRegen}
+            disabled={loading}
+            className="btn-soft rounded-md border border-violet-500/40 bg-violet-500/10 px-3 py-1.5 text-xs font-medium text-violet-200 hover:bg-violet-500/15 disabled:opacity-50"
+          >
+            {loading ? "regenerating…" : "↻ Regen 5 judul lain"}
+          </button>
+        </div>
+      </div>
+
+      {loading && titles.length === 0 && (
+        <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-center text-sm text-slate-500">
+          Generating judul…
+        </div>
+      )}
+
+      <div className="grid gap-2">
+        {titles.map((t, i) => {
+          const angleColor =
+            ANGLE_COLORS[t.hook_angle] ||
+            "border-slate-700/60 bg-slate-900/40 text-slate-300";
+          return (
+            <button
+              key={`${t.text}-${i}`}
+              type="button"
+              onClick={() => onSelect(t.text)}
+              disabled={loading}
+              style={{ "--stagger-i": i }}
+              className={`stagger-in lift-on-hover w-full rounded-xl border p-4 text-left disabled:opacity-50 ${
+                chosenTitle === t.text ? "ring-2 ring-violet-500/60" : ""
+              } ${angleColor}`}
+            >
+              <div className="mb-2 flex items-center gap-2">
+                <span className="text-[10px] text-slate-500">#{i + 1}</span>
+                <span className="rounded-full border border-current/30 bg-black/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
+                  {t.hook_angle || "angle"}
+                </span>
+              </div>
+              <p className="text-sm font-semibold leading-snug text-slate-100">
+                {t.text}
+              </p>
+              {t.reasoning && (
+                <p className="mt-1.5 text-[11px] italic text-slate-400">
+                  💡 {t.reasoning}
+                </p>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+        <Field label="Atau pakai judul sendiri (manual)">
+          <TextArea
+            value={manualTitle}
+            onChange={setManualTitle}
+            placeholder="Ketik judul versi kamu di sini…"
+            rows={2}
+            disabled={loading}
+          />
+        </Field>
+        <button
+          type="button"
+          onClick={() => onSelect(manualTitle)}
+          disabled={!manualTitle.trim() || loading}
+          className="btn-primary mt-2 rounded-lg px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Pakai judul ini →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ScenesPhase({
+  chosenTitle,
+  isReel,
+  sceneCount,
+  setSceneCount,
+  loading,
+  onGenerate,
+  onBack,
+  onChangeTitle,
+  hasResult,
+}) {
+  return (
+    <div className="grid gap-4">
+      <div className="rounded-xl border border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-blue-500/10 p-4">
+        <div className="mb-1 flex items-center justify-between">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-300">
+            Judul terpilih
+          </span>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={onBack}
+              disabled={loading}
+              className="btn-soft rounded-md border border-slate-700/60 bg-slate-900/40 px-2 py-1 text-[10px] text-slate-400 hover:text-violet-200 disabled:opacity-50"
+            >
+              ← Ubah input
+            </button>
+            {chosenTitle && (
+              <button
+                type="button"
+                onClick={onChangeTitle}
+                disabled={loading}
+                className="btn-soft rounded-md border border-violet-500/40 bg-violet-500/10 px-2 py-1 text-[10px] font-medium text-violet-200 hover:bg-violet-500/15 disabled:opacity-50"
+              >
+                Ganti judul
+              </button>
+            )}
+          </div>
+        </div>
+        <p className="text-base font-semibold leading-snug text-slate-100">
+          {chosenTitle || (
+            <span className="italic text-slate-500">
+              (auto — LLM bikin judul sendiri)
+            </span>
+          )}
+        </p>
+      </div>
+
+      {isReel && (
+        <Field label="Jumlah scene" hint={`${sceneCount} scene · ~${sceneCount * 4}s total target`}>
+          <SceneCountStepper
+            value={sceneCount}
+            onChange={setSceneCount}
+            disabled={loading}
+          />
+        </Field>
+      )}
+
+      <GenerateButton
+        onClick={onGenerate}
+        loading={loading}
+        disabled={loading}
+      >
+        {loading
+          ? "Generating brief…"
+          : hasResult
+          ? "Re-generate dengan setting baru"
+          : "Generate Brief →"}
+      </GenerateButton>
+    </div>
+  );
+}
+
+function SceneCountStepper({ value, onChange, disabled }) {
+  const min = 3;
+  const max = 10;
+  return (
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(min, value - 1))}
+        disabled={disabled || value <= min}
+        className="icon-btn flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/60 text-slate-300 hover:border-violet-500/60 hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="Kurangi scene"
+      >
+        −
+      </button>
+      <div className="flex-1">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={1}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          disabled={disabled}
+          className="w-full accent-violet-500"
+          aria-label="Scene count slider"
+        />
+        <div className="mt-1 flex justify-between text-[9px] text-slate-600">
+          {Array.from({ length: max - min + 1 }, (_, i) => min + i).map((n) => (
+            <span key={n} className={n === value ? "font-semibold text-violet-300" : ""}>
+              {n}
+            </span>
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange(Math.min(max, value + 1))}
+        disabled={disabled || value >= max}
+        className="icon-btn flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/60 text-slate-300 hover:border-violet-500/60 hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="Tambah scene"
+      >
+        +
+      </button>
+      <div className="flex h-9 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-violet-500/40 bg-violet-500/10 font-display font-bold text-violet-200">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function BriefResult({
+  result,
+  regenerating,
+  onRegen,
+  canRegen,
+  regeneratingSceneNo,
+  onRegenScene,
+}) {
   const fmt = result.format;
-  const layoutProps = { result, regenerating, onRegen, canRegen };
+  const layoutProps = {
+    result,
+    regenerating,
+    onRegen,
+    canRegen,
+    regeneratingSceneNo,
+    onRegenScene,
+  };
   return (
     <ResultPanel
       title={`Brief · ${fmt} · ${result.title || "Untitled"}`}
@@ -498,7 +996,14 @@ function NarrativeArc({ arc, regenerating, onRegen, canRegen }) {
   );
 }
 
-function ReelLayout({ result, regenerating, onRegen, canRegen }) {
+function ReelLayout({
+  result,
+  regenerating,
+  onRegen,
+  canRegen,
+  regeneratingSceneNo,
+  onRegenScene,
+}) {
   return (
     <>
       {result.hooks?.length > 0 && (
@@ -564,54 +1069,18 @@ function ReelLayout({ result, regenerating, onRegen, canRegen }) {
           title={`${result.scenes.length} scenes (~${result.scenes.reduce(
             (s, x) => s + (x.duration_s || 0),
             0
-          )}s)`}
-          actions={
-            <RegenButton
-              sectionKey="scenes"
-              regenerating={regenerating}
-              onRegen={onRegen}
-              disabled={!canRegen}
-            />
-          }
-          isRegenerating={regenerating === "scenes"}
+          )}s) · regen per scene`}
         >
           <div className="space-y-2">
             {result.scenes.map((s, i) => (
-              <div
-                key={i}
-                style={{ "--stagger-i": i }}
-                className="stagger-in flex gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-3"
-              >
-                <div className="flex w-12 flex-shrink-0 flex-col items-center rounded-lg bg-slate-900/60 p-2">
-                  <span className="text-[9px] uppercase text-slate-500">scene</span>
-                  <span className="font-display text-lg font-bold text-violet-200">
-                    {s.no || i + 1}
-                  </span>
-                  {s.duration_s && (
-                    <span className="text-[9px] text-slate-500">{s.duration_s}s</span>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1 space-y-1">
-                  {s.visual && (
-                    <p className="text-xs text-slate-300">
-                      <span className="text-slate-500">📸 Visual: </span>
-                      {s.visual}
-                    </p>
-                  )}
-                  {s.voiceover && (
-                    <p className="text-xs text-slate-300">
-                      <span className="text-slate-500">🎙 VO: </span>
-                      {s.voiceover}
-                    </p>
-                  )}
-                  {s.on_screen_text && (
-                    <p className="text-xs text-slate-300">
-                      <span className="text-slate-500">📝 Teks: </span>
-                      {s.on_screen_text}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <SceneCard
+                key={`${s.no || i}-${i}`}
+                scene={s}
+                idx={i}
+                regenerating={Number(regeneratingSceneNo) === Number(s.no || i + 1)}
+                anyRegenerating={regeneratingSceneNo != null}
+                onRegen={onRegenScene}
+              />
             ))}
           </div>
         </Section>
@@ -626,6 +1095,130 @@ function ReelLayout({ result, regenerating, onRegen, canRegen }) {
         canRegen={canRegen}
       />
     </>
+  );
+}
+
+function SceneCard({ scene, idx, regenerating, anyRegenerating, onRegen }) {
+  const [hintOpen, setHintOpen] = useState(false);
+  const [hint, setHint] = useState("");
+  const sceneNo = Number(scene.no) || idx + 1;
+
+  function submit() {
+    if (!onRegen || regenerating) return;
+    onRegen(sceneNo, hint.trim() || null);
+    setHintOpen(false);
+    setHint("");
+  }
+
+  return (
+    <div
+      style={{ "--stagger-i": idx }}
+      className={`stagger-in relative rounded-xl border border-slate-800 bg-slate-950/40 p-3 transition-opacity duration-200 ${
+        regenerating ? "pointer-events-none opacity-50" : ""
+      }`}
+    >
+      <div className="flex gap-3">
+        <div className="flex w-12 flex-shrink-0 flex-col items-center rounded-lg bg-slate-900/60 p-2">
+          <span className="text-[9px] uppercase text-slate-500">scene</span>
+          <span className="font-display text-lg font-bold text-violet-200">
+            {sceneNo}
+          </span>
+          {scene.duration_s && (
+            <span className="text-[9px] text-slate-500">{scene.duration_s}s</span>
+          )}
+        </div>
+        <div className="min-w-0 flex-1 space-y-1">
+          {scene.visual && (
+            <p className="text-xs text-slate-300">
+              <span className="text-slate-500">📸 Visual: </span>
+              {scene.visual}
+            </p>
+          )}
+          {scene.voiceover && (
+            <p className="text-xs text-slate-300">
+              <span className="text-slate-500">🎙 VO: </span>
+              {scene.voiceover}
+            </p>
+          )}
+          {scene.on_screen_text && (
+            <p className="text-xs text-slate-300">
+              <span className="text-slate-500">📝 Teks: </span>
+              {scene.on_screen_text}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-shrink-0 flex-col items-end gap-1">
+          <button
+            type="button"
+            onClick={() => setHintOpen((v) => !v)}
+            disabled={anyRegenerating}
+            aria-label={`Regen scene ${sceneNo}`}
+            title="Regen scene ini saja (opsional kasih hint)"
+            className="btn-soft flex h-7 items-center gap-1 rounded-md border border-slate-700/60 bg-slate-900/60 px-2 text-[10px] font-medium uppercase tracking-wider text-slate-400 hover:border-violet-500/60 hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <span className={regenerating ? "spin-loop" : ""} aria-hidden="true">
+              ↻
+            </span>
+            {regenerating ? "regen…" : "regen"}
+          </button>
+        </div>
+      </div>
+
+      {hintOpen && !regenerating && (
+        <div className="reveal-in mt-3 space-y-2 rounded-lg border border-violet-500/30 bg-violet-500/5 p-3">
+          <div>
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-violet-300">
+              Hint regen (opsional)
+            </label>
+            <input
+              type="text"
+              value={hint}
+              onChange={(e) => setHint(e.target.value)}
+              placeholder='Contoh: "lebih dramatic", "tambah humor", "BTS angle"'
+              maxLength={300}
+              disabled={anyRegenerating}
+              className="input-glow w-full rounded-md border border-slate-700/60 bg-slate-950/60 px-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-600 focus:border-violet-500 focus:outline-none disabled:opacity-50"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  submit();
+                }
+              }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={submit}
+              disabled={anyRegenerating}
+              className="btn-primary rounded-md px-3 py-1 text-[11px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Regen scene {sceneNo}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setHintOpen(false);
+                setHint("");
+              }}
+              disabled={anyRegenerating}
+              className="btn-soft rounded-md border border-slate-700/60 bg-slate-900/60 px-3 py-1 text-[11px] text-slate-300 hover:text-slate-100 disabled:opacity-50"
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      )}
+
+      {regenerating && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl"
+        >
+          <div className="shimmer-sweep absolute inset-0" />
+        </div>
+      )}
+    </div>
   );
 }
 
