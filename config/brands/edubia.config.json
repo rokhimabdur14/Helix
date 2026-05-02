@@ -2,5 +2,47 @@
   "brand_id": "edubia",
   "brand_name": "Edubia",
   "website_url": "https://edubia.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les Privat Terbaik Surabaya",
+  "positioning": "Lembaga les privat terpercaya di Surabaya",
+  "brand_voice": {
+    "tone": [
+      "profesional",
+      "ramah",
+      "mendukung"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan siswa"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua Siswa",
+      "priority": "high"
+    },
+    {
+      "id": "siswa",
+      "label": "Siswa",
+      "priority": "medium"
+    },
+    {
+      "id": "mahasiswa",
+      "label": "Mahasiswa",
+      "priority": "low"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor)",
+      "Testimoni Siswa (kesuksesan siswa)",
+      "Tips Belajar (strategi belajar efektif)",
+      "Program Les (informasi program les)",
+      "Prestasi Siswa (prestasi siswa)",
+      "Artikel Pendidikan (artikel tentang pendidikan)"
+    ]
+  }
 }

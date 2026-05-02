@@ -3,5 +3,45 @@
   "brand_name": "Edufio",
   "website_url": "https://edufio.com",
   "created_at": "2026-04-23T14:23:00.362221",
-  "tagline": "Dipercaya 10.000+ Siswa di Yogyakarta"
+  "tagline": "Dipercaya 10.000+ Siswa di Yogyakarta",
+  "positioning": "Layanan les privat berkualitas untuk semua usia",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "profesional",
+      "mendukung"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan dengan sentuhan kehangatan",
+      "Penggunaan emoji terbatas untuk menyampaikan kesan ramah",
+      "Penyampaian informasi yang jelas dan mudah dipahami"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa-sd",
+      "label": "Siswa SD",
+      "priority": "high"
+    },
+    {
+      "id": "siswa-smp",
+      "label": "Siswa SMP",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor berprestasi)",
+      "Tips Belajar (strategi belajar efektif)",
+      "Testimoni Siswa (kesuksesan siswa)",
+      "Pilihan Program Les (variasi program les)",
+      "Edukasi Orang Tua (informasi pendidikan untuk orang tua)"
+    ]
+  }
 }

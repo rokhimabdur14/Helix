@@ -3,5 +3,46 @@
   "brand_name": "arabi",
   "website_url": "https://arabi.id",
   "created_at": "2026-04-24T10:57:07.935375",
-  "tagline": "Kursus Mengaji & Bahasa Arab No.1"
+  "tagline": "Kursus Mengaji & Bahasa Arab No.1",
+  "positioning": "Kursus Bahasa Arab dan Al-Qur'an terbaik di Indonesia",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "profesional",
+      "mendidik"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan dengan sentuhan keagamaan",
+      "Penggunaan kata-kata yang mendidik dan memotivasi",
+      "Tidak menggunakan bahasa yang terlalu santai atau kasual"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "murid",
+      "label": "Murid Sekolah",
+      "priority": "high"
+    },
+    {
+      "id": "mahasiswa",
+      "label": "Mahasiswa",
+      "priority": "medium"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "low"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Kursus Bahasa Arab (Tips dan Trik)",
+      "Pengajaran Al-Qur'an (Tafsir dan Terjemahan)",
+      "Kaligrafi Arab (Sejarah dan Teknik)",
+      "Testimoni Murid (Kesuksesan dan Pengalaman)",
+      "Tips Belajar Bahasa Arab (Motivasi dan Strategi)",
+      "Berita dan Artikel tentang Bahasa Arab dan Islam"
+    ]
+  }
 }

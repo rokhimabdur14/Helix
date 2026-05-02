@@ -2,5 +2,41 @@
   "brand_id": "edusora",
   "brand_name": "Edusora",
   "website_url": "https://edusora.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les Privat Berkualitas",
+  "positioning": "Jasa les privat Semarang profesional dan berkualitas",
+  "brand_voice": {
+    "tone": [
+      "profesional",
+      "ramah",
+      "mendukung"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan kata-kata motivatif"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa",
+      "label": "Siswa",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor)",
+      "Tips Belajar (strategi belajar)",
+      "Testimoni Siswa (kesuksesan siswa)",
+      "Program Les (informasi program)",
+      "Pembelajaran Online (tutorial online)",
+      "Kiat Menghadapi Ujian (persiapan ujian)"
+    ]
+  }
 }

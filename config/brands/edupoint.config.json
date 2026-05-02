@@ -2,5 +2,42 @@
   "brand_id": "edupoint",
   "brand_name": "EduPoint",
   "website_url": "https://www.edupoint.id/id",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les privat terbaik dengan teknologi AI",
+  "positioning": "Platform les privat terpercaya dengan teknologi AI",
+  "brand_voice": {
+    "tone": [
+      "Profesional",
+      "Peduli",
+      "Inovatif"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan teknologi AI",
+      "Fokus pada hasil belajar"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "high"
+    },
+    {
+      "id": "siswa",
+      "label": "Siswa",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tips Belajar Efektif",
+      "Kisah Sukses Siswa",
+      "Teknologi Pendidikan",
+      "Panduan Orang Tua",
+      "Program Les Privat",
+      "Testimoni Siswa"
+    ]
+  }
 }

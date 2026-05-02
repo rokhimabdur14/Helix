@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AddBrandModal } from "../AddBrandModal";
 import { api } from "../api-client";
 import { AppHeader } from "../AppHeader";
+import BrandsSkeleton from "../BrandsSkeleton";
 import { useBrand } from "../use-brand";
 import { HourHeatmap } from "./HourHeatmap";
 import { PillarBars } from "./PillarBars";
@@ -95,9 +96,7 @@ export default function AnalysisPage() {
             )}
           </div>
 
-          {brandsLoading && (
-            <CenteredMessage text="Loading brands..." />
-          )}
+          {brandsLoading && <BrandsSkeleton variant="analysis" />}
 
           {!brandsLoading && brands.length === 0 && (
             <NoBrandsState onAdd={() => setAddOpen(true)} />

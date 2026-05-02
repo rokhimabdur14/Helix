@@ -5,6 +5,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AddBrandModal } from "../AddBrandModal";
 import { api } from "../api-client";
 import { AppHeader } from "../AppHeader";
+import BrandsSkeleton from "../BrandsSkeleton";
 import { useBrand } from "../use-brand";
 import { BriefTab } from "./BriefTab";
 import { CaptionTab } from "./CaptionTab";
@@ -283,8 +284,8 @@ function StudioPageInner() {
           </div>
 
           {brandsLoading && mode === "brand" && (
-            <div className="mt-12 text-center text-sm text-slate-500">
-              Loading brands...
+            <div className="mt-6">
+              <BrandsSkeleton variant="studio" />
             </div>
           )}
 

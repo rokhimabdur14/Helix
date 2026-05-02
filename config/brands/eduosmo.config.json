@@ -2,5 +2,47 @@
   "brand_id": "eduosmo",
   "brand_name": "Eduosmo",
   "website_url": "https://eduosmo.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les Privat Terbaik di Bandung",
+  "positioning": "Lembaga les privat terpercaya di Bandung dengan 2000+ tutor terseleksi",
+  "brand_voice": {
+    "tone": [
+      "profesional",
+      "ramah",
+      "membantu"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan siswa"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa",
+      "label": "Siswa SD-SMA",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua Siswa",
+      "priority": "medium"
+    },
+    {
+      "id": "mahasiswa",
+      "label": "Mahasiswa",
+      "priority": "low"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight",
+      "Tips Belajar",
+      "Testimoni Siswa",
+      "Program Les Privat",
+      "Pengenalan Eduosmo",
+      "Cerita Sukses Siswa"
+    ]
+  }
 }

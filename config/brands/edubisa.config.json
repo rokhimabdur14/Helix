@@ -2,5 +2,47 @@
   "brand_id": "edubisa",
   "brand_name": "Edubisa",
   "website_url": "https://edubisa.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les Privat Terbaik di Medan",
+  "positioning": "Lembaga les privat terpercaya untuk SD, SMP, SMA & ujian masuk kampus",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "profesional",
+      "membantu"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan siswa"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa-sd",
+      "label": "Siswa SD",
+      "priority": "high"
+    },
+    {
+      "id": "siswa-smp",
+      "label": "Siswa SMP",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor)",
+      "Q&A Belajar (tanya jawab les privat)",
+      "Testimoni Siswa (kesuksesan siswa)",
+      "Tips Belajar (strategi belajar efektif)",
+      "Program Les (informasi program les)",
+      "Prestasi Siswa (prestasi siswa Edubisa)"
+    ]
+  }
 }

@@ -2,5 +2,47 @@
   "brand_id": "edumisi",
   "brand_name": "Edumisi",
   "website_url": "https://edumisi.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les privat terpercaya",
+  "positioning": "Lembaga les privat personalized learning terbaik di Jakarta",
+  "brand_voice": {
+    "tone": [
+      "profesional",
+      "ramah",
+      "mendukung"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan siswa"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa",
+      "label": "Siswa SD-SMA",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "medium"
+    },
+    {
+      "id": "mahasiswa",
+      "label": "Mahasiswa",
+      "priority": "low"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor)",
+      "Testimoni Siswa (kesuksesan siswa)",
+      "Tips Belajar (strategi belajar efektif)",
+      "Program Les (informasi program les)",
+      "Pembelajaran Dipersonalisasi (konten edukatif)",
+      "Garansi Kepuasan (jaminan kualitas)"
+    ]
+  }
 }

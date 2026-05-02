@@ -13,8 +13,22 @@ const geist = Geist({
 });
 
 export const metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://helix-dashboard-seven.vercel.app"
+  ),
   title: "HELIX — AI Social Media Strategist by Akselera Tech",
   description: "The DNA of your brand, decoded.",
+  openGraph: {
+    title: "HELIX — AI Social Media Strategist",
+    description: "The DNA of your brand, decoded.",
+    siteName: "HELIX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HELIX — AI Social Media Strategist",
+    description: "The DNA of your brand, decoded.",
+  },
 };
 
 // Inline pre-hydration script: resolve theme dari localStorage + system pref

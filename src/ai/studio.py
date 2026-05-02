@@ -843,9 +843,7 @@ def generate_brief(
 
     Returns format-specific dict (lihat _brief_user_prompt schemas).
     """
-    # Compact mode untuk 8b TPM 6000 — trim expertise/profile/social biar muat.
-    # Saat 70b TPD reset, ganti compact=False + STUDIO_MODEL → PLAN_MODEL.
-    system = _system_prompt(brand_id, BRIEF_ROLE, compact=True)
+    system = _system_prompt(brand_id, BRIEF_ROLE)
     # Reference library per-brand → skip kalau free mode
     targeted_refs = (
         _load_specific_references(brand_id, reference_ids) if brand_id else ""
@@ -864,16 +862,14 @@ def generate_brief(
         scene_count=scene_count,
     )
 
-    # Brief lebih kompleks (multi-section reasoning + integrate sources)
-    # TEMP: pindah ke 8b sementara karena 70b TPD limit hit. max_tokens
-    # diturunkan dari 4500 → 2500 + system prompt compact mode → fit di TPM 6000.
-    # Quality multi-section turun sedikit tapi acceptable utk free tier.
-    # Revert ke PLAN_MODEL + max_tokens 4500 + compact=False saat 70b lega.
+    # Brief = multi-section reasoning (narrative_arc + scenes + caption +
+    # hashtags terintegrasi). 70b model untuk depth; 4500 max_tokens muat
+    # full schema reel/carousel/foto/story tanpa truncation.
     return _generate_json(
         system,
         user,
-        max_tokens=2500,
-        model=STUDIO_MODEL,
+        max_tokens=4500,
+        model=PLAN_MODEL,
         temperature=0.75,
     )
 

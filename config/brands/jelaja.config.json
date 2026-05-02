@@ -2,5 +2,47 @@
   "brand_id": "jelaja",
   "brand_name": "Jelaja",
   "website_url": "https://jelaja.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Liburan Mudah dengan Jelaja",
+  "positioning": "Jasa tour dan travel terpercaya di Indonesia",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "profesional",
+      "membantu"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Gunakan emoji untuk menarik perhatian",
+      "Fokus pada keaslian pengalaman"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "wisatawan-muda",
+      "label": "Wisatawan Muda",
+      "priority": "high"
+    },
+    {
+      "id": "keluarga",
+      "label": "Keluarga",
+      "priority": "medium"
+    },
+    {
+      "id": "turis-asal-luar-negeri",
+      "label": "Turis Asal Luar Negeri",
+      "priority": "low"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Destinasi Wisata (ulasan dan tips)",
+      "Paket Wisata (promo dan penawaran)",
+      "Testimoni Pelanggan (kisah sukses)",
+      "Tips dan Trik Wisata (informasi bermanfaat)",
+      "Berita Wisata (update terbaru)",
+      "Promo Spesial (penawaran eksklusif)"
+    ]
+  }
 }

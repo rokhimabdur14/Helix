@@ -2,5 +2,42 @@
   "brand_id": "edulob",
   "brand_name": "Edulob",
   "website_url": "https://edulob.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les Privat Berkualitas",
+  "positioning": "Layanan les privat Malang dengan guru datang ke rumah",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "profesional",
+      "mendukung"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan pelanggan"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa",
+      "label": "Siswa Sekolah",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (profil tutor)",
+      "Testimoni Siswa (kesaksian pelanggan)",
+      "Tips Belajar (saran dan trik belajar)",
+      "Program Les (informasi program les)",
+      "Prestasi Siswa (prestasi siswa)",
+      "Artikel Pendidikan (artikel tentang pendidikan)"
+    ]
+  }
 }

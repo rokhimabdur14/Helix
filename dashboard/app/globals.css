@@ -235,6 +235,34 @@ body::before {
   display: inline-block;
   animation: spin-loop 0.9s linear infinite;
 }
+
+/* Skeleton bar — gradient pulse untuk placeholder loading */
+.skeleton-bar {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    100deg,
+    rgba(30, 27, 75, 0.35) 0%,
+    rgba(76, 29, 149, 0.18) 50%,
+    rgba(30, 27, 75, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pan 1.6s ease-in-out infinite;
+}
+[data-theme="light"] .skeleton-bar {
+  background: linear-gradient(
+    100deg,
+    rgba(167, 139, 250, 0.14) 0%,
+    rgba(124, 58, 237, 0.10) 50%,
+    rgba(167, 139, 250, 0.14) 100%
+  );
+  background-size: 200% 100%;
+}
+@keyframes skeleton-pan {
+  0%   { background-position: 200% 0; opacity: 0.7; }
+  50%  { opacity: 1; }
+  100% { background-position: -200% 0; opacity: 0.7; }
+}
 @keyframes spin-loop {
   to { transform: rotate(360deg); }
 }

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { AddBrandModal } from "./AddBrandModal";
 import { api, API_URL, ApiUpstreamError } from "./api-client";
 import { AppHeader } from "./AppHeader";
+import BrandsSkeleton from "./BrandsSkeleton";
 import { ChatSidebar } from "./ChatSidebar";
 import {
   createConversation,
@@ -260,8 +261,8 @@ export default function ChatPage() {
           <ModeToggle mode={mode} onChange={setMode} />
 
           {brandsLoading && mode === "brand" && (
-            <div className="mt-20 text-center text-slate-500">
-              <p className="text-sm">Loading brands...</p>
+            <div className="mt-8">
+              <BrandsSkeleton variant="chat" />
             </div>
           )}
 

@@ -2,5 +2,47 @@
   "brand_id": "edumoka",
   "brand_name": "Edumoka",
   "website_url": "https://edumoka.com",
-  "created_at": "2026-04-30T11:56:07.746685"
+  "created_at": "2026-04-30T11:56:07.746685",
+  "tagline": "Les privat terbaik di Makassar",
+  "positioning": "Les privat Makassar untuk TK, SD, SMP, SMA & UTBK SNBT dengan guru berpengalaman",
+  "brand_voice": {
+    "tone": [
+      "ramah",
+      "mendukung",
+      "profesional"
+    ],
+    "language": "id",
+    "style_notes": [
+      "Bahasa formal pendidikan",
+      "Penggunaan emoji terbatas",
+      "Fokus pada kebutuhan belajar"
+    ]
+  },
+  "target_personas": [
+    {
+      "id": "siswa-sd",
+      "label": "Siswa SD",
+      "priority": "high"
+    },
+    {
+      "id": "orang-tua",
+      "label": "Orang Tua",
+      "priority": "high"
+    },
+    {
+      "id": "guru",
+      "label": "Guru",
+      "priority": "medium"
+    }
+  ],
+  "content_strategy": {
+    "content_pillars": [
+      "Tutor Spotlight (les privat)",
+      "Testimoni Siswa (pengalaman belajar)",
+      "Tips Belajar (strategi belajar efektif)",
+      "Program Les Privat (informasi program)",
+      "Pertanyaan yang Sering Diajukan (FAQ)",
+      "Cara Mendaftar Les Privat (proses pendaftaran)"
+    ]
+  }
 }
