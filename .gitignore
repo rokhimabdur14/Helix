@@ -52,6 +52,23 @@ data/*.xlsx
 !data/edupoint_website.json
 !data/jelaja_website.json
 
+# Social profile snapshots (IG + TT analyze) — DI-COMMIT supaya HELIX prompt
+# auto-inject SOCIAL DNA aesthetic ke semua Studio output di prod HF.
+# Tambah `_social_profile.json` di sini saat add brand baru ke product.
+!data/fotofusi_social_profile.json
+!data/arabi_social_profile.json
+!data/edufio_social_profile.json
+!data/edumisi_social_profile.json
+!data/eduosmo_social_profile.json
+!data/edusora_social_profile.json
+!data/edubia_social_profile.json
+!data/edulob_social_profile.json
+!data/eduraya_social_profile.json
+!data/edumoka_social_profile.json
+!data/edubisa_social_profile.json
+!data/edupoint_social_profile.json
+!data/jelaja_social_profile.json
+
 # Templates — DI-COMMIT (referensi user untuk format CSV insights)
 !data/templates/
 !data/templates/*

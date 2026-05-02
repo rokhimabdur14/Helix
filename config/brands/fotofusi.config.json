@@ -6,9 +6,13 @@
   "positioning": "Indonesia's first managed marketplace for photography & videography",
   "base_city": "Yogyakarta",
   "founded": "2026-02",
-
   "brand_voice": {
-    "tone": ["profesional", "hangat", "approachable", "confident"],
+    "tone": [
+      "profesional",
+      "hangat",
+      "approachable",
+      "confident"
+    ],
     "language": "id",
     "style_notes": [
       "WhatsApp-first UX — bahasa kasual tapi tetap profesional",
@@ -16,94 +20,185 @@
       "Managed marketplace (bukan listing/freelance): matching, pricing, QC, delivery, garansi"
     ]
   },
-
   "target_personas": [
-    { "id": "personal", "label": "Ibu-ibu / Personal", "priority": "high" },
-    { "id": "umkm", "label": "UMKM", "priority": "high" },
-    { "id": "corporate", "label": "Korporat / HR / EO", "priority": "high" },
-    { "id": "mahasiswa", "label": "Mahasiswa (wisuda)", "priority": "medium" }
+    {
+      "id": "personal",
+      "label": "Ibu-ibu / Personal",
+      "priority": "high"
+    },
+    {
+      "id": "umkm",
+      "label": "UMKM",
+      "priority": "high"
+    },
+    {
+      "id": "corporate",
+      "label": "Korporat / HR / EO",
+      "priority": "high"
+    },
+    {
+      "id": "mahasiswa",
+      "label": "Mahasiswa (wisuda)",
+      "priority": "medium"
+    }
   ],
-
   "services": [
     {
       "category": "Pre-Wedding",
       "tiers": [
-        { "name": "Bronze", "price": 2500000 },
-        { "name": "Silver", "price": 3750000 },
-        { "name": "Gold", "price": 5800000 }
+        {
+          "name": "Bronze",
+          "price": 2500000
+        },
+        {
+          "name": "Silver",
+          "price": 3750000
+        },
+        {
+          "name": "Gold",
+          "price": 5800000
+        }
       ]
     },
     {
       "category": "Wedding",
       "tiers": [
-        { "name": "Bronze", "price": 3000000 },
-        { "name": "Silver", "price": 5000000 },
-        { "name": "Gold", "price": 7000000 }
+        {
+          "name": "Bronze",
+          "price": 3000000
+        },
+        {
+          "name": "Silver",
+          "price": 5000000
+        },
+        {
+          "name": "Gold",
+          "price": 7000000
+        }
       ]
     },
     {
       "category": "Maternity & Aqiqah",
       "tiers": [
-        { "name": "Standard", "price": 2000000 }
+        {
+          "name": "Standard",
+          "price": 2000000
+        }
       ]
     },
     {
       "category": "Bukber Ramadan",
       "seasonal": true,
       "tiers": [
-        { "name": "Basic", "price": 500000 },
-        { "name": "Premium", "price": 850000 }
+        {
+          "name": "Basic",
+          "price": 500000
+        },
+        {
+          "name": "Premium",
+          "price": 850000
+        }
       ]
     },
     {
       "category": "Wisuda / Graduation",
       "tiers": [
-        { "name": "Lite", "price": 550000 },
-        { "name": "Circle", "price": 1100000 },
-        { "name": "Family", "price": 2000000 },
-        { "name": "VIP", "price": 3500000 }
+        {
+          "name": "Lite",
+          "price": 550000
+        },
+        {
+          "name": "Circle",
+          "price": 1100000
+        },
+        {
+          "name": "Family",
+          "price": 2000000
+        },
+        {
+          "name": "VIP",
+          "price": 3500000
+        }
       ]
     },
     {
       "category": "Couple Session",
       "tiers": [
-        { "name": "Basic", "price": 550000 },
-        { "name": "Premium", "price": 2500000 }
+        {
+          "name": "Basic",
+          "price": 550000
+        },
+        {
+          "name": "Premium",
+          "price": 2500000
+        }
       ]
     },
     {
       "category": "Tour & Travel",
       "tiers": [
-        { "name": "Basic", "price": 2000000 },
-        { "name": "Premium", "price": 4000000 }
+        {
+          "name": "Basic",
+          "price": 2000000
+        },
+        {
+          "name": "Premium",
+          "price": 4000000
+        }
       ]
     },
     {
       "category": "Corporate (Meeting/Workshop/Internal)",
       "tiers": [
-        { "name": "Basic", "price": 2000000 },
-        { "name": "Premium", "price": 4000000 }
+        {
+          "name": "Basic",
+          "price": 2000000
+        },
+        {
+          "name": "Premium",
+          "price": 4000000
+        }
       ]
     },
     {
       "category": "Family Gathering",
       "tiers": [
-        { "name": "Basic", "price": 2000000 },
-        { "name": "Premium", "price": 4000000 }
+        {
+          "name": "Basic",
+          "price": 2000000
+        },
+        {
+          "name": "Premium",
+          "price": 4000000
+        }
       ]
     },
     {
       "category": "Big Event (Pensi/Pameran)",
       "tiers": [
-        { "name": "Basic", "price": 4500000 },
-        { "name": "Premium", "price": 8000000 }
+        {
+          "name": "Basic",
+          "price": 4500000
+        },
+        {
+          "name": "Premium",
+          "price": 8000000
+        }
       ]
     }
   ],
-
   "content_strategy": {
-    "real_footage_categories": ["Corporate Event", "Workshop", "Small Events"],
-    "stock_categories": ["Wedding", "Pre-Wedding", "Maternity", "Wisuda"],
+    "real_footage_categories": [
+      "Corporate Event",
+      "Workshop",
+      "Small Events"
+    ],
+    "stock_categories": [
+      "Wedding",
+      "Pre-Wedding",
+      "Maternity",
+      "Wisuda"
+    ],
     "content_pillars": [
       "Corporate Event Portfolio (kekuatan utama)",
       "Workshop Documentation Showcase",
@@ -112,17 +207,34 @@
       "Behind The Scenes (tim saat shoot corporate)"
     ]
   },
-
   "social_media": {
     "platforms": [
-      { "name": "Instagram", "type": "Business", "status": "active" },
-      { "name": "TikTok", "type": "Creator", "status": "planned" }
+      {
+        "name": "Instagram",
+        "type": "Business",
+        "status": "active"
+      },
+      {
+        "name": "TikTok",
+        "type": "Creator",
+        "status": "planned"
+      }
     ]
   },
-
   "expansion_phases": [
-    { "phase": 1, "target": "Jabodetabek" },
-    { "phase": 2, "target": "10 kota besar" },
-    { "phase": 3, "target": "50+ kota" }
-  ]
+    {
+      "phase": 1,
+      "target": "Jabodetabek"
+    },
+    {
+      "phase": 2,
+      "target": "10 kota besar"
+    },
+    {
+      "phase": 3,
+      "target": "50+ kota"
+    }
+  ],
+  "instagram_handle": "fotofusiofficial",
+  "tiktok_handle": "fotofusiofficial"
 }
