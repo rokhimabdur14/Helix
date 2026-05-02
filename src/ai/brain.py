@@ -28,7 +28,7 @@ CONFIG_DIR = PROJECT_ROOT / "config" / "brands"
 
 # Groq client (auto-reads GROQ_API_KEY from env)
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = "llama-3.3-70b-versatile"
+MODEL = "llama-3.1-8b-instant"
 
 
 # Core pages get full content. Others get title + meta only.
