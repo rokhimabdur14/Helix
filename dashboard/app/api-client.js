@@ -119,6 +119,35 @@ export const api = {
     }
     return res.json();
   },
+  uploadInsightsScreenshot: async (brandId, file, caption) => {
+    // Sprint 14a: vision LLM extract + auto-diagnose dari screenshot Insights.
+    // Pakai raw fetch karena multipart (same alasan dengan uploadInsights).
+    const fd = new FormData();
+    fd.append("file", file);
+    if (caption && caption.trim()) fd.append("caption", caption.trim());
+    let res;
+    try {
+      res = await fetch(
+        `${API_URL}/brands/${brandId}/insights/upload/screenshot`,
+        { method: "POST", body: fd }
+      );
+    } catch (e) {
+      throw new ApiNetworkError(`Server tidak merespons: ${e.message}`, e);
+    }
+    if (!res.ok) {
+      let detail;
+      try {
+        const data = await res.json();
+        detail = data.detail || JSON.stringify(data);
+      } catch {
+        detail = await res.text();
+      }
+      throw new Error(`${res.status}: ${detail}`);
+    }
+    return res.json();
+  },
+  diagnosePost: (brandId, postId) =>
+    apiFetch(`/brands/${brandId}/posts/${postId}/diagnose`, { method: "POST" }),
   chat: (brandId, history, message) =>
     apiFetch("/chat", {
       method: "POST",

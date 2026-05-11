@@ -32,7 +32,13 @@ from src.scraper.website_scraper import (  # noqa: E402
     scrape_brand_website,
 )
 from src.ai import studio  # noqa: E402
-from src.analyzer import csv_adapter, insights_parser, pillar_classifier  # noqa: E402
+from src.analyzer import (  # noqa: E402
+    csv_adapter,
+    insights_parser,
+    pillar_classifier,
+    post_diagnosis,
+    screenshot_extractor,
+)
 from src.social import screenshot as social_screenshot  # noqa: E402
 from src.social import service as social_service  # noqa: E402
 from src.social import storage as social_storage  # noqa: E402
@@ -310,6 +316,206 @@ async def upload_brand_insights(
         json.dump(result, f, ensure_ascii=False, indent=2)
 
     return result
+
+
+# ========== Screenshot Insights upload (Sprint 14a) ==========
+
+# Cap ukuran image upload — 8 MB cukup untuk full-resolution mobile screenshot
+# (~3-5 MB typical IG Insights screenshot iPhone 14).
+_SCREENSHOT_MAX_BYTES = 8 * 1024 * 1024
+_SCREENSHOT_MIMES = {"image/png", "image/jpeg", "image/jpg", "image/webp"}
+
+
+def _append_post_to_insights(brand_id: str, new_row: dict) -> dict:
+    """Append satu row hasil screenshot extraction ke insights store brand.
+
+    Kalau brand belum punya insights file, bikin baru (header + row ini saja).
+    Kalau sudah ada, append + re-run parser → JSON ke-update.
+
+    Returns: dict insights JSON terbaru.
+    """
+    csv_path = DATA_DIR / f"{brand_id}_insights.csv"
+
+    # Pastikan post_id unique vs existing — kalau bentrok, suffix incrementing
+    existing_ids: set[str] = set()
+    if csv_path.exists():
+        existing_rows, _existing_headers = csv_adapter.parse_csv_text(
+            csv_path.read_text(encoding="utf-8-sig")
+        )
+        existing_ids = {r.get("post_id", "") for r in existing_rows}
+    else:
+        existing_rows = []
+
+    base_id = new_row["post_id"]
+    candidate = base_id
+    suffix = 1
+    while candidate in existing_ids:
+        suffix += 1
+        candidate = f"{base_id}_{suffix}"
+    new_row["post_id"] = candidate
+
+    all_rows = existing_rows + [new_row]
+    final_csv = csv_adapter.rows_to_csv(all_rows)
+    csv_path.write_text(final_csv, encoding="utf-8")
+
+    # Re-process untuk regenerate JSON aggregates
+    try:
+        result = insights_parser.process_brand_insights(brand_id)
+    except Exception as e:
+        # Rollback append — restore previous CSV state (atau hapus kalau baru)
+        if existing_rows:
+            csv_path.write_text(csv_adapter.rows_to_csv(existing_rows), encoding="utf-8")
+        else:
+            csv_path.unlink(missing_ok=True)
+        raise HTTPException(status_code=500, detail=f"Insights re-parse gagal: {e}")
+
+    return result
+
+
+@app.post("/brands/{brand_id}/insights/upload/screenshot")
+async def upload_brand_insights_screenshot(
+    brand_id: str,
+    file: UploadFile = File(...),
+    caption: str | None = None,
+):
+    """Upload screenshot Reel Insights → extract metric + diagnose → append store.
+
+    Sprint 14a — Screenshot insights extractor:
+      1. Validate image (mime + size)
+      2. Vision LLM (Llama 4 Scout) extract metric ke HELIX row
+      3. Optional: pillar classify (kalau brand punya pillars + post belum tagged)
+      4. Auto-diagnose (kenapa post ini perform begini + actionable fix)
+      5. Append ke insights CSV → re-run parser → update JSON aggregates
+      6. Return: extracted row + diagnosis + updated aggregates
+
+    Query/form param `caption` opsional — kalau user paste caption manual,
+    pakai itu (lebih akurat daripada vision LLM yang OCR caption dari thumbnail).
+    """
+    _ensure_brand(brand_id)
+
+    mime = (file.content_type or "").lower().strip()
+    if mime not in _SCREENSHOT_MIMES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Format gambar tidak didukung. Pakai: {', '.join(sorted(_SCREENSHOT_MIMES))}",
+        )
+
+    raw_bytes = await file.read()
+    if len(raw_bytes) > _SCREENSHOT_MAX_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Gambar maksimal {_SCREENSHOT_MAX_BYTES // (1024*1024)} MB",
+        )
+    if not raw_bytes:
+        raise HTTPException(status_code=400, detail="File kosong")
+
+    # Step 1: vision LLM extract
+    try:
+        extraction = screenshot_extractor.extract(
+            raw_bytes,
+            mime=mime,
+            user_caption=caption,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Vision LLM gagal ekstrak screenshot: {e}",
+        )
+
+    new_row = extraction["row"]
+
+    # Step 2: pillar classify kalau brand punya pillars + caption ada
+    brand_pillars = _load_brand_pillars(brand_id)
+    pillar_assigned = False
+    if brand_pillars and (new_row.get("caption") or "").strip():
+        try:
+            pillar_map = pillar_classifier.classify_pillars([new_row], brand_pillars)
+            new_row["content_pillar"] = pillar_map.get(new_row["post_id"], brand_pillars[0])
+            pillar_assigned = True
+        except Exception:
+            new_row["content_pillar"] = brand_pillars[0]
+    elif brand_pillars:
+        new_row["content_pillar"] = brand_pillars[0]
+    else:
+        new_row["content_pillar"] = "Uncategorized"
+
+    # Step 3: auto-diagnose (sebelum write biar bisa fail-soft tanpa pollute store)
+    try:
+        diagnosis = post_diagnosis.diagnose_post(brand_id, new_row)
+    except Exception as e:
+        diagnosis = {
+            "summary": f"Diagnosis gagal di-generate: {e}",
+            "performance_band": "avg",
+            "why_winning": [],
+            "why_underperforming": [],
+            "actionable_fixes": [],
+            "next_post_hint": "",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "benchmark_used": False,
+            "error": str(e)[:200],
+        }
+
+    # Step 4: append + re-parse
+    result = _append_post_to_insights(brand_id, new_row)
+
+    # Step 5: simpan diagnosis ke struct JSON — match ke post via post_id
+    diagnoses = result.get("diagnoses") or {}
+    diagnoses[new_row["post_id"]] = diagnosis
+    result["diagnoses"] = diagnoses
+    result["source"] = "uploaded"
+    result["uploaded_at"] = datetime.now(timezone.utc).isoformat()
+    json_path = DATA_DIR / f"{brand_id}_insights.json"
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+
+    return {
+        "extracted_row": new_row,
+        "extraction": {
+            "platform": extraction["platform"],
+            "confidence": extraction["confidence"],
+            "confidence_reason": extraction["confidence_reason"],
+            "not_visible": extraction["not_visible"],
+        },
+        "pillar_assigned": pillar_assigned,
+        "diagnosis": diagnosis,
+        "aggregates": result.get("aggregates"),
+        "post_count": result.get("aggregates", {}).get("post_count", 0),
+    }
+
+
+@app.post("/brands/{brand_id}/posts/{post_id}/diagnose")
+def diagnose_existing_post(brand_id: str, post_id: str):
+    """Re-generate diagnosis untuk post yang sudah ada di insights store.
+
+    Use case: user upload CSV duluan (gak ada diagnosis), lalu klik "kenapa
+    post ini?" di Analysis tab → generate on-demand. Simpan ke JSON.
+    """
+    _ensure_brand(brand_id)
+    json_path = DATA_DIR / f"{brand_id}_insights.json"
+    if not json_path.exists():
+        raise HTTPException(status_code=404, detail=f"Insights '{brand_id}' belum ada")
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    posts = data.get("posts") or []
+    post = next((p for p in posts if p.get("post_id") == post_id), None)
+    if not post:
+        raise HTTPException(status_code=404, detail=f"Post '{post_id}' tidak ada di insights")
+
+    diagnosis = post_diagnosis.diagnose_post(
+        brand_id,
+        post,
+        computed_er=post.get("engagement_rate"),
+    )
+
+    diagnoses = data.get("diagnoses") or {}
+    diagnoses[post_id] = diagnosis
+    data["diagnoses"] = diagnoses
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return {"post_id": post_id, "diagnosis": diagnosis}
 
 
 def _update_config(brand_id: str, **updates) -> None:

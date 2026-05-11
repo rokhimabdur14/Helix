@@ -699,5 +699,28 @@
       "19:00": 14.85,
       "20:00": 16.2
     }
+  },
+  "diagnoses": {
+    "ff_001": {
+      "summary": "Post ini perform di atas rata-rata brand karena masih perlu ditingkatkan engagement rate dan interaksi pengguna.",
+      "performance_band": "below_avg",
+      "why_winning": [
+        "Post ini mendapat 18 kunjungan profil, 3 follow baru, dan 4 shares, yang merupakan indikasi bahwa konten masih relevan dan menarik bagi audiens.",
+        "Caption yang singkat dan padat dengan informasi juga dapat membantu meningkatkan engagement rate."
+      ],
+      "why_underperforming": [
+        "Engagement rate hanya 13,81%, yang lebih rendah dari rata-rata brand (14,47%).",
+        "Sedikitnya interaksi pengguna (42 like, 6 comment, 15 save) menunjukkan bahwa konten belum cukup menarik untuk meningkatkan interaksi.",
+        "Kurangnya interaksi juga dapat menyebabkan post tidak muncul di feed pengguna, sehingga menurunkan visibility."
+      ],
+      "actionable_fixes": [
+        "Ganti caption menjadi lebih menarik dan interaktif, seperti pertanyaan retoris yang spesifik ke pain point persona.",
+        "Tambahkan lebih banyak konten yang menarik, seperti video atau gambar yang lebih dinamis.",
+        "Perhatikan waktu posting, karena jam 19:00 mungkin tidak lagi optimal untuk meningkatkan engagement rate."
+      ],
+      "next_post_hint": "Lanjutkan momentum dengan konten yang lebih interaktif dan menarik, seperti video atau konten yang lebih dinamis.",
+      "generated_at": "2026-05-11T11:47:08.434459",
+      "benchmark_used": true
+    }
   }
 }

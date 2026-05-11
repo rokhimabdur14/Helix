@@ -8,6 +8,7 @@ import BrandsSkeleton from "../BrandsSkeleton";
 import { useBrand } from "../use-brand";
 import { HourHeatmap } from "./HourHeatmap";
 import { PillarBars } from "./PillarBars";
+import { PostDetailModal } from "./PostDetailModal";
 import { PostsTable } from "./PostsTable";
 import { StatCard } from "./StatCard";
 import { TopPostCard } from "./TopPostCard";
@@ -30,6 +31,17 @@ export default function AnalysisPage() {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [detailPost, setDetailPost] = useState(null);
+
+  const diagnoses = insights?.diagnoses || {};
+
+  function handleDiagnosisUpdate(postId, diagnosis) {
+    setInsights((prev) =>
+      prev
+        ? { ...prev, diagnoses: { ...(prev.diagnoses || {}), [postId]: diagnosis } }
+        : prev
+    );
+  }
 
   useEffect(() => {
     if (!activeBrandId) {
@@ -180,10 +192,13 @@ export default function AnalysisPage() {
                 </Section>
               )}
 
-              {/* Full posts table */}
+              {/* Full posts table — klik row buat lihat diagnosis */}
               {insights.posts?.length > 0 && (
                 <Section title={`All Posts (${insights.posts.length})`}>
-                  <PostsTable posts={insights.posts} />
+                  <p className="mb-2 text-[11px] text-slate-500">
+                    Klik baris untuk lihat diagnosis &quot;kenapa post ini perform begini&quot;
+                  </p>
+                  <PostsTable posts={insights.posts} onRowClick={setDetailPost} />
                 </Section>
               )}
             </div>
@@ -201,7 +216,24 @@ export default function AnalysisPage() {
         brandId={activeBrandId}
         brandName={activeBrand?.brand_name}
         onClose={() => setUploadOpen(false)}
-        onSuccess={(data) => setInsights(data)}
+        onSuccess={(data) => {
+          // Backend screenshot upload return berbeda dari CSV — handle keduanya:
+          // CSV: response = full insights JSON; Screenshot: response = {aggregates, diagnosis, ...}
+          if (data?.aggregates && Array.isArray(data?.posts)) {
+            setInsights(data);
+          } else if (activeBrandId) {
+            // Screenshot path: re-fetch insights biar dapat aggregates + diagnoses fresh
+            api.getInsights(activeBrandId).then(setInsights).catch(() => {});
+          }
+        }}
+      />
+      <PostDetailModal
+        open={!!detailPost}
+        post={detailPost}
+        brandId={activeBrandId}
+        savedDiagnosis={detailPost ? diagnoses[detailPost.post_id] : null}
+        onClose={() => setDetailPost(null)}
+        onDiagnosisUpdate={handleDiagnosisUpdate}
       />
     </div>
   );

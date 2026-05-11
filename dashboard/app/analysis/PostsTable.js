@@ -20,7 +20,7 @@ const COLUMNS = [
   { id: "caption", label: "Caption", sortable: false, hideOnMobile: true },
 ];
 
-export function PostsTable({ posts }) {
+export function PostsTable({ posts, onRowClick }) {
   const [sortBy, setSortBy] = useState("date");
   const [sortDir, setSortDir] = useState("desc");
 
@@ -88,7 +88,10 @@ export function PostsTable({ posts }) {
           {sorted.map((p, i) => (
             <tr
               key={p.post_id || i}
-              className="border-t border-slate-800/60 hover:bg-violet-500/5"
+              onClick={onRowClick ? () => onRowClick(p) : undefined}
+              className={`border-t border-slate-800/60 hover:bg-violet-500/5 ${
+                onRowClick ? "cursor-pointer" : ""
+              }`}
             >
               <td className="px-3 py-2 text-slate-400">{p.date}</td>
               <td

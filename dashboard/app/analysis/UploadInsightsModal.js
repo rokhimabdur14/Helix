@@ -42,8 +42,15 @@ const TEMPLATE_CSV = [
   ].join(","),
 ].join("\n");
 
+const IMG_MIMES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+const IMG_MAX_MB = 8;
+const CSV_MAX_MB = 5;
+
 export function UploadInsightsModal({ open, brandId, brandName, onClose, onSuccess }) {
+  const [mode, setMode] = useState("screenshot"); // "screenshot" | "csv"
   const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [caption, setCaption] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -54,9 +61,21 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
 
   function reset() {
     setFile(null);
+    setCaption("");
     setError("");
     setSuccess(null);
     setUploading(false);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  }
+
+  function switchMode(next) {
+    if (uploading) return;
+    if (next === mode) return;
+    reset();
+    setMode(next);
   }
 
   function handleClose() {
@@ -75,15 +94,33 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
   function handleFileSelect(f) {
     setError("");
     setSuccess(null);
-    if (!f.name.toLowerCase().endsWith(".csv")) {
-      setError("File harus berekstensi .csv");
+
+    if (mode === "csv") {
+      if (!f.name.toLowerCase().endsWith(".csv")) {
+        setError("File harus berekstensi .csv");
+        return;
+      }
+      if (f.size > CSV_MAX_MB * 1024 * 1024) {
+        setError(`File maksimal ${CSV_MAX_MB} MB`);
+        return;
+      }
+      setFile(f);
       return;
     }
-    if (f.size > 5 * 1024 * 1024) {
-      setError("File maksimal 5 MB");
+
+    // Screenshot mode
+    const mime = (f.type || "").toLowerCase();
+    if (!IMG_MIMES.includes(mime)) {
+      setError("Format harus PNG / JPG / WEBP");
+      return;
+    }
+    if (f.size > IMG_MAX_MB * 1024 * 1024) {
+      setError(`Gambar maksimal ${IMG_MAX_MB} MB`);
       return;
     }
     setFile(f);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(URL.createObjectURL(f));
   }
 
   async function handleUpload() {
@@ -91,17 +128,31 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
     setUploading(true);
     setError("");
     try {
-      const data = await api.uploadInsights(brandId, file);
-      const agg = data.aggregates || {};
-      setSuccess({
-        post_count: agg.post_count || 0,
-        date_range:
-          data.posts?.length > 0
-            ? `${data.posts[0].date} → ${data.posts[data.posts.length - 1].date}`
-            : "—",
-        adaptation: data.adaptation || null,
-      });
-      onSuccess?.(data);
+      if (mode === "csv") {
+        const data = await api.uploadInsights(brandId, file);
+        const agg = data.aggregates || {};
+        setSuccess({
+          mode: "csv",
+          post_count: agg.post_count || 0,
+          date_range:
+            data.posts?.length > 0
+              ? `${data.posts[0].date} → ${data.posts[data.posts.length - 1].date}`
+              : "—",
+          adaptation: data.adaptation || null,
+        });
+        onSuccess?.(data);
+      } else {
+        const data = await api.uploadInsightsScreenshot(brandId, file, caption);
+        setSuccess({
+          mode: "screenshot",
+          extracted_row: data.extracted_row,
+          extraction: data.extraction || {},
+          diagnosis: data.diagnosis || {},
+          pillar_assigned: data.pillar_assigned,
+          post_count: data.post_count || 0,
+        });
+        onSuccess?.(data);
+      }
     } catch (e) {
       setError(e.message || "Upload gagal");
     } finally {
@@ -113,6 +164,18 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
     helix: "HELIX schema",
     instagram: "Instagram export",
     tiktok: "TikTok export",
+  };
+
+  const CONFIDENCE_STYLE = {
+    high: "text-emerald-300 border-emerald-500/30 bg-emerald-500/5",
+    medium: "text-amber-300 border-amber-500/30 bg-amber-500/5",
+    low: "text-red-300 border-red-500/30 bg-red-500/5",
+  };
+
+  const BAND_STYLE = {
+    above_avg: { label: "Di atas rata-rata", className: "text-emerald-300" },
+    avg: { label: "Setara rata-rata", className: "text-slate-300" },
+    below_avg: { label: "Di bawah rata-rata", className: "text-red-300" },
   };
 
   function downloadTemplate() {
@@ -127,11 +190,19 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
     URL.revokeObjectURL(url);
   }
 
+  const acceptAttr = mode === "csv" ? ".csv" : "image/png,image/jpeg,image/webp";
+  const dropHint = mode === "csv"
+    ? "Drop CSV di sini atau klik buat pilih file"
+    : "Drop screenshot di sini atau klik buat pilih gambar";
+  const sizeHint = mode === "csv"
+    ? `Maksimal ${CSV_MAX_MB} MB · format .csv`
+    : `Maksimal ${IMG_MAX_MB} MB · PNG / JPG / WEBP`;
+
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Upload insights CSV"
+      aria-label="Upload insights"
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 backdrop-blur-sm"
       onClick={handleClose}
     >
@@ -145,9 +216,8 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
               Upload data sosmed
             </h2>
             <p className="mt-1 text-xs text-slate-500">
-              CSV insights untuk{" "}
-              <span className="text-violet-300">{brandName || brandId}</span> —
-              data lama akan diganti
+              Untuk{" "}
+              <span className="text-violet-300">{brandName || brandId}</span>
             </p>
           </div>
           <button
@@ -161,40 +231,91 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
           </button>
         </div>
 
+        {/* Mode toggle */}
+        {!success && (
+          <div className="border-b border-slate-800 px-5 pt-4">
+            <div role="tablist" className="inline-flex gap-1 rounded-lg bg-slate-950/60 p-1 text-xs">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "screenshot"}
+                onClick={() => switchMode("screenshot")}
+                className={`rounded-md px-3 py-1.5 font-medium transition ${
+                  mode === "screenshot"
+                    ? "bg-violet-500/20 text-violet-200"
+                    : "text-slate-500 hover:text-slate-300"
+                }`}
+              >
+                📸 Screenshot Insights
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "csv"}
+                onClick={() => switchMode("csv")}
+                className={`rounded-md px-3 py-1.5 font-medium transition ${
+                  mode === "csv"
+                    ? "bg-violet-500/20 text-violet-200"
+                    : "text-slate-500 hover:text-slate-300"
+                }`}
+              >
+                📄 CSV bulk
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex-1 overflow-y-auto p-5">
+          {!success && mode === "screenshot" && (
+            <div className="mb-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs leading-relaxed text-slate-400">
+              <p className="mb-2 font-semibold text-slate-300">
+                Cara pakai:
+              </p>
+              <ol className="list-inside list-decimal space-y-1">
+                <li>Buka app IG / TikTok di HP, masuk ke post → tap “Insights / Statistik”</li>
+                <li>Screenshot panel Insights (scroll dulu kalau perlu agar semua metric kelihatan)</li>
+                <li>Upload screenshot di sini — AI akan extract metric + analisa kenapa post ini perform begini</li>
+              </ol>
+              <p className="mt-2 text-[11px] text-slate-500">
+                Opsional: paste caption asli post di bawah biar analisis lebih akurat.
+              </p>
+            </div>
+          )}
+
+          {!success && mode === "csv" && (
+            <div className="mb-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs leading-relaxed text-slate-400">
+              <p className="mb-2 font-semibold text-slate-300">
+                HELIX bisa baca 3 format CSV:
+              </p>
+              <ul className="list-inside list-disc space-y-1">
+                <li>
+                  <span className="text-slate-200">Instagram export</span> dari
+                  Meta Business Suite (Permalink, Publish time, Post type, …)
+                </li>
+                <li>
+                  <span className="text-slate-200">TikTok export</span> dari
+                  Creator Center Analytics (Date posted, Video views, …)
+                </li>
+                <li>
+                  <span className="text-slate-200">Schema HELIX</span> —{" "}
+                  <button
+                    type="button"
+                    onClick={downloadTemplate}
+                    className="text-violet-300 underline hover:text-violet-200"
+                  >
+                    download template
+                  </button>{" "}
+                  + isi manual
+                </li>
+              </ul>
+              <p className="mt-3 text-[11px] text-slate-500">
+                Format raw IG/TT auto-mapping ke schema HELIX. Pillar di-tag AI.
+              </p>
+            </div>
+          )}
+
           {!success && (
             <>
-              <div className="mb-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs leading-relaxed text-slate-400">
-                <p className="mb-2 font-semibold text-slate-300">
-                  HELIX bisa baca 3 format:
-                </p>
-                <ul className="list-inside list-disc space-y-1">
-                  <li>
-                    <span className="text-slate-200">Instagram export</span> dari
-                    Meta Business Suite (Permalink, Publish time, Post type, …)
-                  </li>
-                  <li>
-                    <span className="text-slate-200">TikTok export</span> dari
-                    Creator Center Analytics (Date posted, Video views, …)
-                  </li>
-                  <li>
-                    <span className="text-slate-200">Schema HELIX</span> —{" "}
-                    <button
-                      type="button"
-                      onClick={downloadTemplate}
-                      className="text-violet-300 underline hover:text-violet-200"
-                    >
-                      download template
-                    </button>{" "}
-                    + isi manual
-                  </li>
-                </ul>
-                <p className="mt-3 text-[11px] text-slate-500">
-                  Format raw IG/TT auto-mapping ke schema HELIX. Kalau pillar
-                  belum di-tag, AI auto-classify pakai pillar di brand config.
-                </p>
-              </div>
-
               <label
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -213,7 +334,7 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".csv"
+                  accept={acceptAttr}
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
@@ -222,8 +343,17 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
                 />
                 {file ? (
                   <>
-                    <div className="text-2xl">📄</div>
-                    <div className="mt-2 text-sm font-medium text-emerald-200">
+                    {mode === "screenshot" && previewUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={previewUrl}
+                        alt="Preview screenshot"
+                        className="mb-2 max-h-48 rounded-lg border border-slate-800"
+                      />
+                    ) : (
+                      <div className="text-2xl">📄</div>
+                    )}
+                    <div className="mt-1 text-sm font-medium text-emerald-200">
                       {file.name}
                     </div>
                     <div className="mt-1 text-xs text-slate-500">
@@ -242,16 +372,28 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
                   </>
                 ) : (
                   <>
-                    <div className="text-3xl">📤</div>
-                    <div className="mt-2 text-sm text-slate-300">
-                      Drop CSV di sini atau klik buat pilih file
-                    </div>
-                    <div className="mt-1 text-xs text-slate-500">
-                      Maksimal 5 MB · format .csv
-                    </div>
+                    <div className="text-3xl">{mode === "screenshot" ? "📸" : "📤"}</div>
+                    <div className="mt-2 text-sm text-slate-300">{dropHint}</div>
+                    <div className="mt-1 text-xs text-slate-500">{sizeHint}</div>
                   </>
                 )}
               </label>
+
+              {mode === "screenshot" && file && (
+                <div className="mt-3">
+                  <label className="mb-1 block text-xs font-medium text-slate-400">
+                    Caption asli post{" "}
+                    <span className="text-slate-600">(opsional, paste biar AI lebih akurat)</span>
+                  </label>
+                  <textarea
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    rows={3}
+                    placeholder="Paste caption asli post di sini..."
+                    className="w-full resize-y rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:border-violet-500/50 focus:outline-none"
+                  />
+                </div>
+              )}
 
               {error && (
                 <div className="mt-3 rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300">
@@ -261,7 +403,7 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
             </>
           )}
 
-          {success && (
+          {success && success.mode === "csv" && (
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-center">
               <div className="mb-3 text-3xl">✅</div>
               <h3 className="text-base font-semibold text-emerald-200">
@@ -311,6 +453,141 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
               </p>
             </div>
           )}
+
+          {success && success.mode === "screenshot" && (
+            <div className="space-y-4">
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+                <div className="mb-1 text-sm font-semibold text-emerald-200">
+                  ✅ Screenshot berhasil di-extract
+                </div>
+                <div className="text-xs text-slate-400">
+                  Total post di brand sekarang:{" "}
+                  <span className="text-slate-200">{success.post_count}</span>
+                </div>
+              </div>
+
+              {/* Metric extracted */}
+              <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Metric Ter-extract
+                  </h4>
+                  {success.extraction?.confidence && (
+                    <span
+                      className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                        CONFIDENCE_STYLE[success.extraction.confidence] ||
+                        CONFIDENCE_STYLE.medium
+                      }`}
+                    >
+                      {success.extraction.confidence} confidence
+                    </span>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  {[
+                    ["Reach", success.extracted_row?.reach],
+                    ["Plays", success.extracted_row?.impressions],
+                    ["Likes", success.extracted_row?.likes],
+                    ["Comments", success.extracted_row?.comments],
+                    ["Saves", success.extracted_row?.saves],
+                    ["Shares", success.extracted_row?.shares],
+                    ["Profile visits", success.extracted_row?.profile_visits],
+                    ["Follows", success.extracted_row?.follows],
+                  ].map(([label, val]) => (
+                    <div key={label} className="rounded-md bg-slate-900/60 px-2 py-1.5">
+                      <div className="text-[10px] uppercase text-slate-500">{label}</div>
+                      <div className="font-mono text-sm text-slate-200">
+                        {val || 0}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {success.extraction?.confidence_reason && (
+                  <div className="mt-2 text-[11px] italic text-slate-500">
+                    {success.extraction.confidence_reason}
+                  </div>
+                )}
+                {success.extraction?.not_visible?.length > 0 && (
+                  <div className="mt-2 text-[11px] text-amber-400/80">
+                    Tidak terlihat di screenshot:{" "}
+                    {success.extraction.not_visible.join(", ")}
+                  </div>
+                )}
+              </div>
+
+              {/* Diagnosis */}
+              <div className="rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-violet-300">
+                    🧠 AI Diagnosis
+                  </h4>
+                  {success.diagnosis?.performance_band && (
+                    <span
+                      className={`text-[11px] font-semibold ${
+                        BAND_STYLE[success.diagnosis.performance_band]?.className ||
+                        "text-slate-300"
+                      }`}
+                    >
+                      {BAND_STYLE[success.diagnosis.performance_band]?.label ||
+                        success.diagnosis.performance_band}
+                    </span>
+                  )}
+                </div>
+                {success.diagnosis?.summary && (
+                  <p className="mb-3 text-sm leading-relaxed text-slate-200">
+                    {success.diagnosis.summary}
+                  </p>
+                )}
+                {success.diagnosis?.why_winning?.length > 0 && (
+                  <div className="mb-2">
+                    <div className="mb-1 text-[10px] font-semibold uppercase text-emerald-400">
+                      Kenapa berhasil
+                    </div>
+                    <ul className="space-y-1 text-xs text-slate-300">
+                      {success.diagnosis.why_winning.map((b, i) => (
+                        <li key={i}>• {b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {success.diagnosis?.why_underperforming?.length > 0 && (
+                  <div className="mb-2">
+                    <div className="mb-1 text-[10px] font-semibold uppercase text-red-400">
+                      Kenapa kurang perform
+                    </div>
+                    <ul className="space-y-1 text-xs text-slate-300">
+                      {success.diagnosis.why_underperforming.map((b, i) => (
+                        <li key={i}>• {b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {success.diagnosis?.actionable_fixes?.length > 0 && (
+                  <div className="mb-2">
+                    <div className="mb-1 text-[10px] font-semibold uppercase text-violet-300">
+                      Fix yang bisa langsung dipakai
+                    </div>
+                    <ul className="space-y-1 text-xs text-slate-200">
+                      {success.diagnosis.actionable_fixes.map((b, i) => (
+                        <li key={i}>→ {b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {success.diagnosis?.next_post_hint && (
+                  <div className="mt-3 rounded-md border border-slate-800 bg-slate-950/40 px-3 py-2 text-[11px] text-slate-400">
+                    <span className="font-semibold text-slate-300">Hint post berikutnya: </span>
+                    {success.diagnosis.next_post_hint}
+                  </div>
+                )}
+                {!success.diagnosis?.benchmark_used && (
+                  <div className="mt-2 text-[10px] text-slate-500">
+                    Catatan: brand belum punya data historis cukup, diagnosis pakai best-practice expertise saja.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-slate-800 p-4">
@@ -329,7 +606,13 @@ export function UploadInsightsModal({ open, brandId, brandName, onClose, onSucce
               disabled={!file || uploading}
               className="btn-primary rounded-lg px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {uploading ? "Uploading…" : "Upload & process"}
+              {uploading
+                ? mode === "screenshot"
+                  ? "Analisa…"
+                  : "Uploading…"
+                : mode === "screenshot"
+                ? "Extract & analisa"
+                : "Upload & process"}
             </button>
           )}
         </div>
