@@ -1,11 +1,17 @@
 @import "tailwindcss";
 
-/* ========== Brand tokens (default = dark) ========== */
+/* ========== Brand tokens (default = dark) ==========
+ * Palette HELIX = violet (DNA brand) + deep black (premium depth) +
+ * indigo blue (intelligence/tech). Gradient diagonal 135deg supaya
+ * sweep dari kiri-atas (violet) → tengah (black core) → kanan-bawah
+ * (deep blue) — bikin halaman terasa dimensional, bukan flat.
+ */
 :root,
 [data-theme="dark"] {
-  --bg-base: #07050d;
-  --bg-deep: #0d0820;
-  --bg-violet: #1a0f33;
+  --bg-base: #07050f;
+  --bg-deep: #0a0420;
+  --bg-violet: #1a0533;
+  --bg-blue: #04102a;
   --bg-surface: #110b22;
   --bg-elevated: #1a1130;
   --bg-panel: #221842;
@@ -24,17 +30,20 @@
   --danger: #ef4444;
   --success: #10b981;
 
-  /* Body background composition (per theme) */
+  /* Body background — violet (top-left) → black core → deep blue (bottom-right).
+   * 5-stop diagonal: bikin halaman terasa premium + dimensional.
+   */
   --bg-gradient: linear-gradient(
-    180deg,
-    #07050d 0%,
-    #0d0820 35%,
-    #1a0f33 55%,
-    #0d0820 80%,
-    #07050d 100%
+    135deg,
+    #1a0533 0%,
+    #0a0420 25%,
+    #030310 50%,
+    #04102a 75%,
+    #0a2654 100%
   );
-  --glow-1: rgba(124, 58, 237, 0.22);
-  --glow-2: rgba(167, 139, 250, 0.14);
+  /* Ambient glow: violet kiri-atas + blue kanan-bawah — match arah gradient */
+  --glow-1: rgba(139, 92, 246, 0.22);
+  --glow-2: rgba(59, 130, 246, 0.18);
 
   /* Wordmark gradient stops (per theme) */
   --wm-1: #f8fafc;
@@ -42,11 +51,15 @@
   --wm-3: #a78bfa;
 }
 
-/* ========== Light theme overrides ========== */
+/* ========== Light theme overrides ==========
+ * Palette light: putih dengan biru lembut (sky blue dingin) — tetep terasa
+ * tech / strategist tapi calming. Diagonal sweep selaras dengan dark.
+ */
 [data-theme="light"] {
-  --bg-base: #fafaf9;
-  --bg-deep: #f5f3ff;
-  --bg-violet: #ede9fe;
+  --bg-base: #f8fbff;
+  --bg-deep: #eff6ff;
+  --bg-violet: #dbeafe;
+  --bg-blue: #e0f2fe;
   --bg-surface: #ffffff;
   --bg-elevated: #f9fafb;
   --bg-panel: #f3f4f6;
@@ -57,25 +70,26 @@
   --text-secondary: #334155;
   --text-muted: #64748b;
 
-  /* Brand accents tetap — biar identitas violet kuat */
+  /* Accents biru-dominant untuk light (tetap pertahankan violet sebagai aksen) */
   --accent-blue: #2563eb;
   --accent-purple: #7c3aed;
   --accent-lavender: #8b5cf6;
 
   --bg-gradient: linear-gradient(
-    180deg,
-    #fafaf9 0%,
-    #f5f3ff 35%,
-    #ede9fe 55%,
-    #f5f3ff 80%,
-    #fafaf9 100%
+    135deg,
+    #ffffff 0%,
+    #eff6ff 30%,
+    #dbeafe 55%,
+    #e0f2fe 75%,
+    #f0f9ff 100%
   );
-  --glow-1: rgba(124, 58, 237, 0.06);
-  --glow-2: rgba(167, 139, 250, 0.05);
+  /* Glow biru pucat (atas-kiri + bawah-kanan) — soft, gak menyilaukan */
+  --glow-1: rgba(59, 130, 246, 0.10);
+  --glow-2: rgba(99, 102, 241, 0.06);
 
-  --wm-1: #1e1b4b;
-  --wm-2: #6d28d9;
-  --wm-3: #1e1b4b;
+  --wm-1: #1e3a8a;
+  --wm-2: #2563eb;
+  --wm-3: #1e3a8a;
 }
 
 @theme inline {
