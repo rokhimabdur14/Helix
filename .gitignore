@@ -100,6 +100,8 @@ config/brands/*.config.json
 /*.pdf
 /Screenshot*.png
 /ChatGPT*.png
+# Source-art ChatGPT generated yang sudah di-optimize ke dashboard/public/brand/
+/LOGO/
 
 # Headless browser screenshots — local QA artifact, jangan committed
 /screenshots/

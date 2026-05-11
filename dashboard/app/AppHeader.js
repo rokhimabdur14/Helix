@@ -9,6 +9,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useBackendStatus } from "./use-backend-status";
 
 const NAV = [
+  { href: "/welcome", label: "Welcome" },
   { href: "/", label: "Chat" },
   { href: "/studio", label: "Studio" },
   { href: "/analysis", label: "Analysis" },
