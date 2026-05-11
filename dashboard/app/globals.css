@@ -3,8 +3,8 @@
 /* ========== Brand tokens (default = dark) ==========
  * Palette HELIX = violet (DNA brand) + deep black (premium depth) +
  * indigo blue (intelligence/tech). Gradient diagonal 135deg supaya
- * sweep dari kiri-atas (violet) → tengah (black core) → kanan-bawah
- * (deep blue) — bikin halaman terasa dimensional, bukan flat.
+ * sweep dari kiri-atas (violet) â†’ tengah (black core) â†’ kanan-bawah
+ * (deep blue) â€” bikin halaman terasa dimensional, bukan flat.
  */
 :root,
 [data-theme="dark"] {
@@ -30,7 +30,7 @@
   --danger: #ef4444;
   --success: #10b981;
 
-  /* Body background — violet (top-left) → black core → deep blue (bottom-right).
+  /* Body background â€” violet (top-left) â†’ black core â†’ deep blue (bottom-right).
    * 5-stop diagonal: bikin halaman terasa premium + dimensional.
    */
   --bg-gradient: linear-gradient(
@@ -41,7 +41,7 @@
     #04102a 75%,
     #0a2654 100%
   );
-  /* Ambient glow: violet kiri-atas + blue kanan-bawah — match arah gradient */
+  /* Ambient glow: violet kiri-atas + blue kanan-bawah â€” match arah gradient */
   --glow-1: rgba(139, 92, 246, 0.22);
   --glow-2: rgba(59, 130, 246, 0.18);
 
@@ -52,7 +52,7 @@
 }
 
 /* ========== Light theme overrides ==========
- * Palette light: putih dengan biru lembut (sky blue dingin) — tetep terasa
+ * Palette light: putih dengan biru lembut (sky blue dingin) â€” tetep terasa
  * tech / strategist tapi calming. Diagonal sweep selaras dengan dark.
  */
 [data-theme="light"] {
@@ -83,7 +83,7 @@
     #e0f2fe 75%,
     #f0f9ff 100%
   );
-  /* Glow biru pucat (atas-kiri + bawah-kanan) — soft, gak menyilaukan */
+  /* Glow biru pucat (atas-kiri + bawah-kanan) â€” soft, gak menyilaukan */
   --glow-1: rgba(59, 130, 246, 0.10);
   --glow-2: rgba(99, 102, 241, 0.06);
 
@@ -250,7 +250,7 @@ body::before {
   animation: spin-loop 0.9s linear infinite;
 }
 
-/* Skeleton bar — gradient pulse untuk placeholder loading */
+/* Skeleton bar â€” gradient pulse untuk placeholder loading */
 .skeleton-bar {
   position: relative;
   overflow: hidden;
@@ -398,12 +398,12 @@ body::before {
 .dna-dot:nth-child(3) { animation-delay: 0.3s; }
 
 /* ============================================================
-   Motion utilities — smooth feedback untuk button/menu/icon
+   Motion utilities â€” smooth feedback untuk button/menu/icon
    yang sebelumnya cuma `transition` generic. Pair dengan class
    utility Tailwind yang udah ada di komponen.
    ============================================================ */
 
-/* Icon-only button — close X, trash, hamburger, dst.
+/* Icon-only button â€” close X, trash, hamburger, dst.
    Tactile scale + bg fade pas hover/tap. */
 .icon-btn {
   transition:
@@ -419,7 +419,7 @@ body::before {
   transition: transform 0.08s ease;
 }
 
-/* Soft button — buat trigger/secondary action (BrandSwitcher trigger,
+/* Soft button â€” buat trigger/secondary action (BrandSwitcher trigger,
    API link, dst). Lift halus tanpa heavy glow. */
 .btn-soft {
   transition:
@@ -438,7 +438,7 @@ body::before {
   transition: transform 0.08s ease;
 }
 
-/* Top-bar nav link — underline glide indicator yang slide dari tengah
+/* Top-bar nav link â€” underline glide indicator yang slide dari tengah
    keluar saat hover. Active state pakai background gradient (Tailwind
    class), underline disable di active biar gak double-mark. */
 .nav-link {
@@ -500,7 +500,7 @@ body::before {
   height: 75%;
 }
 
-/* Spring-rotate untuk chevron / caret dropdown — smoother dari `transition` */
+/* Spring-rotate untuk chevron / caret dropdown â€” smoother dari `transition` */
 .chevron-rotate {
   transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -508,7 +508,7 @@ body::before {
   transform: rotate(180deg);
 }
 
-/* Tap-scale — buat ThemeToggle buttons + segmented controls kasih
+/* Tap-scale â€” buat ThemeToggle buttons + segmented controls kasih
    tactile feedback saat di-klik tanpa heavy lift. */
 .tap-scale {
   transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -540,7 +540,7 @@ body::before {
   transform: scale(0.94);
 }
 
-/* Stagger fade-in untuk dropdown items — saat parent .dropdown-in
+/* Stagger fade-in untuk dropdown items â€” saat parent .dropdown-in
    muncul, anak2 .menu-item di dalamnya cascade muncul satu per satu. */
 .dropdown-in .menu-item {
   opacity: 0;
@@ -559,11 +559,11 @@ body::before {
 }
 
 /* ============================================================
-   Dark-theme surface enrichment — gradasi subtle di sidebar /
+   Dark-theme surface enrichment â€” gradasi subtle di sidebar /
    modal / header biar gak flat. Body gradient udah ada di :root.
    Specificity [data-theme="dark"] .X (0,2,0) > .X (0,1,0).
    ============================================================ */
-/* Sidebar (ChatSidebar) — vertical violet→deep biar feel berlapis */
+/* Sidebar (ChatSidebar) â€” vertical violetâ†’deep biar feel berlapis */
 [data-theme="dark"] .bg-slate-950\/90 {
   background:
     linear-gradient(180deg,
@@ -571,7 +571,7 @@ body::before {
       rgba(10, 7, 26, 0.92) 50%,
       rgba(7, 5, 13, 0.92) 100%);
 }
-/* Modal / dropdown — diagonal violet glow halus */
+/* Modal / dropdown â€” diagonal violet glow halus */
 [data-theme="dark"] .bg-slate-950\/95 {
   background:
     linear-gradient(135deg,
@@ -579,14 +579,14 @@ body::before {
       rgba(11, 7, 28, 0.96) 60%,
       rgba(7, 5, 13, 0.96) 100%);
 }
-/* Modal backdrop overlay — subtle vignette */
+/* Modal backdrop overlay â€” subtle vignette */
 [data-theme="dark"] .bg-slate-950\/80 {
   background:
     radial-gradient(ellipse at center,
       rgba(13, 8, 32, 0.78) 0%,
       rgba(7, 5, 13, 0.88) 100%);
 }
-/* Header / lightweight surface — horizontal sweep subtle */
+/* Header / lightweight surface â€” horizontal sweep subtle */
 [data-theme="dark"] .bg-slate-950\/40 {
   background:
     linear-gradient(90deg,
@@ -594,7 +594,7 @@ body::before {
       rgba(20, 13, 45, 0.48) 50%,
       rgba(13, 8, 32, 0.45) 100%);
 }
-/* Card panels (most common surface) — diagonal violet hint */
+/* Card panels (most common surface) â€” diagonal violet hint */
 [data-theme="dark"] .bg-slate-900\/40 {
   background:
     linear-gradient(135deg,
@@ -615,7 +615,7 @@ body::before {
 }
 
 /* ============================================================
-   Light-theme utility overrides — flip dark-slate surfaces
+   Light-theme utility overrides â€” flip dark-slate surfaces
    ke clean light tone tanpa harus refactor 87 tempat di komponen.
    Specificity [data-theme="light"] .X (0,2,0) > .X (0,1,0).
    ============================================================ */
@@ -624,7 +624,7 @@ body::before {
 [data-theme="light"] .bg-slate-900 {
   background-color: #ffffff;
 }
-/* Sidebar / modal / dropdown high-opacity → cream gradient */
+/* Sidebar / modal / dropdown high-opacity â†’ cream gradient */
 [data-theme="light"] .bg-slate-950\/90,
 [data-theme="light"] .bg-slate-950\/95 {
   background:
@@ -632,7 +632,7 @@ body::before {
       rgba(255, 255, 255, 0.96) 0%,
       rgba(248, 247, 255, 0.94) 100%);
 }
-/* Modal backdrop — soft white vignette */
+/* Modal backdrop â€” soft white vignette */
 [data-theme="light"] .bg-slate-950\/80 {
   background:
     radial-gradient(ellipse at center,
@@ -691,7 +691,7 @@ body::before {
   border-color: rgba(226, 232, 240, 0.8);
 }
 
-/* Text — invert to dark slate so it's readable on light bg */
+/* Text â€” invert to dark slate so it's readable on light bg */
 [data-theme="light"] .text-slate-100,
 [data-theme="light"] .text-slate-200,
 [data-theme="light"] .text-slate-300 {
@@ -707,7 +707,7 @@ body::before {
   color: #94a3b8;
 }
 
-/* Violet/blue accent text — perdalam shade biar contrast cukup di light */
+/* Violet/blue accent text â€” perdalam shade biar contrast cukup di light */
 [data-theme="light"] .text-violet-200,
 [data-theme="light"] .text-violet-300 {
   color: #6d28d9;
@@ -727,14 +727,14 @@ body::before {
   color: #94a3b8;
 }
 
-/* Backdrop blur surfaces — tone down karena di light bg lebih kontras */
+/* Backdrop blur surfaces â€” tone down karena di light bg lebih kontras */
 [data-theme="light"] .backdrop-blur,
 [data-theme="light"] .backdrop-blur-xl {
   backdrop-filter: blur(8px) saturate(1.1);
 }
 
 /* ============================================================
-   Chat history sidebar + dropdown — explicit theme-aware surfaces
+   Chat history sidebar + dropdown â€” explicit theme-aware surfaces
    biar gak tergantung utility override yang kadang ke-cache.
    ============================================================ */
 .helix-sidebar-surface {
@@ -878,7 +878,7 @@ body::before {
   color: #fff;
 }
 
-/* Slow ambient breathe behind hero � opsional polish */
+/* Slow ambient breathe behind hero — opsional polish */
 @keyframes welcome-hero-aura {
   0%, 100% { opacity: 0.7; transform: scale(1); }
   50%      { opacity: 1;   transform: scale(1.04); }
