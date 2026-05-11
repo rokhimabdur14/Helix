@@ -42,6 +42,7 @@ from src.analyzer import (  # noqa: E402
 from src.social import screenshot as social_screenshot  # noqa: E402
 from src.social import service as social_service  # noqa: E402
 from src.social import storage as social_storage  # noqa: E402
+from src.social import vision as social_vision  # noqa: E402
 
 DATA_DIR = PROJECT_ROOT / "data"
 CONFIG_DIR = PROJECT_ROOT / "config" / "brands"
@@ -480,6 +481,117 @@ async def upload_brand_insights_screenshot(
         "diagnosis": diagnosis,
         "aggregates": result.get("aggregates"),
         "post_count": result.get("aggregates", {}).get("post_count", 0),
+    }
+
+
+# ========== Sprint 14b: URL-based content analysis (no-store) ==========
+
+
+class AnalyzeUrlRequest(BaseModel):
+    """Request body untuk /analyze/post-url + /analyze/profile-url.
+
+    URL wajib IG atau TT (post atau profile, tergantung endpoint).
+    brand_id opsional — kalau ada, hasil di-anchor ke brand context untuk
+    fields seperti suggested_use_for_brand. None = generic analysis.
+    """
+    url: str = Field(..., min_length=10, max_length=500)
+    brand_id: str | None = Field(None, max_length=40)
+
+
+def _validate_supported_url(url: str) -> None:
+    """Reject URL bukan IG/TT, plus enforce basic shape."""
+    if not social_screenshot.is_supported_url(url):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "URL harus instagram.com atau tiktok.com. "
+                "Format link harus public (post URL atau profile URL)."
+            ),
+        )
+
+
+@app.post("/analyze/post-url")
+def analyze_post_url(req: AnalyzeUrlRequest):
+    """Capture screenshot URL post → vision analyze pattern → return.
+
+    Sprint 14b: no-store helper. User paste link post viral / own / competitor
+    → HELIX render via Playwright → vision `analyze_reference` (Sprint 7b
+    REFERENCE_PROMPT) → return analysis dengan why_it_works + replication_angle.
+
+    Tidak save ke reference library — kalau user mau persist, harus pakai
+    endpoint /brands/{id}/references yang lama.
+    """
+    _validate_supported_url(req.url)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
+
+    try:
+        png = social_screenshot.capture(req.url, full_page=True, max_height=3000)
+    except RuntimeError as e:
+        # capture() throw RuntimeError untuk halaman dead / login wall — terjemahin ke 422
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=502, detail=f"Playwright capture gagal: {type(e).__name__}: {e}"
+        )
+
+    try:
+        analysis = social_vision.analyze_reference(social_screenshot.to_data_url(png))
+    except Exception as e:
+        raise HTTPException(
+            status_code=502, detail=f"Vision analysis gagal: {type(e).__name__}: {e}"
+        )
+
+    thumbnail = social_screenshot.thumbnail_data_url(png, max_dim=600)
+
+    return {
+        "url": req.url,
+        "platform": social_screenshot.detect_platform(req.url),
+        "thumbnail_data_url": thumbnail,
+        "analysis": analysis,
+        "brand_id": req.brand_id,
+    }
+
+
+@app.post("/analyze/profile-url")
+def analyze_profile_url(req: AnalyzeUrlRequest):
+    """Capture screenshot URL profile → vision analyze aesthetic → return.
+
+    Sprint 14b: no-store helper. Mirror analyze_post_url tapi pakai
+    PROFILE_PROMPT (vibe + color palette + content themes + format mix +
+    recommended_replication_pillars).
+
+    Untuk persist profile snapshot ke brand, pakai endpoint
+    /brands/{id}/social/snapshot lama.
+    """
+    _validate_supported_url(req.url)
+    if req.brand_id:
+        _ensure_brand(req.brand_id)
+
+    try:
+        png = social_screenshot.capture(req.url, full_page=True, max_height=2400)
+    except RuntimeError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=502, detail=f"Playwright capture gagal: {type(e).__name__}: {e}"
+        )
+
+    try:
+        analysis = social_vision.analyze_profile(social_screenshot.to_data_url(png))
+    except Exception as e:
+        raise HTTPException(
+            status_code=502, detail=f"Vision analysis gagal: {type(e).__name__}: {e}"
+        )
+
+    thumbnail = social_screenshot.thumbnail_data_url(png, max_dim=600)
+
+    return {
+        "url": req.url,
+        "platform": social_screenshot.detect_platform(req.url),
+        "thumbnail_data_url": thumbnail,
+        "analysis": analysis,
+        "brand_id": req.brand_id,
     }
 
 

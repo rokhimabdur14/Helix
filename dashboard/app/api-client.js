@@ -148,6 +148,16 @@ export const api = {
   },
   diagnosePost: (brandId, postId) =>
     apiFetch(`/brands/${brandId}/posts/${postId}/diagnose`, { method: "POST" }),
+  analyzePostUrl: (url, brandId = null) =>
+    apiFetch("/analyze/post-url", {
+      method: "POST",
+      body: JSON.stringify({ url, brand_id: brandId }),
+    }),
+  analyzeProfileUrl: (url, brandId = null) =>
+    apiFetch("/analyze/profile-url", {
+      method: "POST",
+      body: JSON.stringify({ url, brand_id: brandId }),
+    }),
   chat: (brandId, history, message) =>
     apiFetch("/chat", {
       method: "POST",

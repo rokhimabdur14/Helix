@@ -103,7 +103,7 @@ export default function AnalysisPage() {
                 onClick={() => setUploadOpen(true)}
                 className="lift-on-hover rounded-xl border border-violet-500/40 bg-gradient-to-br from-violet-500/10 to-blue-500/10 px-4 py-2 text-sm font-semibold text-violet-200 transition hover:border-violet-500/70"
               >
-                📤 Upload data sosmed
+                🔍 Analisa konten
               </button>
             )}
           </div>
