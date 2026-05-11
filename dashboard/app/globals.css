@@ -910,3 +910,19 @@ body::before {
 .welcome-feature-card:hover::before {
   opacity: 1;
 }
+
+/* ========== Sprint 15b: Welcome page smooth exit transition ========== */
+.welcome-page-wrap {
+  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              filter 700ms ease;
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+.welcome-page-wrap.is-exiting {
+  opacity: 0;
+  transform: scale(0.96);
+  filter: blur(8px);
+  pointer-events: none;
+}

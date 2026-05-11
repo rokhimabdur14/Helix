@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { WelcomeIntro } from "./WelcomeIntro";
 
 const FEATURES = [
@@ -35,11 +36,55 @@ const FEATURES = [
   },
 ];
 
+// Auto-redirect ke dashboard kalau user diam — kasih waktu untuk lihat hero
+// + intro + tagline, baru fade out + push ke target.
+const AUTO_REDIRECT_DELAY_MS = 3500; // setelah intro complete
+const FADE_OUT_MS = 700;
+
 export default function WelcomePage() {
+  const router = useRouter();
   const [introDone, setIntroDone] = useState(false);
+  const [exiting, setExiting] = useState(false);
+  const autoTimerRef = useRef(null);
+  const userInteractedRef = useRef(false);
+
+  // Prefetch target supaya redirect smooth tanpa flash blank
+  useEffect(() => {
+    router.prefetch("/");
+    router.prefetch("/studio");
+    router.prefetch("/analysis");
+  }, [router]);
+
+  // Auto-redirect ke / setelah intro selesai, kecuali user udah klik card
+  useEffect(() => {
+    if (!introDone || userInteractedRef.current) return;
+    autoTimerRef.current = setTimeout(() => {
+      if (!userInteractedRef.current) {
+        smoothTransition("/");
+      }
+    }, AUTO_REDIRECT_DELAY_MS);
+    return () => {
+      if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
+    };
+  }, [introDone]);
+
+  function smoothTransition(href) {
+    if (exiting) return;
+    userInteractedRef.current = true;
+    if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
+    setExiting(true);
+    // Wait for fade-out, then navigate
+    setTimeout(() => {
+      router.push(href);
+    }, FADE_OUT_MS);
+  }
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12">
+    <div
+      className={`welcome-page-wrap relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12 ${
+        exiting ? "is-exiting" : ""
+      }`}
+    >
       <main className="mx-auto w-full max-w-5xl">
         {/* Hero — phoenix animation */}
         <div className="welcome-hero-aura mb-8 sm:mb-12">
@@ -49,9 +94,7 @@ export default function WelcomePage() {
         {/* Tagline below animation */}
         <div
           className={`mb-10 text-center transition-all duration-700 ${
-            introDone
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-4"
+            introDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
           <h1 className="wordmark font-display text-4xl font-extrabold sm:text-5xl">
@@ -66,23 +109,30 @@ export default function WelcomePage() {
           </p>
         </div>
 
-        {/* Feature cards — fade-in setelah intro done */}
+        {/* Feature cards */}
         <div
           className={`transition-all duration-700 ${
-            introDone
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-6"
+            introDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <h2 className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
             ✨ Pilih fitur untuk mulai
+            {introDone && (
+              <span className="ml-2 text-slate-600 normal-case">
+                · auto-redirect ke Chat dalam {(AUTO_REDIRECT_DELAY_MS / 1000).toFixed(0)}s
+              </span>
+            )}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
               <Link
                 key={f.href}
                 href={f.href}
-                className={`welcome-feature-card stagger-in rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur hover:border-violet-500/40`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  smoothTransition(f.href);
+                }}
+                className="welcome-feature-card stagger-in rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur hover:border-violet-500/40"
                 style={{ "--stagger-i": i }}
               >
                 <div
