@@ -41,14 +41,69 @@ function Thumbnail({ src, alt }) {
   );
 }
 
+const VERDICT_STYLE = {
+  ramai: {
+    label: "RAMAI",
+    emoji: "🔥",
+    headerClass: "from-emerald-500/30 to-emerald-500/5 border-emerald-500/50",
+    badgeClass: "bg-emerald-500/20 text-emerald-200 border-emerald-500/40",
+    summary: "Post ini perform tinggi",
+  },
+  biasa: {
+    label: "BIASA",
+    emoji: "📊",
+    headerClass: "from-amber-500/20 to-amber-500/5 border-amber-500/40",
+    badgeClass: "bg-amber-500/20 text-amber-200 border-amber-500/40",
+    summary: "Post ini perform rata-rata",
+  },
+  sepi: {
+    label: "SEPI",
+    emoji: "❄️",
+    headerClass: "from-red-500/20 to-red-500/5 border-red-500/40",
+    badgeClass: "bg-red-500/20 text-red-200 border-red-500/40",
+    summary: "Post ini perform rendah",
+  },
+};
+
 export function PostUrlResultCard({ result }) {
-  const { url, platform, thumbnail_data_url, analysis } = result || {};
+  const { url, platform, thumbnail_data_url, analysis, diagnosis } = result || {};
   if (!analysis) return null;
 
   const eng = analysis.engagement_signals || {};
+  const verdict = diagnosis?.performance_verdict || null;
+  const v = verdict ? VERDICT_STYLE[verdict] : null;
 
   return (
     <div className="space-y-4">
+      {/* HERO: verdict ramai/biasa/sepi — paling penting */}
+      {v && (
+        <div
+          className={`rounded-2xl border bg-gradient-to-br p-5 ${v.headerClass}`}
+        >
+          <div className="mb-2 flex items-center gap-3">
+            <span className="text-3xl">{v.emoji}</span>
+            <div>
+              <div
+                className={`inline-block rounded-md border px-2 py-0.5 text-xs font-bold uppercase ${v.badgeClass}`}
+              >
+                Verdict: {v.label}
+              </div>
+              <p className="mt-1 text-xs text-slate-400">{v.summary}</p>
+            </div>
+          </div>
+          {diagnosis?.verdict_reason && (
+            <p className="text-sm leading-relaxed text-slate-100">
+              {diagnosis.verdict_reason}
+            </p>
+          )}
+          {diagnosis?.brand_context_used && (
+            <p className="mt-2 text-[10px] text-emerald-300/80">
+              ✓ Diagnosis pakai data brand kamu sebagai pembanding
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center gap-2 flex-wrap">
@@ -96,92 +151,123 @@ export function PostUrlResultCard({ result }) {
         </div>
       </div>
 
-      {/* Visual + hook breakdown */}
-      <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-3">
-        {analysis.visual_summary && (
-          <div>
-            <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
-              Visual summary
-            </div>
-            <p className="text-xs leading-relaxed text-slate-300">
-              {analysis.visual_summary}
-            </p>
-          </div>
-        )}
-        {analysis.hook_or_first_frame && (
-          <div>
-            <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
-              Hook / detik 1
-            </div>
-            <p className="text-xs leading-relaxed text-slate-300">
-              {analysis.hook_or_first_frame}
-            </p>
-          </div>
-        )}
-        {(analysis.hooks_pattern || analysis.topic_or_pillar) && (
-          <div className="flex flex-wrap gap-2 text-[11px]">
-            {analysis.hooks_pattern && (
-              <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-200">
-                Pattern: {analysis.hooks_pattern}
-              </span>
-            )}
-            {analysis.topic_or_pillar && (
-              <span className="rounded-md bg-slate-800 px-2 py-1 text-slate-300">
-                Topic: {analysis.topic_or_pillar}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Caption */}
-      {analysis.caption_excerpt && (
-        <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-          <h4 className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            Caption
-          </h4>
-          <p className="whitespace-pre-wrap text-xs leading-relaxed text-slate-300">
-            {analysis.caption_excerpt}
-          </p>
-          {analysis.caption_style && (
-            <p className="mt-2 text-[10px] italic text-slate-500">
-              Style: {analysis.caption_style}
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* Why it works */}
-      {analysis.why_it_works?.length > 0 && (
+      {/* Kenapa ramai / kenapa sepi */}
+      {diagnosis?.why_winning?.length > 0 && (
         <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
           <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-emerald-300">
-            ✅ Kenapa post ini ramai
+            ✅ Kenapa post ini RAMAI
           </h4>
-          <ul className="space-y-1 text-xs leading-relaxed text-slate-200">
-            {analysis.why_it_works.map((b, i) => (
+          <ul className="space-y-1 text-sm leading-relaxed text-slate-200">
+            {diagnosis.why_winning.map((b, i) => (
               <li key={i}>• {b}</li>
             ))}
           </ul>
         </div>
       )}
 
-      {/* Replication */}
-      {analysis.replication_angle && (
-        <div className="rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-violet-300">
-            🔁 Cara replikasi untuk brand kamu
+      {diagnosis?.why_underperforming?.length > 0 && (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-4">
+          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-red-300">
+            ⚠️ Kenapa post ini SEPI
           </h4>
-          <p className="text-sm leading-relaxed text-slate-200">
-            {analysis.replication_angle}
-          </p>
-          {analysis.suggested_use_for_brand && (
-            <p className="mt-2 text-[11px] text-slate-400">
-              <span className="font-semibold text-slate-300">Cocok untuk goal: </span>
-              {analysis.suggested_use_for_brand}
-            </p>
+          <ul className="space-y-1 text-sm leading-relaxed text-slate-200">
+            {diagnosis.why_underperforming.map((b, i) => (
+              <li key={i}>• {b}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* TIPS — paling actionable */}
+      {diagnosis?.tips_for_brand?.length > 0 && (
+        <div className="rounded-xl border border-violet-500/40 bg-violet-500/10 p-4">
+          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-violet-200">
+            💡 Tips biar konten brand kamu RAMAI
+          </h4>
+          <ul className="space-y-2 text-sm leading-relaxed text-slate-100">
+            {diagnosis.tips_for_brand.map((b, i) => (
+              <li key={i} className="flex gap-2">
+                <span className="text-violet-300">→</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          {diagnosis.brand_fit_note && (
+            <div className="mt-3 rounded-md border border-slate-700 bg-slate-950/40 px-3 py-2 text-[11px] text-slate-400">
+              <span className="font-semibold text-slate-300">Brand fit: </span>
+              {diagnosis.brand_fit_note}
+            </div>
           )}
         </div>
       )}
+
+      {/* Visual + hook breakdown (detail teknis di bawah, expandable mental) */}
+      <details className="rounded-xl border border-slate-800 bg-slate-950/40">
+        <summary className="cursor-pointer px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-slate-200">
+          Detail breakdown post (visual, hook, caption)
+        </summary>
+        <div className="space-y-3 border-t border-slate-800 px-4 pt-3 pb-4">
+          {analysis.visual_summary && (
+            <div>
+              <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
+                Visual summary
+              </div>
+              <p className="text-xs leading-relaxed text-slate-300">
+                {analysis.visual_summary}
+              </p>
+            </div>
+          )}
+          {analysis.hook_or_first_frame && (
+            <div>
+              <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
+                Hook / detik 1
+              </div>
+              <p className="text-xs leading-relaxed text-slate-300">
+                {analysis.hook_or_first_frame}
+              </p>
+            </div>
+          )}
+          {(analysis.hooks_pattern || analysis.topic_or_pillar) && (
+            <div className="flex flex-wrap gap-2 text-[11px]">
+              {analysis.hooks_pattern && (
+                <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-200">
+                  Pattern: {analysis.hooks_pattern}
+                </span>
+              )}
+              {analysis.topic_or_pillar && (
+                <span className="rounded-md bg-slate-800 px-2 py-1 text-slate-300">
+                  Topic: {analysis.topic_or_pillar}
+                </span>
+              )}
+            </div>
+          )}
+          {analysis.caption_excerpt && (
+            <div>
+              <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
+                Caption
+              </div>
+              <p className="whitespace-pre-wrap text-xs leading-relaxed text-slate-300">
+                {analysis.caption_excerpt}
+              </p>
+              {analysis.caption_style && (
+                <p className="mt-1 text-[10px] italic text-slate-500">
+                  Style: {analysis.caption_style}
+                </p>
+              )}
+            </div>
+          )}
+          {analysis.replication_angle && (
+            <div>
+              <div className="mb-1 text-[10px] font-semibold uppercase text-slate-400">
+                Cara replikasi (initial analysis)
+              </div>
+              <p className="text-xs leading-relaxed text-slate-300">
+                {analysis.replication_angle}
+              </p>
+            </div>
+          )}
+        </div>
+      </details>
     </div>
   );
 }

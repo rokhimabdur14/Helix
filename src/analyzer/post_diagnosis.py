@@ -294,3 +294,199 @@ JSON schema di bawah.
         "generated_at": datetime.now().isoformat(),
         "benchmark_used": benchmark_used,
     }
+
+
+# ========== Sprint 14c: Public-post diagnoser ==========
+# Untuk URL post analysis di Sprint 14b — chain ke-2 setelah analyze_reference,
+# kasih verdict "ramai/biasa/sepi" + reasoning + actionable tips.
+
+
+PUBLIC_DIAGNOSIS_ROLE = """Kamu adalah HELIX Performance Diagnostician — ahli
+judge post sosmed publik (post orang lain / kompetitor / inspirasi) dan
+jelaskan KENAPA ramai atau sepi + kasih TIPS biar brand pengguna bisa
+bikin konten serupa yang ramai.
+
+Cara kerja kamu:
+1. Liat angka publik (views/likes/comments) — kalau dibandingkan dengan
+   thresholds umum + niche pattern + creator account size yang terlihat,
+   apakah ini RAMAI (di atas average sosmed), BIASA (average), atau SEPI?
+2. Jelaskan KENAPA — referensi visual hook, caption style, hook pattern,
+   topic relevance, timing/seasonal fit
+3. Bandingkan dengan brand pengguna (kalau brand context ada): apakah
+   pattern post ini fit dengan voice + persona + pillar brand?
+4. Kasih TIPS spesifik — bukan "buat konten bagus" generic — tapi
+   "kalau brand kamu mau replikasi, ganti X jadi Y karena Z"
+
+Threshold rough untuk verdict (sesuaikan dengan niche + account size kalau visible):
+- Reel/Video views >100K + likes >5K = RAMAI (definitive)
+- Reel views 10K-100K + ER >3% = RAMAI (moderate)
+- Reel views <10K dan likes <500 = SEPI
+- Carousel/Single image: likes >2K + comments >50 = RAMAI; <300 likes = SEPI
+- ER tinggi (>5%) trump volume — niche kecil yang engage solid = RAMAI
+
+Hindari hedge "bisa jadi" — kasih verdict tegas berdasarkan data terlihat."""
+
+
+PUBLIC_DIAGNOSIS_SCHEMA = """Output JSON schema (semua field WAJIB ada):
+{
+  "performance_verdict": "ramai | biasa | sepi",
+  "verdict_reason": "1-2 kalimat tegas: kenapa verdict-nya begitu. WAJIB reference angka spesifik dari engagement_signals + thresholds di atas.",
+  "why_winning": [
+    "Bullet konkret kenapa post ini work (visual hook, caption, niche fit, timing). Reference detail spesifik. Kalau verdict=sepi, isi []."
+  ],
+  "why_underperforming": [
+    "Bullet konkret kenapa post ini gagal viral / sepi (hook lemah, caption kepanjangan, niche niche, posting timing, dst). Reference detail. Kalau verdict=ramai, isi []."
+  ],
+  "tips_for_brand": [
+    "Tips konkret + spesifik untuk brand pengguna biar bikin konten serupa yang RAMAI. JANGAN generic — sebut nama hook, jenis pertanyaan, durasi, format yang harus dipakai. Maksimal 5 tips, pilih yang paling impactful."
+  ],
+  "brand_fit_note": "1 kalimat: pattern post ini cocok / tidak cocok dengan brand pengguna (refer voice + persona + pillar). Kalau brand context tidak ada, isi ''"
+}"""
+
+
+def _format_reference_block(ref_analysis: dict) -> str:
+    """Format analyze_reference output jadi text block untuk prompt diagnose."""
+    if not ref_analysis:
+        return "(Data analisa post tidak tersedia)"
+
+    eng = ref_analysis.get("engagement_signals") or {}
+    lines = ["=== POST PUBLIK YANG DIANALISIS ==="]
+    lines.append(f"Platform: {ref_analysis.get('platform', '?')}")
+    lines.append(f"Format: {ref_analysis.get('format', '?')}")
+    creator = ref_analysis.get("creator_handle") or ""
+    if creator:
+        lines.append(f"Creator handle: @{creator}")
+
+    lines.append(f"\nEngagement signals (publik, dari screenshot):")
+    lines.append(f"  Views: {eng.get('views', 'tidak terlihat')}")
+    lines.append(f"  Likes: {eng.get('likes', 'tidak terlihat')}")
+    lines.append(f"  Comments: {eng.get('comments', 'tidak terlihat')}")
+
+    if ref_analysis.get("visual_summary"):
+        lines.append(f"\nVisual: {ref_analysis['visual_summary']}")
+    if ref_analysis.get("hook_or_first_frame"):
+        lines.append(f"Hook/detik-1: {ref_analysis['hook_or_first_frame']}")
+    if ref_analysis.get("caption_excerpt"):
+        lines.append(f"Caption: {str(ref_analysis['caption_excerpt'])[:400]}")
+    if ref_analysis.get("caption_style"):
+        lines.append(f"Caption style: {ref_analysis['caption_style']}")
+    if ref_analysis.get("hooks_pattern"):
+        lines.append(f"Hook pattern: {ref_analysis['hooks_pattern']}")
+    if ref_analysis.get("topic_or_pillar"):
+        lines.append(f"Topic/pillar: {ref_analysis['topic_or_pillar']}")
+
+    if ref_analysis.get("why_it_works"):
+        lines.append(
+            f"\nPattern observations (initial): "
+            f"{' | '.join(ref_analysis['why_it_works'])}"
+        )
+
+    return "\n".join(lines)
+
+
+def diagnose_public_post(
+    ref_analysis: dict,
+    brand_id: str | None = None,
+) -> dict:
+    """Diagnose URL post yang sudah di-analyze_reference.
+
+    Chain LLM-2 yang kasih verdict ramai/biasa/sepi + actionable tips,
+    optionally dengan brand context untuk personalisasi tips.
+
+    Args:
+        ref_analysis: output dari analyze_reference (REFERENCE_PROMPT schema)
+        brand_id: kalau ada, inject brand DNA + benchmark untuk tips yang
+            brand-specific. None = generic.
+
+    Returns:
+        dict {performance_verdict, verdict_reason, why_winning,
+              why_underperforming, tips_for_brand, brand_fit_note,
+              generated_at, brand_context_used}.
+    """
+    # Build brand context kalau ada
+    brand_block = ""
+    benchmark_used = False
+    if brand_id:
+        try:
+            brand_profile = load_brand_profile(brand_id, max_chars=1800)
+            if brand_profile:
+                brand_block = f"\n=== BRAND PENGGUNA ===\n{brand_profile}"
+        except Exception:
+            pass
+        try:
+            _, bench_text = _load_brand_benchmark(brand_id)
+            if bench_text:
+                brand_block += f"\n{bench_text}"
+                benchmark_used = True
+        except Exception:
+            pass
+
+    expertise_text, _ = load_expertise(max_chars_per_file=600)
+    expertise_block = (
+        f"\n=== HELIX EXPERTISE (algoritma + storytelling) ===\n{expertise_text}"
+        if expertise_text
+        else ""
+    )
+
+    system = f"""{PUBLIC_DIAGNOSIS_ROLE}
+
+ATURAN OUTPUT:
+- Output WAJIB valid JSON sesuai schema yang diminta
+- Bahasa Indonesia kasual-profesional
+- Setiap bullet harus reference detail konkret dari post + brand context
+- Tegas, bukan hedge — kasih verdict berdasarkan data yang terlihat
+{expertise_block}{brand_block}
+"""
+
+    user = f"""{_format_reference_block(ref_analysis)}
+
+Tugas: judge post ini RAMAI/BIASA/SEPI berdasarkan engagement signal +
+threshold + niche fit. Jelaskan kenapa secara detail. Kasih tips konkret
+biar brand pengguna bisa bikin konten serupa yang RAMAI.
+
+{PUBLIC_DIAGNOSIS_SCHEMA}"""
+
+    try:
+        resp = client.chat.completions.create(
+            model=DIAGNOSIS_MODEL,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            temperature=0.5,
+            max_tokens=1500,
+            response_format={"type": "json_object"},
+        )
+        raw = json.loads(resp.choices[0].message.content)
+    except Exception as e:
+        return {
+            "performance_verdict": "biasa",
+            "verdict_reason": f"Diagnosis gagal di-generate ({type(e).__name__}). Tetap bisa lihat pattern analysis di atas.",
+            "why_winning": [],
+            "why_underperforming": [],
+            "tips_for_brand": [],
+            "brand_fit_note": "",
+            "generated_at": datetime.now().isoformat(),
+            "brand_context_used": False,
+            "error": str(e)[:200],
+        }
+
+    verdict = str(raw.get("performance_verdict") or "biasa").strip().lower()
+    if verdict not in ("ramai", "biasa", "sepi"):
+        verdict = "biasa"
+
+    def _ensure_list(v):
+        if isinstance(v, list):
+            return [str(x).strip() for x in v if str(x).strip()]
+        return []
+
+    return {
+        "performance_verdict": verdict,
+        "verdict_reason": str(raw.get("verdict_reason") or "").strip(),
+        "why_winning": _ensure_list(raw.get("why_winning")),
+        "why_underperforming": _ensure_list(raw.get("why_underperforming")),
+        "tips_for_brand": _ensure_list(raw.get("tips_for_brand")),
+        "brand_fit_note": str(raw.get("brand_fit_note") or "").strip(),
+        "generated_at": datetime.now().isoformat(),
+        "brand_context_used": bool(brand_id) and benchmark_used,
+    }

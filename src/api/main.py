@@ -544,11 +544,28 @@ def analyze_post_url(req: AnalyzeUrlRequest):
 
     thumbnail = social_screenshot.thumbnail_data_url(png, max_dim=600)
 
+    # Sprint 14c: chain LLM-2 untuk verdict ramai/sepi + tips. Fail-soft —
+    # kalau diagnose gagal, return tanpa diagnosis (analysis masih usable).
+    try:
+        diagnosis = post_diagnosis.diagnose_public_post(analysis, brand_id=req.brand_id)
+    except Exception as e:
+        diagnosis = {
+            "performance_verdict": "biasa",
+            "verdict_reason": f"Diagnosis tidak tersedia ({type(e).__name__})",
+            "why_winning": [],
+            "why_underperforming": [],
+            "tips_for_brand": [],
+            "brand_fit_note": "",
+            "brand_context_used": False,
+            "error": str(e)[:200],
+        }
+
     return {
         "url": req.url,
         "platform": social_screenshot.detect_platform(req.url),
         "thumbnail_data_url": thumbnail,
         "analysis": analysis,
+        "diagnosis": diagnosis,
         "brand_id": req.brand_id,
     }
 
