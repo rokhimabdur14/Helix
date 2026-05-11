@@ -282,6 +282,25 @@ def _generate_json(
     return json.loads(content)
 
 
+def _is_rate_limit_error(e: Exception) -> bool:
+    """Detect Groq 429 / TPD limit error.
+
+    Catch via: explicit groq.RateLimitError type OR substring match di message
+    (cover edge cases dari APIError generic).
+    """
+    try:
+        from groq import RateLimitError  # type: ignore
+        if isinstance(e, RateLimitError):
+            return True
+    except ImportError:
+        pass
+    msg = str(e).lower()
+    return any(
+        token in msg
+        for token in ("rate_limit", "rate limit", "429", "tokens per day", "tpd")
+    )
+
+
 # ========== 1. Hook Generator ==========
 
 HOOK_ROLE = """Kamu adalah HELIX Hook Specialist — ahli bikin 3-detik pertama
@@ -515,7 +534,8 @@ def generate_plan(
     insights_section = _load_brand_insights(brand_id) if brand_id else None
     insights_block = f"\n\n{insights_section}" if insights_section else ""
 
-    system = _system_prompt(brand_id, PLAN_ROLE) + insights_block
+    # PLAN_ROLE prompt dibangun di bawah saat dipakai (full + compact variants
+    # buat fallback). insights_block sama untuk dua-duanya.
 
     theme_clean = (theme or "").strip()
     theme_block = ""
@@ -569,13 +589,28 @@ Output JSON schema:
   ]
 }}"""
 
-    return _generate_json(
-        system,
-        user,
-        max_tokens=4000,
-        model=PLAN_MODEL,
-        temperature=0.7,
-    )
+    # 70b primary; auto-fallback ke 8b+compact saat TPD hit. Plan jarang
+    # di-call (1 plan/minggu/brand) tapi tetap pasang safety net.
+    try:
+        system = _system_prompt(brand_id, PLAN_ROLE) + insights_block
+        return _generate_json(
+            system,
+            user,
+            max_tokens=4000,
+            model=PLAN_MODEL,
+            temperature=0.7,
+        )
+    except Exception as e:
+        if not _is_rate_limit_error(e):
+            raise
+        system_compact = _system_prompt(brand_id, PLAN_ROLE, compact=True) + insights_block
+        return _generate_json(
+            system_compact,
+            user,
+            max_tokens=2500,
+            model=STUDIO_MODEL,
+            temperature=0.7,
+        )
 
 
 # ========== 5. Brief (unified per-post) ==========
@@ -843,7 +878,6 @@ def generate_brief(
 
     Returns format-specific dict (lihat _brief_user_prompt schemas).
     """
-    system = _system_prompt(brand_id, BRIEF_ROLE)
     # Reference library per-brand → skip kalau free mode
     targeted_refs = (
         _load_specific_references(brand_id, reference_ids) if brand_id else ""
@@ -862,16 +896,30 @@ def generate_brief(
         scene_count=scene_count,
     )
 
-    # Brief = multi-section reasoning (narrative_arc + scenes + caption +
-    # hashtags terintegrasi). 70b model untuk depth; 4500 max_tokens muat
-    # full schema reel/carousel/foto/story tanpa truncation.
-    return _generate_json(
-        system,
-        user,
-        max_tokens=4500,
-        model=PLAN_MODEL,
-        temperature=0.75,
-    )
+    # Brief = multi-section reasoning. Default 70b for depth; auto-fallback
+    # ke 8b + compact mode kalau 70b TPD hit (100K/day, kepake habis saat
+    # demo aktif). 8b kualitas multi-section turun dikit tapi acceptable
+    # vs total fail. Self-recover saat 70b reset rolling 24h.
+    try:
+        system = _system_prompt(brand_id, BRIEF_ROLE)
+        return _generate_json(
+            system,
+            user,
+            max_tokens=4500,
+            model=PLAN_MODEL,
+            temperature=0.75,
+        )
+    except Exception as e:
+        if not _is_rate_limit_error(e):
+            raise
+        system_compact = _system_prompt(brand_id, BRIEF_ROLE, compact=True)
+        return _generate_json(
+            system_compact,
+            user,
+            max_tokens=2500,
+            model=STUDIO_MODEL,
+            temperature=0.75,
+        )
 
 
 # ========== 5b. Title generator (step 1 of 2-step Brief workflow) ==========
