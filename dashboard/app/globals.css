@@ -633,8 +633,9 @@ body::before {
       rgba(250, 250, 252, 0.78) 100%);
 }
 [data-theme="light"] .bg-slate-950\/30,
-[data-theme="light"] .bg-slate-950\/50 {
-  background-color: rgba(248, 250, 252, 0.7);
+[data-theme="light"] .bg-slate-950\/50,
+[data-theme="light"] .bg-slate-950\/60 {
+  background-color: rgba(241, 245, 249, 0.8);
 }
 [data-theme="light"] .bg-slate-900\/40 {
   background:
