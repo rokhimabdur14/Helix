@@ -18,9 +18,11 @@ from typing import Literal
 
 from src.ai.brain import client
 
-# Same model lineup with src/social/vision.py — multimodal Llama 4 di Groq
+# Same model lineup with src/social/vision.py — multimodal Llama 4 di Groq.
+# Maverick fallback deprecated by Groq per 2026-05-11; sekarang Scout only
+# dengan retry-on-flake (3x exponential backoff).
 VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
-VISION_FALLBACK = "meta-llama/llama-4-maverick-17b-128e-instruct"
+VISION_MAX_RETRIES = 3
 
 
 def image_bytes_to_data_url(data: bytes, mime: str = "image/png") -> str:
@@ -85,9 +87,12 @@ def _call_vision(
 ) -> dict:
     """Kirim prompt + image ke Groq vision, parse JSON response.
 
-    Try VISION_MODEL dulu, fallback ke VISION_FALLBACK kalau error.
-    Temperature rendah (0.2) untuk extraction — lebih konsisten, less hallucination.
+    Retry Scout sampai VISION_MAX_RETRIES x dengan exponential backoff
+    (1s/2s). Temperature rendah (0.2) untuk extraction — lebih konsisten,
+    less hallucination.
     """
+    import time
+
     messages = [
         {
             "role": "user",
@@ -99,10 +104,10 @@ def _call_vision(
     ]
 
     last_err = None
-    for model in (VISION_MODEL, VISION_FALLBACK):
+    for attempt in range(VISION_MAX_RETRIES):
         try:
             resp = client.chat.completions.create(
-                model=model,
+                model=VISION_MODEL,
                 messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -112,8 +117,12 @@ def _call_vision(
             return json.loads(content)
         except Exception as e:
             last_err = e
+            if attempt < VISION_MAX_RETRIES - 1:
+                time.sleep(2 ** attempt)
             continue
-    raise RuntimeError(f"Vision extraction gagal di semua model: {last_err}")
+    raise RuntimeError(
+        f"Vision extraction gagal setelah {VISION_MAX_RETRIES} retries: {last_err}"
+    )
 
 
 _HASHTAG_RE = re.compile(r"#\w+")

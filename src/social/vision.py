@@ -8,10 +8,13 @@ from typing import Literal
 
 from src.ai.brain import client
 
-# Llama 4 Scout — multimodal, support image input via OpenAI-compatible format.
-# Kalau model ini deprecated/down, fallback ke maverick.
+# Llama 4 Scout — multimodal vision di Groq. Per 2026-05-11, ini SATU-SATUNYA
+# vision-capable model di Groq free tier yang masih hidup. Llama 4 Maverick
+# yang dulu jadi fallback udah di-deprecate (404). Strategi sekarang: retry
+# Scout 3x dengan backoff exponential supaya tahan transient connection
+# error / rate-limit flake.
 VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
-VISION_FALLBACK = "meta-llama/llama-4-maverick-17b-128e-instruct"
+VISION_MAX_RETRIES = 3
 
 Platform = Literal["instagram", "tiktok"]
 
@@ -24,8 +27,12 @@ def _call_vision(
 ) -> dict:
     """Kirim prompt + image ke Groq vision, parse JSON response.
 
-    Try VISION_MODEL dulu, fallback ke VISION_FALLBACK kalau error.
+    Retry Scout sampai VISION_MAX_RETRIES x dengan backoff 1s/2s/4s.
+    Connection error transient sering muncul di Groq vision endpoint —
+    retry biasa pulih di attempt ke-2.
     """
+    import time
+
     messages = [
         {
             "role": "user",
@@ -37,10 +44,10 @@ def _call_vision(
     ]
 
     last_err = None
-    for model in (VISION_MODEL, VISION_FALLBACK):
+    for attempt in range(VISION_MAX_RETRIES):
         try:
             resp = client.chat.completions.create(
-                model=model,
+                model=VISION_MODEL,
                 messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -50,8 +57,12 @@ def _call_vision(
             return json.loads(content)
         except Exception as e:
             last_err = e
+            if attempt < VISION_MAX_RETRIES - 1:
+                time.sleep(2 ** attempt)  # 1s, 2s backoff
             continue
-    raise RuntimeError(f"Vision call gagal di semua model: {last_err}")
+    raise RuntimeError(
+        f"Vision call gagal setelah {VISION_MAX_RETRIES} retries: {last_err}"
+    )
 
 
 PROFILE_PROMPT = """Kamu adalah HELIX Brand Aesthetic Analyst.
