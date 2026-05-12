@@ -1,5 +1,6 @@
 import { Geist, Orbitron } from "next/font/google";
 import "./globals.css";
+import { Warmup } from "./Warmup";
 
 const orbitron = Orbitron({
   variable: "--font-display",
@@ -60,7 +61,10 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Warmup />
+        {children}
+      </body>
     </html>
   );
 }

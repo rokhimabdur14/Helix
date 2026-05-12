@@ -6,6 +6,13 @@ import { useBackendStatus } from "./use-backend-status";
 
 const STORAGE_KEY = "helix.activeBrandId";
 
+// Featured brand: brand pertama yang dipilih saat user baru pertama buka HELIX
+// (localStorage kosong). Pilih fotofusi karena: punya 16-page scrape paling
+// lengkap, expertise+brand profile paling enriched, content bank ready buat
+// demo end-to-end. Backend return alfabetis (arabi first), tanpa override ini
+// fresh visitor landing di arabi.
+const FEATURED_BRAND_ID = "fotofusi";
+
 export function useBrand() {
   const [brands, setBrands] = useState([]);
   const [activeBrandId, setActiveBrandId] = useState(null);
@@ -36,24 +43,30 @@ export function useBrand() {
           ? window.localStorage.getItem(STORAGE_KEY)
           : null;
       const found = saved && list.find((b) => b.brand_id === saved);
-      const pick = found ? saved : list[0]?.brand_id || null;
+      const featured = list.find((b) => b.brand_id === FEATURED_BRAND_ID);
+      const pick = found
+        ? saved
+        : featured
+        ? FEATURED_BRAND_ID
+        : list[0]?.brand_id || null;
       setActiveBrandId(pick);
     })();
   }, [refresh]);
 
-  // Auto re-load brands saat backend transisi offline → online
-  // (handle case: user buka page saat backend mati, lalu user nyalain backend)
+  // Auto re-load brands saat backend transisi ke "online" dari state apapun
+  // yang bukan online (offline/booting/unknown). Krn cold-start awal user landing,
+  // brand list fetch awal 502 → brands=[]; tanpa retry user stuck.
   const backendStatus = useBackendStatus();
   const prevStatusRef = useRef(backendStatus);
   useEffect(() => {
     const prev = prevStatusRef.current;
     prevStatusRef.current = backendStatus;
-    if (backendStatus === "online" && prev === "offline") {
-      // backend baru hidup lagi — retry brand load
+    if (backendStatus === "online" && prev !== "online" && prev !== "unknown") {
       (async () => {
         const list = await refresh();
         if (!activeBrandId && list.length > 0) {
-          setActiveBrandId(list[0].brand_id);
+          const featured = list.find((b) => b.brand_id === FEATURED_BRAND_ID);
+          setActiveBrandId(featured ? FEATURED_BRAND_ID : list[0].brand_id);
         }
       })();
     }

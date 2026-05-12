@@ -58,6 +58,27 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history, loading]);
 
+  // Ctrl/Cmd+B toggle sidebar desktop. Promise di tooltip "Sembunyikan sidebar
+  // (Ctrl+B)" — sebelumnya cuma copy tanpa handler. Skip kalau user lagi ngetik
+  // di input/textarea biar nggak nabrak shortcut native.
+  useEffect(() => {
+    function handler(e) {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if (e.key !== "b" && e.key !== "B") return;
+      const t = e.target;
+      const tag = t?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || t?.isContentEditable) return;
+      e.preventDefault();
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        setSidebarHiddenDesktop((v) => !v);
+      } else {
+        setSidebarOpen((v) => !v);
+      }
+    }
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   // Free mode: nggak butuh brand. Brand mode: butuh activeBrandId.
   const canSend = mode === "free" || !!activeBrandId;
 
