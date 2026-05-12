@@ -806,85 +806,228 @@ body::before {
 }
 
 
-/* ========== Sprint 15: Welcome intro animation ========== */
+/* ========== Sprint 16: Phoenix perched + scroll-scrub transformation ========== */
+
+/* Tall scroll container so ScrollTrigger has room to scrub */
+.welcome-stage {
+  position: relative;
+  width: 100%;
+}
+
+/* Pinned hero — phoenix bertengger di tengah viewport */
+.welcome-pin {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+.welcome-pin-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* Phoenix wrapper — the scene that scrubs */
+.phoenix-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-origin: 50% 60%;
+  will-change: transform, opacity, filter;
+}
+
+/* Existing wrap — pedestal box around phoenix */
 .welcome-intro-wrap {
   position: relative;
   width: 100%;
-  max-width: 560px;
+  max-width: 520px;
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   border-radius: 24px;
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.18), transparent 60%);
-  box-shadow:
-    0 30px 80px -20px rgba(139, 92, 246, 0.4),
-    0 0 100px -20px rgba(59, 130, 246, 0.3);
+  overflow: visible; /* allow ember glow to spill */
+  isolation: isolate;
 }
+
+/* Phoenix breathing bob — driven by --phoenix-bob var from WelcomeIntro */
+.phoenix-perch {
+  --phoenix-bob: 0px;
+}
+.phoenix-perch .flap-frame {
+  transform: translateY(var(--phoenix-bob));
+  transition: transform 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95),
+              opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glow pedestal behind phoenix — God of War vibe */
+.phoenix-aura {
+  position: absolute;
+  inset: -8% -8% -14% -8%;
+  background:
+    radial-gradient(ellipse at 50% 88%, rgba(255, 112, 32, 0.35), transparent 55%),
+    radial-gradient(ellipse at 50% 55%, rgba(139, 92, 246, 0.35), transparent 60%),
+    radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.18), transparent 70%);
+  filter: blur(14px);
+  animation: phoenix-aura-pulse 4.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes phoenix-aura-pulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
+}
+
+/* Frame layers */
 .welcome-intro-frame {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transform: scale(var(--initial-scale, 1)) rotate(var(--rotate, 0deg));
-  transition:
-    opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 2400ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
-}
-.welcome-intro-frame.is-active {
-  opacity: 1;
-  transform: scale(var(--final-scale, 1)) rotate(0deg);
-}
-.welcome-intro-frame.is-past {
-  opacity: 0;
-  transform: scale(1.1) rotate(0deg);
+  z-index: 1;
 }
 .welcome-intro-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.45));
-}
-[data-theme="light"] .welcome-intro-wrap {
-  background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 60%);
-  box-shadow:
-    0 30px 80px -20px rgba(59, 130, 246, 0.3),
-    0 0 80px -20px rgba(99, 102, 241, 0.2);
+  filter: drop-shadow(0 12px 30px rgba(255, 112, 32, 0.35))
+          drop-shadow(0 0 36px rgba(139, 92, 246, 0.4));
 }
 [data-theme="light"] .welcome-intro-img {
-  filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.35));
-}
-.welcome-intro-skip {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: rgba(15, 10, 35, 0.6);
-  border: 1px solid rgba(167, 139, 250, 0.3);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: all 0.15s ease;
-}
-.welcome-intro-skip:hover {
-  background: rgba(124, 58, 237, 0.25);
-  border-color: rgba(167, 139, 250, 0.6);
-  color: #fff;
+  filter: drop-shadow(0 10px 24px rgba(59, 130, 246, 0.35))
+          drop-shadow(0 0 28px rgba(99, 102, 241, 0.3));
 }
 
-/* Slow ambient breathe behind hero — opsional polish */
-@keyframes welcome-hero-aura {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.04); }
+/* Ember canvas overlay — rises from below */
+.phoenix-ember-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: screen;
+  opacity: 0.95;
 }
-.welcome-hero-aura {
-  animation: welcome-hero-aura 6s ease-in-out infinite;
+[data-theme="light"] .phoenix-ember-canvas {
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+/* Logo mark — appears as phoenix shrinks */
+.welcome-logo-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 0 24px rgba(139, 92, 246, 0.55));
+}
+.welcome-logo-mark img {
+  width: clamp(120px, 18vw, 180px);
+  height: auto;
+}
+
+/* Wordmark — revealed at end of scrub */
+.welcome-wordmark {
+  position: absolute;
+  top: calc(50% + 100px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.welcome-tagline {
+  position: absolute;
+  top: calc(50% + 165px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  color: rgb(148, 163, 184);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.welcome-subline {
+  position: absolute;
+  top: calc(50% + 200px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: clamp(0.75rem, 1.1vw, 0.85rem);
+  color: rgb(100, 116, 139);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .welcome-wordmark { top: calc(50% + 80px); }
+  .welcome-tagline  { top: calc(50% + 130px); font-size: 0.9rem; }
+  .welcome-subline  { top: calc(50% + 158px); font-size: 0.72rem; }
+}
+
+/* Scroll hint chevron */
+.welcome-scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: rgba(196, 181, 253, 0.75);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 4;
+}
+.welcome-scroll-hint .scroll-chevron {
+  font-size: 28px;
+  line-height: 1;
+  animation: scroll-chevron-bounce 1.8s ease-in-out infinite;
+  font-weight: 300;
+}
+@keyframes scroll-chevron-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+[data-theme="light"] .welcome-scroll-hint {
+  color: rgba(67, 56, 202, 0.7);
+}
+
+/* Cards section — revealed after pin ends */
+.welcome-cards-section {
+  position: relative;
+  min-height: 60vh;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(10, 5, 32, 0.6) 30%,
+    rgba(10, 5, 32, 0.85) 100%
+  );
+}
+[data-theme="light"] .welcome-cards-section {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(239, 246, 255, 0.6) 30%,
+    rgba(219, 234, 254, 0.85) 100%
+  );
 }
 
 /* Feature card hover */
@@ -911,18 +1054,29 @@ body::before {
   opacity: 1;
 }
 
-/* ========== Sprint 15b: Welcome page smooth exit transition ========== */
-.welcome-page-wrap {
+/* Page exit transition — IMPORTANT: avoid any non-`none` value for transform
+   or filter on .welcome-stage. Both create a new containing block which
+   breaks ScrollTrigger's `position: fixed` pin (phoenix would scroll away
+   instead of staying pinned). Browser interpolates filter: none → blur(8px)
+   smoothly during exit. */
+.welcome-stage {
   transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
               filter 700ms ease;
   opacity: 1;
-  transform: scale(1);
-  filter: blur(0);
+  /* filter intentionally omitted (default: none) — see note above */
 }
-.welcome-page-wrap.is-exiting {
+.welcome-stage.is-exiting {
   opacity: 0;
-  transform: scale(0.96);
   filter: blur(8px);
   pointer-events: none;
+}
+
+/* Reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .phoenix-aura,
+  .welcome-scroll-hint .scroll-chevron,
+  .phoenix-perch .flap-frame {
+    animation: none !important;
+    transition: none !important;
+  }
 }

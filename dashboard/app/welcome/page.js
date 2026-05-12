@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -36,92 +37,203 @@ const FEATURES = [
   },
 ];
 
-// Auto-redirect ke dashboard kalau user diam — kasih waktu untuk lihat hero
-// + intro + tagline, baru fade out + push ke target.
-const AUTO_REDIRECT_DELAY_MS = 3500; // setelah intro complete
 const FADE_OUT_MS = 700;
 
 export default function WelcomePage() {
   const router = useRouter();
-  const [introDone, setIntroDone] = useState(false);
   const [exiting, setExiting] = useState(false);
-  const autoTimerRef = useRef(null);
-  const userInteractedRef = useRef(false);
 
-  // Prefetch target supaya redirect smooth tanpa flash blank
+  const stageRef = useRef(null); // tall scroll container
+  const pinRef = useRef(null); // pinned viewport-sized hero
+  const phoenixWrapRef = useRef(null); // entire phoenix scene
+  const emberCanvasRef = useRef(null);
+  const logoMarkRef = useRef(null); // helix-mark.png (revealed at scrub)
+  const wordmarkRef = useRef(null); // "HELIX AI" text
+  const taglineRef = useRef(null);
+  const sublineRef = useRef(null);
+  const scrollHintRef = useRef(null);
+  const cardsRef = useRef(null);
+
   useEffect(() => {
     router.prefetch("/");
     router.prefetch("/studio");
     router.prefetch("/analysis");
   }, [router]);
 
-  // Auto-redirect ke / setelah intro selesai, kecuali user udah klik card
+  // GSAP ScrollTrigger transformation
   useEffect(() => {
-    if (!introDone || userInteractedRef.current) return;
-    autoTimerRef.current = setTimeout(() => {
-      if (!userInteractedRef.current) {
-        smoothTransition("/");
+    let cleanup = () => {};
+    let cancelled = false;
+
+    (async () => {
+      const { gsap } = await import("gsap");
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      if (cancelled) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      if (prefersReducedMotion) {
+        // Skip scrub on reduced motion — keep phoenix idle, show cards naturally
+        return;
       }
-    }, AUTO_REDIRECT_DELAY_MS);
+
+      const ctx = gsap.context(() => {
+        // Initial state — phoenix big, logo hidden, wordmark hidden
+        gsap.set(logoMarkRef.current, {
+          opacity: 0,
+          scale: 0.4,
+          y: 30,
+        });
+        gsap.set(wordmarkRef.current, {
+          opacity: 0,
+          y: 40,
+          scale: 0.9,
+          letterSpacing: "0.4em",
+        });
+        gsap.set([taglineRef.current, sublineRef.current], {
+          opacity: 0,
+          y: 20,
+        });
+
+        // Master scroll-scrub timeline
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: stageRef.current,
+            start: "top top",
+            end: "+=160%", // 1.6 viewport heights of scrub
+            scrub: 0.6,
+            pin: pinRef.current,
+            pinSpacing: true,
+            anticipatePin: 1,
+          },
+        });
+
+        // Phase A (0-50%): phoenix shrinks + moves up + fades
+        tl.to(
+          phoenixWrapRef.current,
+          {
+            scale: 0.45,
+            y: -120,
+            opacity: 0,
+            filter: "blur(2px)",
+            ease: "power2.in",
+          },
+          0
+        );
+        tl.to(
+          emberCanvasRef.current,
+          { opacity: 0.25, ease: "none" },
+          0
+        );
+        tl.to(
+          scrollHintRef.current,
+          { opacity: 0, y: 10, duration: 0.2, ease: "power1.out" },
+          0
+        );
+
+        // Phase B (40-75%): helix-mark logo rises + wordmark expands
+        tl.to(
+          logoMarkRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.4,
+            ease: "power3.out",
+          },
+          0.4
+        );
+        tl.to(
+          wordmarkRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            letterSpacing: "0.12em",
+            duration: 0.45,
+            ease: "power3.out",
+          },
+          0.45
+        );
+
+        // Phase C (75-100%): tagline + subline pop
+        tl.to(
+          taglineRef.current,
+          { opacity: 1, y: 0, duration: 0.3 },
+          0.75
+        );
+        tl.to(
+          sublineRef.current,
+          { opacity: 1, y: 0, duration: 0.3 },
+          0.85
+        );
+      }, stageRef);
+
+      cleanup = () => ctx.revert();
+    })();
+
     return () => {
-      if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
+      cancelled = true;
+      cleanup();
     };
-  }, [introDone]);
+  }, []);
 
   function smoothTransition(href) {
     if (exiting) return;
-    userInteractedRef.current = true;
-    if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
     setExiting(true);
-    // Wait for fade-out, then navigate
-    setTimeout(() => {
-      router.push(href);
-    }, FADE_OUT_MS);
+    setTimeout(() => router.push(href), FADE_OUT_MS);
   }
 
   return (
     <div
-      className={`welcome-page-wrap relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12 ${
-        exiting ? "is-exiting" : ""
-      }`}
+      ref={stageRef}
+      className={`welcome-stage relative ${exiting ? "is-exiting" : ""}`}
     >
-      <main className="mx-auto w-full max-w-5xl">
-        {/* Hero — phoenix animation */}
-        <div className="welcome-hero-aura mb-8 sm:mb-12">
-          <WelcomeIntro onComplete={() => setIntroDone(true)} />
-        </div>
+      {/* Pinned hero section — phoenix transforms into logo while user scrolls */}
+      <section ref={pinRef} className="welcome-pin">
+        <div className="welcome-pin-inner">
+          {/* Phoenix scene (flap loop + embers) — shrinks/fades on scroll */}
+          <div ref={phoenixWrapRef} className="phoenix-stage">
+            <WelcomeIntro emberRef={emberCanvasRef} />
+          </div>
 
-        {/* Tagline below animation */}
-        <div
-          className={`mb-10 text-center transition-all duration-700 ${
-            introDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <h1 className="wordmark font-display text-4xl font-extrabold sm:text-5xl">
+          {/* Helix mark — appears as phoenix shrinks */}
+          <div ref={logoMarkRef} className="welcome-logo-mark">
+            <Image
+              src="/brand/helix-mark.png"
+              alt="HELIX mark"
+              width={160}
+              height={160}
+              priority
+            />
+          </div>
+
+          {/* Wordmark + tagline (revealed at end of scrub) */}
+          <h1 ref={wordmarkRef} className="welcome-wordmark wordmark font-display">
             HELIX AI
           </h1>
-          <p className="mt-3 text-base text-slate-400 sm:text-lg">
-            <span className="text-violet-300">The DNA of your brand,</span>{" "}
-            decoded.
+          <p ref={taglineRef} className="welcome-tagline">
+            <span className="text-violet-300">The DNA of your brand,</span> decoded.
           </p>
-          <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+          <p ref={sublineRef} className="welcome-subline">
             AI Social Media Strategist · oleh Akselera Tech
           </p>
-        </div>
 
-        {/* Feature cards */}
-        <div
-          className={`transition-all duration-700 ${
-            introDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          <h2 className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+          {/* Scroll hint — fades on scroll */}
+          <div ref={scrollHintRef} className="welcome-scroll-hint" aria-hidden>
+            <span className="scroll-label">Scroll untuk masuk</span>
+            <span className="scroll-chevron">⌄</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature cards — revealed after pin ends */}
+      <section ref={cardsRef} className="welcome-cards-section">
+        <div className="mx-auto w-full max-w-5xl px-4 py-12">
+          <h2 className="mb-6 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
             ✨ Pilih fitur untuk mulai
-            {introDone && (
-              <span className="ml-2 text-slate-600 normal-case">
-                · auto-redirect ke Chat dalam {(AUTO_REDIRECT_DELAY_MS / 1000).toFixed(0)}s
-              </span>
-            )}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
@@ -152,8 +264,6 @@ export default function WelcomePage() {
               </Link>
             ))}
           </div>
-
-          {/* Footer micro stats */}
           <div className="mt-10 text-center">
             <p className="text-[11px] text-slate-600">
               13+ brand · Vision AI multimodal · Live trend ingestion ·
@@ -161,7 +271,7 @@ export default function WelcomePage() {
             </p>
           </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
