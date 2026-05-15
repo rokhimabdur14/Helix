@@ -589,17 +589,19 @@ function SocialDnaBanner({ profiles, references, onGo }) {
     return (
       <button
         onClick={onGo}
-        className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-slate-700/60 bg-slate-900/40 px-4 py-2.5 text-left text-xs text-slate-300 transition hover:border-violet-500/40 hover:bg-slate-800/40"
+        className="group mt-4 flex w-full flex-col items-start justify-between gap-2 rounded-xl border border-slate-700/60 bg-slate-900/40 px-4 py-2.5 text-left text-xs text-slate-300 transition hover:border-violet-500/40 hover:bg-slate-800/40 sm:flex-row sm:items-center sm:gap-3"
       >
-        <span className="flex items-center gap-2">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500" />
-          <span className="font-semibold text-slate-200">SOCIAL DNA</span>
-          <span className="text-slate-500">— belum di-setup</span>
-          <span className="text-slate-600">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500" />
+            <span className="font-semibold text-slate-200">SOCIAL DNA</span>
+            <span className="text-slate-500">— belum di-setup</span>
+          </span>
+          <span className="hidden text-slate-600 sm:inline">
             · scrape profile + simpan post viral untuk konteks generator
           </span>
         </span>
-        <span className="text-violet-300 transition group-hover:translate-x-0.5">
+        <span className="flex-shrink-0 text-violet-300 transition group-hover:translate-x-0.5">
           Setup →
         </span>
       </button>
@@ -610,19 +612,21 @@ function SocialDnaBanner({ profiles, references, onGo }) {
     return (
       <button
         onClick={onGo}
-        className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-violet-500/10 px-4 py-2.5 text-left text-xs text-amber-100 transition hover:border-amber-500/60"
+        className="group mt-4 flex w-full flex-col items-start justify-between gap-2 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-violet-500/10 px-4 py-2.5 text-left text-xs text-amber-100 transition hover:border-amber-500/60 sm:flex-row sm:items-center sm:gap-3"
       >
-        <span className="flex items-center gap-2">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
-          <span className="font-semibold">SOCIAL DNA aktif:</span>
-          <span className="text-amber-200">
-            {profiles} profile{profiles !== 1 ? "s" : ""}
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
+            <span className="font-semibold">SOCIAL DNA aktif:</span>
+            <span className="text-amber-200">
+              {profiles} profile{profiles !== 1 ? "s" : ""}
+            </span>
           </span>
-          <span className="text-amber-300/70">
+          <span className="hidden text-amber-300/70 sm:inline">
             — tambah reference post viral untuk diversifikasi output
           </span>
         </span>
-        <span className="text-amber-300 transition group-hover:translate-x-0.5">
+        <span className="flex-shrink-0 text-amber-300 transition group-hover:translate-x-0.5">
           + Add references →
         </span>
       </button>
@@ -632,20 +636,22 @@ function SocialDnaBanner({ profiles, references, onGo }) {
   return (
     <button
       onClick={onGo}
-      className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-4 py-2.5 text-left text-xs text-violet-100 transition hover:border-violet-500/60"
+      className="group mt-4 flex w-full flex-col items-start justify-between gap-2 rounded-xl border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-4 py-2.5 text-left text-xs text-violet-100 transition hover:border-violet-500/60 sm:flex-row sm:items-center sm:gap-3"
     >
-      <span className="flex items-center gap-2">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
-        <span className="font-semibold">SOCIAL DNA aktif:</span>
-        <span className="text-violet-200">
-          {profiles} profile{profiles !== 1 ? "s" : ""} · {references} reference
-          {references !== 1 ? "s" : ""}
+      <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
+          <span className="font-semibold">SOCIAL DNA aktif:</span>
+          <span className="text-violet-200">
+            {profiles} profile{profiles !== 1 ? "s" : ""} · {references}{" "}
+            reference{references !== 1 ? "s" : ""}
+          </span>
         </span>
-        <span className="text-violet-300/70">
+        <span className="hidden text-violet-300/70 sm:inline">
           — auto-inject ke generator
         </span>
       </span>
-      <span className="text-violet-400 transition group-hover:translate-x-0.5">
+      <span className="flex-shrink-0 text-violet-400 transition group-hover:translate-x-0.5">
         Manage →
       </span>
     </button>
