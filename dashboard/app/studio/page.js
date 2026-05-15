@@ -388,31 +388,13 @@ function StudioPageInner() {
                 })}
               </div>
 
-              {mode === "brand" &&
-                (socialCounts.references > 0 || socialCounts.profiles > 0) &&
-                activeTab !== "references" && (
-                  <button
-                    onClick={() => changeTab("references")}
-                    className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-4 py-2.5 text-left text-xs text-violet-100 transition hover:border-violet-500/60"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
-                      <span className="font-semibold">SOCIAL DNA aktif:</span>
-                      <span className="text-violet-200">
-                        {socialCounts.profiles} profile
-                        {socialCounts.profiles !== 1 ? "s" : ""} ·{" "}
-                        {socialCounts.references} reference
-                        {socialCounts.references !== 1 ? "s" : ""}
-                      </span>
-                      <span className="text-violet-300/70">
-                        — auto-inject ke generator
-                      </span>
-                    </span>
-                    <span className="text-violet-400 transition group-hover:translate-x-0.5">
-                      Manage →
-                    </span>
-                  </button>
-                )}
+              {mode === "brand" && activeTab !== "references" && (
+                <SocialDnaBanner
+                  profiles={socialCounts.profiles}
+                  references={socialCounts.references}
+                  onGo={() => changeTab("references")}
+                />
+              )}
 
               <div
                 role="tabpanel"
@@ -458,6 +440,8 @@ function StudioPageInner() {
                   />
                 )}
               </div>
+
+              {activeTab !== "references" && <StudioTips activeTab={activeTab} />}
             </>
           )}
         </div>
@@ -469,6 +453,202 @@ function StudioPageInner() {
         onCreate={createBrand}
       />
     </div>
+  );
+}
+
+const STUDIO_TIPS = {
+  plan: [
+    {
+      title: "Konsisten > banyak",
+      text: "3 post/minggu fokus pillar jelas mengalahkan 7 post random. Pilih 2-3 pillar utama lalu rotate.",
+    },
+    {
+      title: "Mix format strategis",
+      text: "Reel untuk reach, Carousel untuk save, Story untuk top-of-mind. Jangan all-in di satu format.",
+    },
+    {
+      title: "Send to Brief / Hook",
+      text: "Klik post di kalender untuk auto-prefill ke tab Brief, Hook, atau Caption — gak perlu ketik ulang.",
+    },
+  ],
+  brief: [
+    {
+      title: "Hook 3 detik wajib",
+      text: "Pertanyaan, kontradiksi, atau angka spesifik. Hindari 'Halo guys' — viewer scroll dalam 1 detik.",
+    },
+    {
+      title: "FEEL → THINK → DO → TELL",
+      text: "4 scene optimal untuk Reel <30s. Mulai dari emosi, naik ke insight, ke aksi, ke CTA. Smooth flow.",
+    },
+    {
+      title: "Regen per scene",
+      text: "Hasil belum pas? Klik ↻ di scene tertentu + kasih hint ('lebih dramatic') untuk fine-tune.",
+    },
+  ],
+  hook: [
+    {
+      title: "Question hook",
+      text: "'Kenapa post kamu nggak naik?' lebih engaging dari pernyataan flat. Tap viewer's curiosity gap.",
+    },
+    {
+      title: "Pattern interrupt",
+      text: "Kontradiksi expected: 'Followers banyak tapi nggak laku — ini sebabnya'. Bikin viewer stop scroll.",
+    },
+    {
+      title: "Angka spesifik",
+      text: "'3 langkah', '7 alasan', '12 menit' — angka konkret lebih scroll-stopping dari 'beberapa'.",
+    },
+  ],
+  caption: [
+    {
+      title: "Length sesuai goal",
+      text: "Short → engagement cepat. Long → save & share. Pilih length sebelum tulis, jangan campur tujuan.",
+    },
+    {
+      title: "CTA spesifik",
+      text: "'Comment YES kalau setuju' lebih convert dari 'apa pendapatmu?'. Instruksi konkret > pertanyaan vague.",
+    },
+    {
+      title: "Mix hashtag",
+      text: "5-15 tag: 1-2 big reach (#fotografi) + 5-8 niche (#fotojogja) + 2-3 branded. Hindari spam #love.",
+    },
+  ],
+  carousel: [
+    {
+      title: "Cover = hook visual",
+      text: "Slide 1 tease value, jangan kasih semua. 'Hindari 3 kesalahan ini ↓' bikin viewer swipe.",
+    },
+    {
+      title: "1 ide per slide",
+      text: "Jangan padat. White space + 1 takeaway per slide = save-worthy + shareable.",
+    },
+    {
+      title: "CTA di slide terakhir",
+      text: "Save, share, follow, atau comment — kasih instruksi jelas. Slide terakhir adalah conversion moment.",
+    },
+  ],
+};
+
+function StudioTips({ activeTab }) {
+  const tips = STUDIO_TIPS[activeTab];
+  if (!tips) return null;
+
+  return (
+    <div className="mt-6">
+      <div className="mb-3 flex items-center gap-2 px-1">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          className="text-violet-400"
+        >
+          <path
+            d="M12 2a7 7 0 00-4 12.745V17a2 2 0 002 2h4a2 2 0 002-2v-2.255A7 7 0 0012 2z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 22h6M10 19h4"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+          Pro tips
+        </span>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {tips.map((tip, i) => (
+          <div
+            key={i}
+            style={{ "--stagger-i": i }}
+            className="stagger-in rounded-xl border border-slate-800/60 bg-slate-900/30 p-3 backdrop-blur"
+          >
+            <div className="mb-1 text-xs font-semibold text-violet-200">
+              {tip.title}
+            </div>
+            <div className="text-xs leading-relaxed text-slate-400">
+              {tip.text}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SocialDnaBanner({ profiles, references, onGo }) {
+  const bothEmpty = profiles === 0 && references === 0;
+  const refsEmpty = profiles > 0 && references === 0;
+
+  if (bothEmpty) {
+    return (
+      <button
+        onClick={onGo}
+        className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-slate-700/60 bg-slate-900/40 px-4 py-2.5 text-left text-xs text-slate-300 transition hover:border-violet-500/40 hover:bg-slate-800/40"
+      >
+        <span className="flex items-center gap-2">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500" />
+          <span className="font-semibold text-slate-200">SOCIAL DNA</span>
+          <span className="text-slate-500">— belum di-setup</span>
+          <span className="text-slate-600">
+            · scrape profile + simpan post viral untuk konteks generator
+          </span>
+        </span>
+        <span className="text-violet-300 transition group-hover:translate-x-0.5">
+          Setup →
+        </span>
+      </button>
+    );
+  }
+
+  if (refsEmpty) {
+    return (
+      <button
+        onClick={onGo}
+        className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-violet-500/10 px-4 py-2.5 text-left text-xs text-amber-100 transition hover:border-amber-500/60"
+      >
+        <span className="flex items-center gap-2">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
+          <span className="font-semibold">SOCIAL DNA aktif:</span>
+          <span className="text-amber-200">
+            {profiles} profile{profiles !== 1 ? "s" : ""}
+          </span>
+          <span className="text-amber-300/70">
+            — tambah reference post viral untuk diversifikasi output
+          </span>
+        </span>
+        <span className="text-amber-300 transition group-hover:translate-x-0.5">
+          + Add references →
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={onGo}
+      className="group mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-blue-500/10 px-4 py-2.5 text-left text-xs text-violet-100 transition hover:border-violet-500/60"
+    >
+      <span className="flex items-center gap-2">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
+        <span className="font-semibold">SOCIAL DNA aktif:</span>
+        <span className="text-violet-200">
+          {profiles} profile{profiles !== 1 ? "s" : ""} · {references} reference
+          {references !== 1 ? "s" : ""}
+        </span>
+        <span className="text-violet-300/70">
+          — auto-inject ke generator
+        </span>
+      </span>
+      <span className="text-violet-400 transition group-hover:translate-x-0.5">
+        Manage →
+      </span>
+    </button>
   );
 }
 
